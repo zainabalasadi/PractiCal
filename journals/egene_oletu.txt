@@ -1,0 +1,5 @@
+Journal - Egene Oletu (z5059371)
+
+10/11th October:
+Started setting up the MySQL server. So far created the user table, and started
+coding the manager functions for it.
