@@ -1,8 +1,9 @@
 class Event():
 
-    def __init__(self, user, name, description, startDateTime, endDateTime, category):
+    def __init__(self, user, name, ID, description, startDateTime, endDateTime, category):
         self._user = user
         self._name = name
+        self._ID = ID
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
@@ -19,6 +20,9 @@ class Event():
         
     def get_name(self):
         return self._name
+
+    def get_ID(self):
+        return self._ID
         
     def get_description(self):
         return self._description
@@ -39,6 +43,9 @@ class Event():
         
     def set_name(self, name):
         self._name = name
+
+    def set_ID(self, ID):
+        self._ID = ID
         
     def set_description(self, description):
         self._description = description
