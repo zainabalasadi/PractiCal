@@ -19,5 +19,5 @@ class User():
             if old_event.ID == event.ID:
                 delete_event(old_event)
                 add_event(event)
-                return 1
-        return 0
+                return true
+        return false
