@@ -7,32 +7,133 @@ DATABASE = "practiCal_db"
 
 class DatabaseManager():
 
-    def loadDatabase(self, database, host, user, passwd):
-
+    def __init__(self, database, host, user, password):
         try:
-            db = mysql.connector.connect(
+            self._db = mysql.connector.connect(
                 host=host,
                 user=user,
-                passwd=passwd,
+                passwd=password,
                 database=database
             )
         except Exception as e:
             print(("Error loading database {} using provided credentials.\n"
                    "The following error was raised:\n\n{}".format(database, e)))
-            db = None
+            self._db = None
+        
+
+    def loadDatabase(self, database, host, user, password):
+
+        try:
+            self._db = mysql.connector.connect(
+                host=host,
+                user=user,
+                passwd=password,
+                database=database
+            )
+        except Exception as e:
+            print(("Error loading database {} using provided credentials.\n"
+                   "The following error was raised:\n\n{}".format(database, e)))
+            self._db = None
 
     def createUser(self, first_name, last_name, email, password):
-        cursor = db.cursor()
+        cursor = self._db.cursor()
+        sql = ("INSERT INTO users (first_name, last_name, email, password)"
+               "VALUES (%s, %s, %s, %s)")
+        val = (first_name.lower(), last_name.lower(), email.lower(), password)
         try:
-            cursor.execute(("INSERT INTO users (first_name, last_name, "
-                            "email, password)"
-                            "VALUES ({}, {}, {}, {})".format(first_name,
-                            last_name, email, password)))
+            cursor.execute(sql, val)
+            self._db.commit()
+            cursor.close()
         except Exception as e:
             print(("Error trying to create new user.\n"
                    "The following error was raised:\n\n{}".format(e)))
 
+    def checkUserPwd(self, email, password):
+        cursor = self._db.cursor()
+        sql = "SELECT email, password FROM users WHERE email = %s"
+        val = (email.lower(),)
+        try:
+            cursor.execute(sql, val)
+            user = cursor.fetchone()
+            cursor.close()
+            if not user:
+                raise ValueError("User not found")
+            if user[1] == password:
+                return 1
+            else:
+                return 0
+        except Exception as e:
+            print(("Error encountered while accessing database.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
 
+    def deleteUser(self, email):
+        cursor = self._db.cursor()
+        sql = "DELETE FROM users WHERE email = %s"
+        val = (email.lower(),)
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while trying to delete record.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return 0
+
+    def updateUserName(self, email, new_fname, new_lname):
+        cursor = self._db.cursor()
+        sql = "UPDATE users SET first_name = %s, last_name = %s WHERE email = %s"
+        val = (new_fname.lower(), new_lname.lower(), email.lower())
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while trying to update record.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return 0
+
+    def updateUserEmail(self, email, new_email):
+        cursor = self._db.cursor()
+        sql = "UPDATE users SET email = %s WHERE email = %s"
+        val = (new_email.lower(), email.lower())
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while trying to update record.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return 0
+        
+    def updateUserPassword(self, email, new_pass):
+        cursor = self._db.cursor()
+        sql = "UPDATE users SET password = %s WHERE email = %s"
+        val = (new_pass, email.lower())
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while trying to update record.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return 0
 
 if __name__ == "__main__":
     db = mysql.connector.connect(
@@ -62,6 +163,4 @@ if __name__ == "__main__":
                     "first_name VARCHAR(70), "
                     "last_name VARCHAR(70), "
                     "email VARCHAR(255) UNIQUE, "
-                    "password VARCHAR(30))"))
-
-
+                    "password VARCHAR(128))"))
