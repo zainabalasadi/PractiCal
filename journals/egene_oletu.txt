@@ -1,5 +1,8 @@
 Journal - Egene Oletu (z5059371)
 
-10/11th October:
+10/10/2019:
 Started setting up the MySQL server. So far created the user table, and started
 coding the manager functions for it.
+
+11/10/2019:
+Wrote and tested new methods to add, delete, and edit entries in the users table.
