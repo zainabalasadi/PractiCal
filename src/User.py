@@ -16,7 +16,7 @@ class User():
     #edits a given event from a users calendar
     def edit_event(self, event):
         for old_event in self._events:
-            if old_event.ID == event.ID:
+            if old_event.get_ID == event.get_ID:
                 delete_event(old_event)
                 add_event(event)
                 return true
