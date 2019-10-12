@@ -1,0 +1,13 @@
+diary
+
+9/10/19
+Today we stayed back for our group meeting. We finalised all our US for the first sprint. Our sprint length is 1 week we decided. I have been assigned to focus on event creation deletion and editing. 
+
+10/10/19
+Today I start on the code with Morgan. I completed the deletion of an event for a user, as well as the editing of an event for a user.
+
+11/10
+very minor refactoring
+
+12/10
+started writing pytest as well as added getters and setters
