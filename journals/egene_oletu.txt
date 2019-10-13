@@ -6,3 +6,8 @@ coding the manager functions for it.
 
 11/10/2019:
 Wrote and tested new methods to add, delete, and edit entries in the users table.
+
+13/10/2019:
+Refactored code. Added events table to database, basing the schema off the
+event class defined in the EventBranch branch. Also wrote creat/delete event
+methods. New code not tested.
