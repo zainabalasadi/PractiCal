@@ -25,18 +25,12 @@ class User():
 
     def get_email(self):
         return self._email
-
-    def get_password(self):
-        return self._password
-    
-    def get_events(self):
-        return self._events
     
     def get_categories(self):
-        return self._calendars
+        return self._category
 
-    def add_categories(self, newCalendar):
-        self._calendars.append(newCalendar)
+    def add_categories(self, newCategory):
+        self._calendars.append(newCategory)
 
     def get_contacts(self):
         return self._contacts
