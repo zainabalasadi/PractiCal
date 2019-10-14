@@ -35,11 +35,11 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(database, e)))
             self._db = None
 
-    def addUser(self, first_name, last_name, email, password):
+    def addUser(self, firstName, lastName, email, password):
         cursor = self._db.cursor()
         sql = ("INSERT INTO users (first_name, last_name, email, password) "
                "VALUES (%s, %s, %s, %s)")
-        val = (first_name.lower(), last_name.lower(), email.lower(), password)
+        val = (firstName.lower(), lastName.lower(), email.lower(), password)
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -72,10 +72,10 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def deleteUser(self, userid):
+    def deleteUser(self, userID):
         cursor = self._db.cursor()
-        sql = "DELETE FROM users WHERE uid = %d"
-        val = (userid,)
+        sql = "DELETE FROM users WHERE uid = %s"
+        val = (userID,)
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -89,10 +89,10 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def setUserName(self, email, new_fname, new_lname):
+    def setUserName(self, userID, newFName, newLName):
         cursor = self._db.cursor()
-        sql = "UPDATE users SET first_name = %s, last_name = %s WHERE email = %s"
-        val = (new_fname.lower(), new_lname.lower(), email.lower())
+        sql = "UPDATE users SET first_name = %s, last_name = %s WHERE uid = %s"
+        val = (newFName.lower(), newLName.lower(), userID)
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -106,10 +106,10 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def setUserEmail(self, email, new_email):
+    def setUserEmail(self, email, newEmail):
         cursor = self._db.cursor()
         sql = "UPDATE users SET email = %s WHERE email = %s"
-        val = (new_email.lower(), email.lower())
+        val = (newEmail.lower(), email.lower())
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -123,10 +123,10 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
         
-    def setUserPassword(self, email, new_pass):
+    def setUserPassword(self, email, newPass):
         cursor = self._db.cursor()
         sql = "UPDATE users SET password = %s WHERE email = %s"
-        val = (new_pass, email.lower())
+        val = (newPass, email.lower())
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -140,20 +140,20 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def addEvent(self, userid, title, desc, category, startdt, enddt=None):
+    def addEvent(self, userID, title, descr, category, startDT, endDT=None):
         cursor = self._db.cursor()
 
         try:
-            sql = "SELECT uid FROM users WHERE uid = %d"
-            val = (userid, )
+            sql = "SELECT uid FROM users WHERE uid = %s"
+            val = (userID, )
             cursor.execute(sql, val)
             if not cursor.fetchone():
                 raise ValueError("User does not exist")
 
-            sql = ("INSERT INTO events (uid, title, desc, startdt, "
+            sql = ("INSERT INTO events (uid, title, descr, startdt, "
                    "enddt, category) "
-                   "VALUES (%d, %s, %s, %s, %s, %s)")
-            val = (userid, title, startdt, enddt, category)
+                   "VALUES (%s, %s, %s, %s, %s, %s)")
+            val = (userID, title, descr, startDT, endDT, category)
             cursor.execute(sql, val)
             self._db.commit()
             rowcount = cursor.rowcount
@@ -167,10 +167,10 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def deleteEvent(self, eventid):
+    def deleteEvent(self, eventID):
         cursor = self._db.cursor()
-        sql = "DELETE FROM events WHERE eid = %d"
-        val = (eventid, )
+        sql = "DELETE FROM events WHERE eid = %s"
+        val = (eventID, )
         try:
             cursor.execut(sql, val)
             self._db.commit()
@@ -182,6 +182,74 @@ class DatabaseManager():
 
         except Exception as e:
             print(("Error encountered while deleting event.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
+    def setEventTitle(self, eventID, newTitle):
+        cursor = self._db.cursor()
+        sql = "UPDATE events SET title = %s WHERE eid = %s"
+        val = (newTitle, eventID)
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while updating event.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
+    def setEventDescr(self, eventID, newDescr):
+        cursor = self._db.cursor()
+        sql = "UPDATE events SET descr = %s WHERE eid = %s"
+        val = (newDescr, eventID)
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while updating event.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
+    def setEventDateTime(self, eventID, newStartDT, newEndDT):
+        cursor = self._db.cursor()
+        sql = "UPDATE events SET startdt = %s, enddt = %s WHERE eid = %s"
+        val = (newStartDT, newEndDT, eventID)
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while updating event.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
+    def setEventCategory(self, eventid, newCategory):
+        cursor = self._db.cursor()
+        sql = "UPDATE events SET category = %s WHERE eid = %s"
+        val = (newCategory, eventid)
+        try:
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while updating event.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
@@ -203,8 +271,11 @@ if __name__ == "__main__":
         if resp.lower()[0] == "n":
             quit()
         elif resp.lower()[0] == "y":
+            cursor.execute("USE {}".format(DATABASE))
             print("Deleting data from database {}...".format(DATABASE))
+            cursor.execute("SET foreign_key_checks = 0")
             cursor.execute("DROP TABLE IF EXISTS users, events")
+            cursor.execute("SET foreign_key_checks = 1")
     else:
         print("Creating database {}...".format(DATABASE))
         cursor.execute("CREATE DATABASE {}".format(DATABASE))
@@ -222,9 +293,11 @@ if __name__ == "__main__":
                     "eid int NOT NULL AUTO_INCREMENT, "
                     "uid int NOT NULL, "
                     "title VARCHAR(70) NOT NULL, "
-                    "desc TEXT, "
+                    "descr TEXT, "
                     "startdt DATETIME NOT NULL, "
                     "enddt DATETIME, "
                     "category VARCHAR(25), "
                     "PRIMARY KEY (eid), "
                     "FOREIGN KEY (uid) REFERENCES users(uid))"))
+    db.commit()
+    cursor.close()
