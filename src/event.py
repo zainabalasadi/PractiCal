@@ -9,11 +9,8 @@ class Event():
         self._endDateTime = endDateTime
         self._category = category
         self._comments = []
-    
-    def add_comment(self, comment):
-        self._comments.append(comment)
-    
-    #Getters
+        self._invitees = []
+        self._groups = []
     
     def get_user(self):
         return self._user
@@ -36,8 +33,6 @@ class Event():
     def get_category(self):
         return self._category
         
-    #Setters
-    
     def set_user(self, user):
         self._user = user
         
@@ -58,3 +53,32 @@ class Event():
     
     def set_category(self, category):
         self._category = category
+
+    def add_comment(self, comment):
+        self._comments.append(comment)
+
+    def add_invitees(self, invitee):
+        self._invitees.append(invitee)
+
+    def remove_invitees(self, invitee):
+        # TODO
+        return true
+
+    def add_group(self, group):
+        self._groups.append(group)
+
+    def remove_group(self, invitee):
+        # TODO
+        return true
+
+    # Edits an event
+    # Returns true if editing is successful, false if not
+    def edit_event(self, name, desc, startDateTime, endDateTime, invitees):
+        # Update event details
+        self.setName(name) 
+        self.set_description(desc) 
+        self.set_startDateTime(startDateTime) 
+        self.set_endDateTime(endDateTime)
+        # Add or delete invitees
+        # TODO
+
