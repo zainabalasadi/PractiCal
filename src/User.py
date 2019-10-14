@@ -14,7 +14,7 @@ class User():
         self._groups = []
     
     def get_id(self):
-        return str(self.id)
+        return str(self._id)
 
     def get_firstName(self):
         return self._firstName
