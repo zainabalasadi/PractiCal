@@ -11,3 +11,7 @@ Wrote and tested new methods to add, delete, and edit entries in the users table
 Refactored code. Added events table to database, basing the schema off the
 event class defined in the EventBranch branch. Also wrote creat/delete event
 methods. New code not tested.
+
+14/10/2019:
+Refactored code. Added events update methods and fixed syntax errors in some
+of the sql statements used in the code. Did some basic testing of some methods.
