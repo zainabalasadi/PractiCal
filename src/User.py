@@ -2,7 +2,9 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
-import Notification, Event, Category
+from src.Notification import Notification
+from src.Event import Event
+from src.Category import Category
 
 class User():
     def __init__(self, userId, firstName, lastName, email, password):
@@ -15,6 +17,7 @@ class User():
         self._contacts = []
         self._groups = []
         self._notifications = []
+        self._maybe_events = []
     
     def get_id(self):
         return self._id
@@ -58,10 +61,28 @@ class User():
 
     def remove_notification(self, notif):
         self._notifications.remove(notif)
+
+    def get_maybe_events(self):
+        return self._maybe_events
+
+    def add_maybe_event(self, event):
+        self._maybe_events.append(event)
  
     def accept_invite(self, notif, category):
-        # TODO
+        category.add_event(notif.get_event())
+        self.remove_notification(notif)
 
-    def decline_invite(self, event):
-        # TODO
+    def decline_invite(self, notif):
+        event = notif.get_event()
+        inviter = event.get_user()
+        new_notif = Notification(event, 'declined_invite', self, inviter)
+        inviter.add_notification(new_notif)
+        self.remove_notification(notif)
 
+    def maybe_invite(self, notif, category):
+        event = notif.get_event()
+        inviter = event.get_user()
+        new_notif = Notification(event, 'maybe_invite', self, inviter)
+        inviter.add_notification(new_notif)
+        self.add_maybe_event(event)
+        self.remove_notification(notif)

@@ -2,12 +2,12 @@
 # Completed by Michael Ho
 # Started 15/10/19
 
-import User, Category
+from src.User import User
+from src.Category import Category
 
 class PractiCalManager():
 	def __init__(self):
 		self._users = []
-		self._notifications = []
 		
 	def get_users(self):
 		return self._users
@@ -45,5 +45,3 @@ class PractiCalManager():
 			if user.get_email() == email:
 				return user
 		return None
-
-	

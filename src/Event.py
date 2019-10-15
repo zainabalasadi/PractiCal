@@ -59,6 +59,9 @@ class Event():
 
     def add_invitee(self, invitee):
         self._invitees.append(invitee)
+        notif = Notification(self, 'invite', self.get_user(), invitee)
+        invitee_notifs = invitee.get_notifications()
+        invitee_notifs.append(notif)
 
     # Returns true if invitee exists in event and is successfully removed
     def remove_invitee(self, invitee):
