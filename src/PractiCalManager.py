@@ -7,6 +7,7 @@ import User, Category
 class PractiCalManager():
 	def __init__(self):
 		self._users = []
+		self._notifications = []
 		
 	def get_users(self):
 		return self._users
@@ -44,3 +45,5 @@ class PractiCalManager():
 			if user.get_email() == email:
 				return user
 		return None
+
+	
