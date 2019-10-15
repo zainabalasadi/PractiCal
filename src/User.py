@@ -84,5 +84,6 @@ class User():
         inviter = event.get_user()
         new_notif = Notification(event, 'maybe_invite', self, inviter)
         inviter.add_notification(new_notif)
+        category.add_event(event)
         self.add_maybe_event(event)
         self.remove_notification(notif)
