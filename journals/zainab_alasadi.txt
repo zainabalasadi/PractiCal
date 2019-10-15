@@ -1,0 +1,35 @@
+# Journal - Zainab Alasadi (z5115216)
+# Role - Product Owner
+
+## Weekly Meeting 1 (Sprint #1) - 9/10/19
+Today, we held a weekly meeting to discuss the sprint that commenced today. The main 
+objective of this meeting was to assign points to the user stories and determine which
+stories are most important to focus on for Sprint #1. We decided to focus on user account
+creation, event creation and database setup as these are the basis of other features. I
+was assigned to work on user facing features with Michael.
+
+What did I do yesterday? Yesterday, I worked on adding all the user stories we have 
+decided to complete to the icebox on pivotal tracker.
+
+What will I do today? Today, I will continue to add tasks and user acceptance criteria
+to the pivotal tracker so that we are aware of exactly what we need to complete
+
+Is anything in my way? Some features that are allocated to me rely on interface 
+components, since this is the first week of development and we are focusing more on
+back-end to get up an running, this may impact my progress on the user stories as part
+of sprint one.
+
+
+## Weekly Meeting 2 (Sprint #1) - 14/10/19
+Today, we held another weekly meeting for Sprint #1 to discuss the progress of everyone
+and bring up any concerns we have. We decided to modify some architecture and enforce
+some code styling techniques. 
+
+What did I do yesterday? Yesterday, I worked on planning how I will tackle my assigned
+user stories and began scoping what attributes the user class will require
+
+What will I do today? Today, I will complete the user class, with appropriate functions
+as well as implement test cases to ensure that the code works accordingly
+
+Is anything in my way? The react/flask setup is slightly delayed due to other university
+commitments which pushes draft UI creation a day further. 
