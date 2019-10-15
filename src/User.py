@@ -2,6 +2,8 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
+import Notification, Event, Category
+
 class User():
     def __init__(self, userId, firstName, lastName, email, password):
         self._id = userId
@@ -9,9 +11,10 @@ class User():
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._category = []
+        self._categories = []
         self._contacts = []
         self._groups = []
+        self._notifications = []
     
     def get_id(self):
         return str(self._id)
@@ -46,3 +49,19 @@ class User():
 
     def add_group(self, group):
         self._groups.append(group)
+
+    def get_notifications(self):
+        return self._notifications
+
+    def add_notification(self, notif):
+        self._notifications.append(notif)
+
+    def remove_notification(self, notif):
+        self._notifications.remove(notif)
+ 
+    def accept_invite(self, notif, category):
+        # TODO
+
+    def decline_invite(self, event):
+        # TODO
+

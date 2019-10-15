@@ -1,10 +1,11 @@
 # Implementation of PractiCalManager class
 # Completed by Michael Ho
 # Started 15/10/19
-import User
+
+import User, Category
 
 class PractiCalManager():
-	def __init__():
+	def __init__(self):
 		self._users = []
 		
 	def get_users(self):
@@ -14,6 +15,8 @@ class PractiCalManager():
 	def create_user(self, userId, firstName, lastName, email, password):
 		if self.search_user_email() == None:
 			new_user = User(userId, firstName, lastName, email, password)
+			default_category = Category('My Calendar', 'Red')
+			new_user.add_categories(default_category)
 			self._users.append(new_user)
 			return True
 		else:
