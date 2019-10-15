@@ -10,9 +10,14 @@ class PractiCalManager():
 	def get_users(self):
 		return self._users
 
+	# Returns true if new user is successfully created
 	def create_user(self, userId, firstName, lastName, email, password):
-		new_user = User(userId, firstName, lastName, email, password)
-		self._users.append(new_user)
+		if self.search_user_email() == None:
+			new_user = User(userId, firstName, lastName, email, password)
+			self._users.append(new_user)
+			return True
+		else:
+			return False
 
 	# Return true if user exists and is successfully removed from system	
 	def remove_user(self, user):
@@ -30,10 +35,9 @@ class PractiCalManager():
 				matching_users.append(user)
 		return matching_users
 
-	# Returns list of matching users
+	# Returns matching user if exists
 	def search_user_email(self, email):
-		matching_users = []
 		for user in self.users:
 			if user.get_email() == email:
-				matching_users.append(user)
-		return matching_users
+				return user
+		return None
