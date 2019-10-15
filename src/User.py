@@ -17,7 +17,7 @@ class User():
         self._notifications = []
     
     def get_id(self):
-        return str(self._id)
+        return self._id
 
     def get_firstName(self):
         return self._firstName
