@@ -57,19 +57,27 @@ class Event():
     def add_comment(self, comment):
         self._comments.append(comment)
 
-    def add_invitees(self, invitee):
+    def add_invitee(self, invitee):
         self._invitees.append(invitee)
 
-    def remove_invitees(self, invitee):
-        # TODO
-        return true
+    # Returns true if invitee exists in event and is successfully removed
+    def remove_invitee(self, invitee):
+        try:
+            self._invitees.remove(invitee)
+            return True
+        except:
+            return False
 
     def add_group(self, group):
         self._groups.append(group)
 
-    def remove_group(self, invitee):
-        # TODO
-        return true
+    # Returns true if group exists in event and is successfully removed
+    def remove_group(self, group):
+        try:
+            self._groups.remove(group)
+            return True
+        except:
+            return False
 
     # Edits an event
     # Returns true if editing is successful, false if not

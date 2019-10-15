@@ -19,6 +19,9 @@ class User():
     def get_firstName(self):
         return self._firstName
 
+    def get_lastName(self):
+        return self._lastName
+
     # Validate if provided password matches user password
     def validate(self, password):
         return self._password == password
