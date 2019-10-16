@@ -41,7 +41,7 @@ class PractiCalManager():
 
     # Returns matching user if exists
     def searchUserEmail(self, email):
-        for user in self.users:
+        for user in self._users:
             if user.get_email() == email:
                 return user
         return None
