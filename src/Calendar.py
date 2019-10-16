@@ -4,10 +4,11 @@
 
 
 class Calendar():
-    def __init__(self, name, colour):
+    def __init__(self, name, colour, user):
         self._name = name
         self._colour = colour
         self._events = []
+        self._user = user
 
     def getName(self):
         return self._name
@@ -31,6 +32,13 @@ class Calendar():
     def deleteEvent(self, event):
         # TODO
         # If the event is shared, remove from everyone's calendar
+
+        if event.getUser() == self._user:
+            for invitee in event.getInvitees():
+                for calendar in invitee.getCalendars():
+                    if event in calendar.getEvents():
+                        calendar.deleteEvent(event)
+
         if event in self.getEvents():
             self._events.remove(event)
             return True

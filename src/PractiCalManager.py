@@ -16,7 +16,7 @@ class PractiCalManager():
     def createUser(self, userId, firstName, lastName, email, password):
         if self.searchUserEmail() is None:
             newUser = User(userId, firstName, lastName, email, password)
-            defaultCalendar = Calendar('My Calendar', 'Red')
+            defaultCalendar = Calendar('My Calendar', 'Red', 1)
             newUser.addCalendars(defaultCalendar)
             self._users.append(newUser)
             return True

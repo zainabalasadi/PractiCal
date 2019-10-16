@@ -1,16 +1,17 @@
 from src.Notification import Notification
+from src.User import User
 
 
 class Event():
 
-    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, category):
+    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar):
         self._user = user
         self._name = name
         self._eventId = eventId
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
-        self._category = category
+        self._calendar = calendar
         self._comments = []
         self._invitees = []
         self._groups = []
@@ -36,8 +37,8 @@ class Event():
     def getInvitees(self):
         return self._invitees
 
-    def getCategory(self):
-        return self._category
+    def getCalendar(self):
+        return self._calendar
 
     def setUser(self, user):
         self._user = user
@@ -57,8 +58,8 @@ class Event():
     def setEndDateTime(self, endDateTime):
         self._endDateTime = endDateTime
 
-    def setCategory(self, category):
-        self._category = category
+    def setCalendar(self, calendar):
+        self._calendar = calendar
 
     def addComment(self, comment):
         self._comments.append(comment)
@@ -66,7 +67,7 @@ class Event():
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
         notif = Notification(self, 'invite', self.getUser(), invitee)
-        inviteeNotifs = invitee.get_notifications()
+        inviteeNotifs = invitee.getNotifications()
         inviteeNotifs.append(notif)
 
     # Returns true if invitee exists in event and is successfully removed
@@ -104,4 +105,3 @@ class Event():
         return True
         # Add or delete invitees
         # TODO
-
