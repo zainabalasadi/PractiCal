@@ -18,56 +18,55 @@ class TestEvent():
                                 datetime.datetime.now(), "Personal")
         self.workCal = Category("Derrick", "red")
         self.workPersonal = Category("Derrick", "blue")
-
-        self.user.add_categories(self.workCal)
+        self.user.addCalendars(self.workCal)
                   
     def test_event(self, fixture):
-        assert (self.event.get_user() == 1)
-        assert (self.event.get_category() == "Work")
-        assert (self.event.get_description() == "Standup")
-        assert (self.event.get_name() == "COMP4920 Meeting")
-        assert (self.event.get_ID() == 1)
-        assert (self.event.get_startDateTime() <= self.event.get_endDateTime())
+        assert (self.event.getUser() == 1)
+        assert (self.event.getCategory() == "Work")
+        assert (self.event.getDescription() == "Standup")
+        assert (self.event.getName() == "COMP4920 Meeting")
+        assert (self.event.getID() == 1)
+        assert (self.event.getStartDateTime() <= self.event.getEndDateTime())
 
     def test_add_event(self, fixture):
-        self.workCal.add_event(self.event)
-        assert (len(self.user.get_categories()) == 1)
-        assert (len(self.workCal.get_events()) == 1)
+        self.workCal.addEvent(self.event)
+        assert (len(self.user.getCalendars()) == 1)
+        assert (len(self.workCal.getEvents()) == 1)
 
     def test_add_same_event(self, fixture):
-        self.workCal.add_event(self.event)
-        assert (len(self.workCal.get_events()) == 1)
-        self.workCal.add_event(self.event)
-        assert (len(self.workCal.get_events()) == 1)
+        self.workCal.addEvent(self.event)
+        assert (len(self.workCal.getEvents()) == 1)
+        self.workCal.addEvent(self.event)
+        assert (len(self.workCal.getEvents()) == 1)
 
     def test_add_multiple_events(self, fixture):
-        self.workCal.add_event(self.event)
-        assert (len(self.workCal.get_events()) == 1)
-        self.workCal.add_event(self.event1)
-        assert (len(self.workCal.get_events()) == 2)
+        self.workCal.addEvent(self.event)
+        assert (len(self.workCal.getEvents()) == 1)
+        self.workCal.addEvent(self.event1)
+        assert (len(self.workCal.getEvents()) == 2)
 
     def test_delete_events_when_none_exist(self, fixture):
-        assert not (self.workCal.delete_event(self.event))
+        assert not (self.workCal.deleteEvent(self.event))
 
     def test_delete_event(self, fixture):
-        self.workCal.add_event(self.event)
-        assert (len(self.workCal.get_events()) == 1)
-        self.workCal.delete_event(self.event)
-        assert (len(self.workCal.get_events()) == 0)
-        assert not (self.workCal.delete_event(self.event))
+        self.workCal.addEvent(self.event)
+        assert (len(self.workCal.getEvents()) == 1)
+        self.workCal.deleteEvent(self.event)
+        assert (len(self.workCal.getEvents()) == 0)
+        assert not (self.workCal.deleteEvent(self.event))
 
     def test_edit_event(self, fixture):
-        self.workCal.add_event(self.event)
-        self.event.edit_event("COMP4920 Meeting 2.0", "Online", datetime.datetime.now(), datetime.datetime.now(),
-                              self.event.get_invitees())
-        for event in self.workCal.get_events():
-            assert (event.get_name() == "COMP4920 Meeting 2.0")
-        assert (len(self.workCal.get_events()) == 1)
+        self.workCal.addEvent(self.event)
+        self.event.editEvent("COMP4920 Meeting 2.0", "Online", datetime.datetime.now(), datetime.datetime.now(),
+                             self.event.getInvitees())
+        for event in self.workCal.getEvents():
+            assert (event.getName() == "COMP4920 Meeting 2.0")
+        assert (len(self.workCal.getEvents()) == 1)
 
     def test_bad_date_edit_event(self, fixture):
-        self.workCal.add_event(self.event)
-        self.event.edit_event("COMP4920 Meeting 2.0", "Online", datetime.date(2012, 12, 31), datetime.date(2001, 12, 31)
-                              , self.event.get_invitees())
-        for event in self.workCal.get_events():
-            assert (event.get_name() == "COMP4920 Meeting")
-        assert (len(self.workCal.get_events()) == 1)
+        self.workCal.addEvent(self.event)
+        self.event.editEvent("COMP4920 Meeting 2.0", "Online", datetime.date(2012, 12, 31), datetime.date(2001, 12, 31)
+                              , self.event.getInvitees())
+        for event in self.workCal.getEvents():
+            assert (event.getName() == "COMP4920 Meeting")
+        assert (len(self.workCal.getEvents()) == 1)

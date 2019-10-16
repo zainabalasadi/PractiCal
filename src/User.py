@@ -9,40 +9,40 @@ class User():
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._category = []
+        self._calendars = []
         self._contacts = []
         self._groups = []
     
-    def get_id(self):
+    def getID(self):
         return self._id
 
-    def get_firstName(self):
+    def getFirstName(self):
         return self._firstName
 
-    def get_lastName(self):
+    def getLastName(self):
         return self._lastName
 
     # Validate if provided password matches user password
     def validate(self, password):
         return self._password == password
 
-    def get_email(self):
+    def getEmail(self):
         return self._email
     
-    def get_categories(self):
-        return self._category
+    def getCalendars(self):
+        return self._calendars
 
-    def add_categories(self, newCategory):
-        self._category.append(newCategory)
+    def addCalendars(self, newCategory):
+        self._calendars.append(newCategory)
 
-    def get_contacts(self):
+    def getContacts(self):
         return self._contacts
 
-    def add_contacts(self, contact):
+    def addContact(self, contact):
         self._contacts.append(contact)
 
-    def get_groups(self):
+    def getGroups(self):
         return self._groups
 
-    def add_group(self, group):
+    def addGroup(self, group):
         self._groups.append(group)
