@@ -1,7 +1,7 @@
 # Journal - Zainab Alasadi (z5115216)
 # Role - Product Owner
 
-## Weekly Meeting 1 (Sprint #1) - 9/10/19
+## Meeting 1 (Sprint #1) - 9/10/19
 Today, we held a weekly meeting to discuss the sprint that commenced today. The main 
 objective of this meeting was to assign points to the user stories and determine which
 stories are most important to focus on for Sprint #1. We decided to focus on user account
@@ -20,7 +20,7 @@ back-end to get up an running, this may impact my progress on the user stories a
 of sprint one.
 
 
-## Weekly Meeting 2 (Sprint #1) - 14/10/19
+## Meeting 2 (Sprint #1) - 14/10/19
 Today, we held another weekly meeting for Sprint #1 to discuss the progress of everyone
 and bring up any concerns we have. We decided to modify some architecture and enforce
 some code styling techniques. 
@@ -33,3 +33,20 @@ as well as implement test cases to ensure that the code works accordingly
 
 Is anything in my way? The react/flask setup is slightly delayed due to other university
 commitments which pushes draft UI creation a day further. 
+
+
+## Meeting 3 (Sprint #2) - 16/10/19
+Today, we held a sprint review to discuss the success of Sprint #1 as well as planning
+the following sprint that commences today. We worked together to assign stories for the
+backlog, assigned tasks and spoke about how to improve the agile process for Sprint #2. 
+
+What did I do yesterday? Yesterday, I on checking and accepting the user stories as part
+of Sprint #1 and added tasks to the user stories stages for Sprint #2. I also modified
+the interface and created some additional screens to share with the team. I attached
+these designs to the corresponding user story.
+
+What will I do today? Today, I will add acceptance criteria to the stories in Sprint #2
+and research DialogFlow so that I can complete the NLP user story for this sprint
+
+Is anything in my way? Learning NLP before beginning to work on the user story might 
+slow down my progress slightly. 
