@@ -3,7 +3,7 @@ from src.Notification import Notification
 
 class Event():
 
-    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, category):
+    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar):
         self._user = user
         self._name = name
         self._eventId = eventId
