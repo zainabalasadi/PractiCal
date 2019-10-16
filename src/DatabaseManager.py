@@ -1,4 +1,5 @@
 import mysql.connector
+import argparse
 
 HOST = "localhost"
 USER = "admin"
@@ -43,11 +44,11 @@ class DatabaseManager():
         try:
             cursor.execute(sql, val)
             self._db.commit()
-            rowcount = cursor.rowcount
+            newID = cursor.lastrowid
             cursor.close()
-            if not rowcount:
+            if not newID:
                 raise Exception("No changes made")
-            return 1
+            return newID
         except Exception as e:
             print(("Error trying to create new user.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -89,6 +90,22 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
+    def getUser(self, email):
+        cursor = self._db.cursor()
+        sql = "SELECT uid, first_name, last_name, email FROM users WHERE email = %s"
+        val = (email, )
+        try:
+            cursor.execute(sql, val)
+            user = cursor.fetchone()
+            cursor.close()
+            if not user:
+                raise Exception("User not found")
+            return user
+        except Exception as e:
+            print(("Error encountered while trying to locate user record.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
     def setUserName(self, userID, newFName, newLName):
         cursor = self._db.cursor()
         sql = "UPDATE users SET first_name = %s, last_name = %s WHERE uid = %s"
@@ -99,41 +116,41 @@ class DatabaseManager():
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
-                raise Exception("No changes made")
+                raise Exception("User name was not changed")
             return 1
         except Exception as e:
             print(("Error encountered while trying to update record.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def setUserEmail(self, email, newEmail):
+    def setUserEmail(self, userID, newEmail):
         cursor = self._db.cursor()
-        sql = "UPDATE users SET email = %s WHERE email = %s"
-        val = (newEmail.lower(), email.lower())
+        sql = "UPDATE users SET email = %s WHERE uid = %s"
+        val = (newEmail.lower(), userID)
         try:
             cursor.execute(sql, val)
             self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
-                raise Exception("No changes made")
+                raise Exception("Email was not changed")
             return 1
         except Exception as e:
             print(("Error encountered while trying to update record.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
         
-    def setUserPassword(self, email, newPass):
+    def setUserPassword(self, userID, newPass):
         cursor = self._db.cursor()
-        sql = "UPDATE users SET password = %s WHERE email = %s"
-        val = (newPass, email.lower())
+        sql = "UPDATE users SET password = %s WHERE uid = %s"
+        val = (newPass, userID)
         try:
             cursor.execute(sql, val)
             self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
-                raise Exception("No changes made")
+                raise Exception("Password was not changed")
             return 1
         except Exception as e:
             print(("Error encountered while trying to update record.\n"
@@ -156,11 +173,11 @@ class DatabaseManager():
             val = (userID, title, descr, startDT, endDT, category)
             cursor.execute(sql, val)
             self._db.commit()
-            rowcount = cursor.rowcount
+            newID = cursor.lastrowid
             cursor.close()
-            if not rowcount:
+            if not newID:
                 raise Exception("No changes made")
-            return 1
+            return newID
 
         except Exception as e:
             print(("Error encounterd while creating event.\n"
@@ -172,7 +189,7 @@ class DatabaseManager():
         sql = "DELETE FROM events WHERE eid = %s"
         val = (eventID, )
         try:
-            cursor.execut(sql, val)
+            cursor.execute(sql, val)
             self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
@@ -185,6 +202,38 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
+    def getEvent(self, eventID):
+        cursor = self._db.cursor()
+        sql = ("SELECT eid, uid, title, descr, startdt, enddt, category "
+               "FROM events WHERE eid = %s")
+        val = (eventID, )
+        try:
+            cursor.execute(sql, val)
+            event = cursor.fetchone()
+            cursor.close()
+            if not event:
+                raise Exception("Event not found")
+            return event
+        except Exception as e:
+            print(("Error encountered while trying to locate record.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
+    def getUserEvents(self, userID):
+        cursor = self._db.cursor()
+        sql = ("SELECT eid, uid, title, descr, startdt, enddt, category "
+               "FROM events WHERE uid = %s")
+        val = (userID, )
+        try:
+            cursor.execute(sql, val)
+            events = cursor.fetchall()
+            cursor.close()
+            return events
+        except Exception as e:
+            print(("Error encountered while trying to locate records.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+            
     def setEventTitle(self, eventID, newTitle):
         cursor = self._db.cursor()
         sql = "UPDATE events SET title = %s WHERE eid = %s"
@@ -253,34 +302,54 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
+def arg_parser():
+    parser = argparse.ArgumentParser(
+        prog="PractiCal Database Manager",
+        description="Initialise PractiCal database")
+    parser.add_argument("--d", nargs="?", default="practiCal_db",
+                        help="Enter database name")
+    parser.add_argument("--h", nargs="?", default="localhost",
+                        help="Enter database server host")
+    parser.add_argument("--u", nargs="?", default="admin",
+                        help="Enter server username")
+    parser.add_argument("--p", nargs="?", default="password",
+                        help="Enter password")
+    return parser.parse_args()
 
 if __name__ == "__main__":
+
+    args = arg_parser()
+    database = args.d
+    host = args.h
+    user = args.u
+    password = args.p
+
     db = mysql.connector.connect(
-        host=HOST,
-        user=USER,
-        passwd=PASSWORD
+        host=host,
+        user=user,
+        passwd=password
     )
 
     cursor = db.cursor()
     print("Checking databases...")
     cursor.execute("SHOW DATABASES")
-    if DATABASE in [x[0] for x in cursor]:
+    if database in [x[0] for x in cursor]:
         print(("Database already exists. Do you wish to reinitialise the "
-               "{} database? (y/n)".format(DATABASE)))
+               "{} database? (y/n)".format(database)))
         resp = input()
         if resp.lower()[0] == "n":
             quit()
         elif resp.lower()[0] == "y":
-            cursor.execute("USE {}".format(DATABASE))
-            print("Deleting data from database {}...".format(DATABASE))
+            cursor.execute("USE {}".format(database))
+            print("Deleting data from database {}...".format(database))
             cursor.execute("SET foreign_key_checks = 0")
             cursor.execute("DROP TABLE IF EXISTS users, events")
             cursor.execute("SET foreign_key_checks = 1")
     else:
-        print("Creating database {}...".format(DATABASE))
-        cursor.execute("CREATE DATABASE {}".format(DATABASE))
+        print("Creating database {}...".format(database))
+        cursor.execute("CREATE DATABASE {}".format(database))
 
-    cursor.execute("USE {}".format(DATABASE))
+    cursor.execute("USE {}".format(database))
     print("Initialising database...")
     cursor.execute(("CREATE TABLE users ("
                     "uid int NOT NULL AUTO_INCREMENT, "
