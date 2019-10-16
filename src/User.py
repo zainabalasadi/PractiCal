@@ -33,7 +33,7 @@ class User():
         return self._category
 
     def add_categories(self, newCategory):
-        self._calendars.append(newCategory)
+        self._category.append(newCategory)
 
     def get_contacts(self):
         return self._contacts

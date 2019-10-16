@@ -7,15 +7,15 @@ class Category():
         self._name = name
         self._colour = colour
         self._events = []
-    
+
     def get_name(self):
         return self._name
 
     def get_colour(self):
         return str(self._colour)
 
-	def get_events(self):
-		return self._events
+    def get_events(self):
+        return self._events
 
     # Adds an event to a user's calendar
     # Returns true if addition is successful, false if not

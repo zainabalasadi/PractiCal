@@ -11,46 +11,49 @@ class Event():
         self._comments = []
         self._invitees = []
         self._groups = []
-    
+
     def get_user(self):
         return self._user
-        
+
     def get_name(self):
         return self._name
 
     def get_ID(self):
         return self._eventId
-        
+
     def get_description(self):
         return self._description
-    
+
     def get_startDateTime(self):
         return self._startDateTime
-        
+
     def get_endDateTime(self):
         return self._endDateTime
-    
+
+    def get_invitees(self):
+        return self._invitees
+
     def get_category(self):
         return self._category
-        
+
     def set_user(self, user):
         self._user = user
-        
+
     def set_name(self, name):
         self._name = name
 
     def set_ID(self, ID):
         self._ID = ID
-        
+
     def set_description(self, description):
         self._description = description
-    
+
     def set_startDateTime(self, startDateTime):
         self._startDateTime = startDateTime
-        
+
     def set_endDateTime(self, endDateTime):
         self._endDateTime = endDateTime
-    
+
     def set_category(self, category):
         self._category = category
 
@@ -83,10 +86,16 @@ class Event():
     # Returns true if editing is successful, false if not
     def edit_event(self, name, desc, startDateTime, endDateTime, invitees):
         # Update event details
-        self.setName(name) 
-        self.set_description(desc) 
-        self.set_startDateTime(startDateTime) 
+
+        if startDateTime > endDateTime:
+            return False
+
+        self.set_name(name)
+        self.set_description(desc)
+        self.set_startDateTime(startDateTime)
         self.set_endDateTime(endDateTime)
+
+        return True
         # Add or delete invitees
         # TODO
 
