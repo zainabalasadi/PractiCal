@@ -1,3 +1,9 @@
 Sprint 1: 9/10 - 15/10
-- Completed "Create an account" user story with Zainab. In specific, I completed the creation of a user through the PractiCalManager and also the task of creating a default calendar for a new user.
-- Completed "Adding invitees to events" user story. I created functions to searh for users in the Calendar Manager and to add invited events to a user's calendar. I also created methods for invited users to accept, decline and maybe event invitations.
+- Completed "Create an account" user story with Zainab. In specific, 
+I completed the creation of a user through the PractiCalManager and 
+also the task of creating a default calendar for a new user.
+
+- Completed "Adding invitees to events" user story. I created functions 
+to searh for users in the Calendar Manager and to add invited events to 
+a user's calendar. I also created methods for invited users to accept,
+decline and maybe event invitations.
