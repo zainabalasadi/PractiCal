@@ -15,3 +15,7 @@ methods. New code not tested.
 14/10/2019:
 Refactored code. Added events update methods and fixed syntax errors in some
 of the sql statements used in the code. Did some basic testing of some methods.
+
+15-16/10/2019:
+Refactored code. Finished writing basic getters/setters for events and users
+tables. Also wrote a test script for all the methods.
