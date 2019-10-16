@@ -10,7 +10,7 @@ class Event():
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
-        self._category = category
+        self._calendar = calendar
         self._comments = []
         self._invitees = []
         self._groups = []
@@ -36,8 +36,8 @@ class Event():
     def getInvitees(self):
         return self._invitees
 
-    def getCategory(self):
-        return self._category
+    def getCalendar(self):
+        return self._calendar
 
     def setUser(self, user):
         self._user = user
@@ -57,8 +57,8 @@ class Event():
     def setEndDateTime(self, endDateTime):
         self._endDateTime = endDateTime
 
-    def setCategory(self, category):
-        self._category = category
+    def setCalendar(self, calendar):
+        self._calendar = calendar
 
     def addComment(self, comment):
         self._comments.append(comment)
