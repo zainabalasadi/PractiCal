@@ -27,10 +27,11 @@ class Category():
 
     # Removes a given event from a user's calendar
     # Returns true if removal is successful, false if not
-    def delete_event(self, event):
+    def delete_event(self, event_id):
         # TODO
         # If the event is shared, remove from everyone's calendar
-        if event in self.get_events():
-            self._events.remove(event)
-            return True
+        for event in self.get_events():
+	    if (event.get_id == event_id):
+			self._events.remove(event)
+			return True
         return False
