@@ -1,3 +1,6 @@
+from src.Notification import Notification
+
+
 class Event():
 
     def __init__(self, eventId, user, name, description, startDateTime, endDateTime, category):
@@ -62,6 +65,9 @@ class Event():
 
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
+        notif = Notification(self, 'invite', self.getUser(), invitee)
+        inviteeNotifs = invitee.get_notifications()
+        inviteeNotifs.append(notif)
 
     # Returns true if invitee exists in event and is successfully removed
     def removeInvitee(self, invitee):

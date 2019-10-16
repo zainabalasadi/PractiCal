@@ -1,6 +1,7 @@
 # Implementation of PractiCalManager class
 # Completed by Michael Ho
 # Started 15/10/19
+from calendar import Calendar
 from src.User import User
 
 
@@ -14,8 +15,10 @@ class PractiCalManager():
     # Returns true if new user is successfully created
     def createUser(self, userId, firstName, lastName, email, password):
         if self.searchUserEmail() is None:
-            new_user = User(userId, firstName, lastName, email, password)
-            self._users.append(new_user)
+            newUser = User(userId, firstName, lastName, email, password)
+            defaultCalendar = Calendar('My Calendar', 'Red')
+            newUser.addCalendars(defaultCalendar)
+            self._users.append(newUser)
             return True
         else:
             return False
