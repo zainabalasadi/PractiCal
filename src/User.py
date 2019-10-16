@@ -13,73 +13,73 @@ class User():
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._categories = []
+        self._calendars = []
         self._contacts = []
         self._groups = []
         self._notifications = []
         self._maybe_events = []
     
-    def get_id(self):
+    def getID(self):
         return self._id
 
-    def get_firstName(self):
+    def getFirstName(self):
         return self._firstName
 
-    def get_lastName(self):
+    def getLastName(self):
         return self._lastName
 
     # Validate if provided password matches user password
     def validate(self, password):
         return self._password == password
 
-    def get_email(self):
+    def getEmail(self):
         return self._email
     
-    def get_categories(self):
-        return self._category
+    def getCalendars(self):
+        return self._calendars
 
-    def add_categories(self, newCategory):
+    def addCalendars(self, newCategory):
         self._calendars.append(newCategory)
 
-    def get_contacts(self):
+    def getContacts(self):
         return self._contacts
 
-    def add_contacts(self, contact):
+    def addContact(self, contact):
         self._contacts.append(contact)
 
-    def get_groups(self):
+    def getGroups(self):
         return self._groups
 
-    def add_group(self, group):
+    def addGroup(self, group):
         self._groups.append(group)
 
-    def get_notifications(self):
+    def getNotifications(self):
         return self._notifications
 
-    def add_notification(self, notif):
+    def addNotification(self, notif):
         self._notifications.append(notif)
 
-    def remove_notification(self, notif):
+    def removeNotification(self, notif):
         self._notifications.remove(notif)
 
-    def get_maybe_events(self):
+    def getMaybeEvents(self):
         return self._maybe_events
 
-    def add_maybe_event(self, event):
+    def addMaybeEvent(self, event):
         self._maybe_events.append(event)
  
-    def accept_invite(self, notif, category):
+    def acceptInvite(self, notif, category):
         category.add_event(notif.get_event())
         self.remove_notification(notif)
 
-    def decline_invite(self, notif):
+    def declineInvite(self, notif):
         event = notif.get_event()
         inviter = event.get_user()
         new_notif = Notification(event, 'declined_invite', self, inviter)
         inviter.add_notification(new_notif)
         self.remove_notification(notif)
 
-    def maybe_invite(self, notif, category):
+    def maybeInvite(self, notif, category):
         event = notif.get_event()
         inviter = event.get_user()
         new_notif = Notification(event, 'maybe_invite', self, inviter)

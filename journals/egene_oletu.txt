@@ -1,0 +1,21 @@
+Journal - Egene Oletu (z5059371)
+
+10/10/2019:
+Started setting up the MySQL server. So far created the user table, and started
+coding the manager functions for it.
+
+11/10/2019:
+Wrote and tested new methods to add, delete, and edit entries in the users table.
+
+13/10/2019:
+Refactored code. Added events table to database, basing the schema off the
+event class defined in the EventBranch branch. Also wrote creat/delete event
+methods. New code not tested.
+
+14/10/2019:
+Refactored code. Added events update methods and fixed syntax errors in some
+of the sql statements used in the code. Did some basic testing of some methods.
+
+15-16/10/2019:
+Refactored code. Finished writing basic getters/setters for events and users
+tables. Also wrote a test script for all the methods.
