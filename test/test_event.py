@@ -1,7 +1,7 @@
 import datetime
 import pytest
 
-from src.Category import Category
+from src.Calendar import Calendar
 from src.User import User
 from src.Event import Event
 
@@ -16,8 +16,8 @@ class TestEvent():
                             datetime.datetime.now(), datetime.datetime.now(), "Work")
         self.event_edit = Event(1, 1, "COMP4920 Meeting 2.0", "Online", datetime.datetime.now(),
                                 datetime.datetime.now(), "Personal")
-        self.workCal = Category("Derrick", "red")
-        self.workPersonal = Category("Derrick", "blue")
+        self.workCal = Calendar("Derrick", "red")
+        self.workPersonal = Calendar("Derrick", "blue")
         self.user.addCalendars(self.workCal)
                   
     def test_event(self, fixture):

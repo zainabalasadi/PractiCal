@@ -1,9 +1,9 @@
-# Implementation of Category class
+# Implementation of Calendar class
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
 
-class Category():
+class Calendar():
     def __init__(self, name, colour):
         self._name = name
         self._colour = colour
