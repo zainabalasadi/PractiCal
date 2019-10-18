@@ -73,3 +73,21 @@ class TestEvent():
         assert (len(self.event.getComments()) == 1)
         self.event.removeComment(self.comment)
         assert (len(self.event.getComments()) == 0)
+
+    def test_remove_child_comment(self, fixture):
+        self.event.addComment(self.comment)
+        for comment in self.event.getComments():
+            comment.replyToComment(self.commentReply)
+        self.event.removeComment(self.commentReply)
+
+        assert (len(self.event.getComments()) == 1)
+
+        for comment in self.event.getComments():
+            assert (len(comment.getReplies()) == 0)
+
+    def test_remove_parent_with_children(self, fixture):
+        self.event.addComment(self.comment)
+        for comment in self.event.getComments():
+            comment.replyToComment(self.commentReply)
+        self.event.removeComment(self.comment)
+        assert(len(self.event.getComments()) == 0)

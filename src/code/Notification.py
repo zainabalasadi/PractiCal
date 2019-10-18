@@ -2,6 +2,7 @@
 # Completed by Michael Ho
 # Started 15/10/19
 
+
 class Notification():
     def __init__(self, event, notifType, invoker, receiver):
         self._event = event

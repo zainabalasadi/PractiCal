@@ -21,6 +21,6 @@ class Comment():
         if comment.getComment() == self.getComment() and comment.getUser() == self.getUser():
             return True
         for comments in self._children:
-            if comments.deleteComment():
+            if comments.deleteComment(comment):
                 self._children.remove(comments)
         return False

@@ -37,8 +37,8 @@ class User():
     def getCalendars(self):
         return self._calendars
 
-    def addCalendars(self, newCategory):
-        self._calendars.append(newCategory)
+    def addCalendars(self, newCalendar):
+        self._calendars.append(newCalendar)
 
     def getContacts(self):
         return self._contacts
@@ -59,7 +59,8 @@ class User():
         self._notifications.append(notif)
 
     def removeNotification(self, notif):
-        self._notifications.remove(notif)
+        if notif in self.getNotifications():
+            self._notifications.remove(notif)
 
     def getMaybeEvents(self):
         return self._maybe_events
@@ -67,8 +68,8 @@ class User():
     def addMaybeEvent(self, event):
         self._maybe_events.append(event)
 
-    def acceptInvite(self, notif, category):
-        category.addEvent(notif.get_event())
+    def acceptInvite(self, notif, calendar):
+        calendar.addEvent(notif.getEvent())
         self.removeNotification(notif)
 
     def declineInvite(self, notif):
@@ -78,11 +79,11 @@ class User():
         inviter.addNotification(new_notif)
         self.removeNotification(notif)
 
-    def maybeInvite(self, notif, category):
+    def maybeInvite(self, notif, calendar):
         event = notif.getEvent()
         inviter = event.getUser()
         new_notif = Notification(event, 'maybe_invite', self, inviter)
         inviter.addNotification(new_notif)
-        category.addEvent(event)
+        calendar.addEvent(event)
         self.addMaybeEvent(event)
         self.removeNotification(notif)
