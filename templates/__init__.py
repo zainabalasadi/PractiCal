@@ -2,8 +2,8 @@ from flask import Flask
 app = Flask(__name__,
  static_folder = './public',
  template_folder="./static")
-import templates.hello.views
+import templates.code.views
 
-from templates.hello.views import hello_blueprint
+from templates.code.views import index_blueprint
 # register the blueprints
-app.register_blueprint(hello_blueprint)
+app.register_blueprint(index_blueprint)
