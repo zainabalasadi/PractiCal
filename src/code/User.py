@@ -2,9 +2,8 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
-from src.Notification import Notification
-from src.Event import Event
-from src.Category import Category
+from src.code.Notification import Notification
+
 
 class User():
     def __init__(self, userId, firstName, lastName, email, password):
@@ -18,7 +17,7 @@ class User():
         self._groups = []
         self._notifications = []
         self._maybe_events = []
-    
+
     def getID(self):
         return self._id
 
@@ -34,7 +33,7 @@ class User():
 
     def getEmail(self):
         return self._email
-    
+
     def getCalendars(self):
         return self._calendars
 
@@ -67,23 +66,23 @@ class User():
 
     def addMaybeEvent(self, event):
         self._maybe_events.append(event)
- 
+
     def acceptInvite(self, notif, category):
-        category.add_event(notif.get_event())
-        self.remove_notification(notif)
+        category.addEvent(notif.get_event())
+        self.removeNotification(notif)
 
     def declineInvite(self, notif):
-        event = notif.get_event()
-        inviter = event.get_user()
+        event = notif.getEvent()
+        inviter = event.getUser()
         new_notif = Notification(event, 'declined_invite', self, inviter)
-        inviter.add_notification(new_notif)
-        self.remove_notification(notif)
+        inviter.addNotification(new_notif)
+        self.removeNotification(notif)
 
     def maybeInvite(self, notif, category):
-        event = notif.get_event()
-        inviter = event.get_user()
+        event = notif.getEvent()
+        inviter = event.getUser()
         new_notif = Notification(event, 'maybe_invite', self, inviter)
-        inviter.add_notification(new_notif)
-        category.add_event(event)
-        self.add_maybe_event(event)
-        self.remove_notification(notif)
+        inviter.addNotification(new_notif)
+        category.addEvent(event)
+        self.addMaybeEvent(event)
+        self.removeNotification(notif)

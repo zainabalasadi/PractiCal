@@ -1,0 +1,4 @@
+{
+  "test_calendar.py::TestEvent": true,
+  "test_event.py": true
+}

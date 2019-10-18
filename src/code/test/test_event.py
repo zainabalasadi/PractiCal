@@ -1,9 +1,10 @@
 import datetime
 import pytest
 
-from src.Calendar import Calendar
-from src.User import User
-from src.Event import Event
+from src.code.Calendar import Calendar
+from src.code.Comment import Comment
+from src.code.User import User
+from src.code.Event import Event
 
 
 class TestEvent():
@@ -19,7 +20,12 @@ class TestEvent():
         self.workCal = Calendar("Work", "red", 1)
         self.workPersonal = Calendar("Personal", "blue", 1)
         self.user.addCalendars(self.workCal)
-                  
+
+        self.comment = Comment("Derrick", "So excited people!")
+        self.comment1 = Comment("Derrick", "6pm don't be late!")
+        self.commentReply = Comment("Zainab", "Cool")
+        self.commentReply1 = Comment("Michael", "Me too!")
+
     def test_event(self, fixture):
         assert (self.event.getUser() == 1)
         assert (self.event.getCalendar() == "Work")
@@ -43,3 +49,27 @@ class TestEvent():
         for event in self.workCal.getEvents():
             assert (event.getName() == "COMP4920 Meeting")
         assert (len(self.workCal.getEvents()) == 1)
+
+    def test_add_comment(self, fixture):
+        self.event.addComment("So excited people!")
+        assert (len(self.event.getComments()) == 1)
+
+    def test_add_two_parent_comments(self, fixture):
+        self.event.addComment(self.comment)
+        assert (len(self.event.getComments()) == 1)
+        self.event.addComment(self.comment1)
+        assert (len(self.event.getComments()) == 2)
+
+    def test_add_nested_comments(self, fixture):
+        self.event.addComment(self.comment)
+        assert (len(self.event.getComments()) == 1)
+        for comment in self.event.getComments():
+            comment.replyToComment(self.commentReply)
+            assert (len(comment.getReplies()) == 1)
+        assert (len(self.event.getComments()) == 1)
+
+    def test_remove_comment(self, fixture):
+        self.event.addComment(self.comment)
+        assert (len(self.event.getComments()) == 1)
+        self.event.removeComment(self.comment)
+        assert (len(self.event.getComments()) == 0)

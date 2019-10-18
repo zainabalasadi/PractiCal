@@ -1,5 +1,6 @@
-from src.Notification import Notification
-from src.User import User
+from src.code.Comment import Comment
+from src.code.Notification import Notification
+
 
 class Event():
 
@@ -23,6 +24,9 @@ class Event():
 
     def getID(self):
         return self._eventId
+
+    def getComments(self):
+        return self._comments
 
     def getDescription(self):
         return self._description
@@ -104,3 +108,12 @@ class Event():
         return True
         # Add or delete invitees
         # TODO
+
+    def addComment(self, comment):
+        self._comments.append(comment)
+
+    def removeComment(self, comment):
+        for comments in self._comments:
+            if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
+                self._comments.remove(comments)
+            comments.deleteComment(comment)

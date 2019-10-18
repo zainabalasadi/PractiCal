@@ -1,9 +1,9 @@
 import datetime
 import pytest
 
-from src.Calendar import Calendar
-from src.Event import Event
-from src.User import User
+from src.code.Calendar import Calendar
+from src.code.Event import Event
+from src.code.User import User
 
 
 class TestEvent():
@@ -17,7 +17,7 @@ class TestEvent():
         self.event_edit = Event(1, 1, "COMP4920 Meeting 2.0", "Online", datetime.datetime.now(),
                                 datetime.datetime.now(), "Personal")
         self.workCal = Calendar("Work", "red", 1)
-        self.workPersonal = Calendar("Personal", "blue", 1)
+        self.personalCal = Calendar("Personal", "blue", 1)
         self.user.addCalendars(self.workCal)
 
     def test_add_event(self, fixture):
@@ -30,6 +30,13 @@ class TestEvent():
         assert (len(self.workCal.getEvents()) == 1)
         self.workCal.addEvent(self.event)
         assert (len(self.workCal.getEvents()) == 1)
+        
+    def test_add_same_event_diff_calendars(self, fixture):
+        self.workCal.addEvent(self.event)
+        assert (len(self.workCal.getEvents()) == 1)
+        self.personalCal.addEvent(self.event)
+        self.user.addCalendars(self.personalCal)
+        assert (len(self.personalCal.getEvents()) == 1)
 
     def test_add_multiple_events(self, fixture):
         self.workCal.addEvent(self.event)
