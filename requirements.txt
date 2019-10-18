@@ -1,3 +1,4 @@
+mysql-connector==2.2.9
 Click==7.0
 Flask==1.1.1
 itsdangerous==1.1.0
