@@ -1,0 +1,7 @@
+9/10/2019
+First sprint beginning and project plan presentation, we presented our ideas and decided on our modules for the first sprint. We decided to work entirely 
+on the backend before starting the frontend for this assignment, and we've begun with creating the functionality around user and event objects
+
+16/10/2019
+We finished first sprint comfortably and decided to begin weaving in the frontend and NLP development between our backend modules.
+We need to rearrange our file system to properly utilise flask and react, get started on dialogflow intent identification and get our report in
