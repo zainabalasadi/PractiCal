@@ -44,7 +44,7 @@ def register():
 @app.route('/')
 def index():
 	if 'username' in session:
-		return 'You are logged in as ' + sesion['username']
+		return 'You are logged in as ' + session['username']
 	return render_template('index.html')
 
 @app.route('/calendar')
