@@ -9,13 +9,36 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Login Example</title>
-
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <title>PractiCal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
 
 <body>
+
+    <div class="hero-head">
+        <nav class="navbar">
+            <div class="container">
+                <div id="navbarMenuHeroA" class="navbar-menu">
+                    <div class="navbar-end">
+                        <a href="{{ url_for('index.index') }}" class="navbar-item">
+                            Home
+                        </a>
+                        <a href="{{ url_for('index.calendar') }}" class="navbar-item">
+                            Profile
+                        </a>
+                        <a href="{{ url_for('index.register') }}" class="navbar-item">
+                            Register
+                        </a>
+                        <a href="{{ url_for('index.logout') }}" class="navbar-item">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
 
     {% block body %}{% endblock %}
 

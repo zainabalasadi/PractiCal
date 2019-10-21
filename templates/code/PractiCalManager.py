@@ -2,21 +2,23 @@
 # Completed by Michael Ho
 # Started 15/10/19
 
-from calendar import Calendar
-from src.User import User
+from templates.code.Calendar import Calendar
+from templates.code.User import User
 
 
 class PractiCalManager():
     def __init__(self):
         self._users = []
+        self._numUsers = 0
 
     def getUsers(self):
         return self._users
 
     # Returns true if new user is successfully created
-    def createUser(self, userId, firstName, lastName, email, password):
-        if self.searchUserEmail() is None:
-            newUser = User(userId, firstName, lastName, email, password)
+    def createUser(self, firstName, lastName, email, password):
+        if self.searchUserEmail(email) is None:
+            self._numUsers += 1
+            newUser = User(self._numUsers, firstName, lastName, email, password)
             defaultCalendar = Calendar('My Calendar', 'Red', 1)
             newUser.addCalendars(defaultCalendar)
             self._users.append(newUser)
@@ -43,6 +45,6 @@ class PractiCalManager():
     # Returns matching user if exists
     def searchUserEmail(self, email):
         for user in self._users:
-            if user.get_email() == email:
+            if user.getEmail() == email:
                 return user
         return None

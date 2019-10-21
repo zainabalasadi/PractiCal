@@ -2,12 +2,12 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
-from src.code.Notification import Notification
+from templates.code.Notification import Notification
 
 
 class User():
-    def __init__(self, userId, firstName, lastName, email, password):
-        self._id = userId
+    def __init__(self, userID, firstName, lastName, email, password):
+        self._id = userID
         self._firstName = firstName
         self._lastName = lastName
         self._email = email
