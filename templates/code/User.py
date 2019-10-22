@@ -1,11 +1,12 @@
 # Implementation of User class
 # Completed by Zainab Alasadi
 # Started 13/10/19
+from flask_login import UserMixin
 
 from templates.code.Notification import Notification
 
 
-class User():
+class User(UserMixin):
     def __init__(self, userID, firstName, lastName, email, password):
         self._id = userID
         self._firstName = firstName
@@ -17,6 +18,13 @@ class User():
         self._groups = []
         self._notifications = []
         self._maybe_events = []
+
+    # UserMixin required method - don't change name
+    def get_id(self):
+        try:
+            return self._id
+        except AttributeError:
+            raise NotImplementedError('No `id` attribute - override `get_id`')
 
     def getID(self):
         return self._id

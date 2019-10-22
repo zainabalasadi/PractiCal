@@ -1,5 +1,6 @@
-from flask import Flask, render_template, url_for, request, session, redirect, Blueprint, flash
 import bcrypt
+from flask import Flask, render_template, url_for, request, session, redirect, Blueprint, flash
+from flask_login import login_user, logout_user, login_required, current_user
 
 from templates.code.PractiCalManager import PractiCalManager
 from templates.code.User import User
@@ -7,10 +8,10 @@ from templates.code.User import User
 
 index_blueprint = Blueprint('index', __name__)
 
-pcm = PractiCalManager()
+PCM = PractiCalManager()
 
-@index_blueprint.route('/')
-@index_blueprint.route('/index')
+@index_blueprint.route('/', methods=['GET', 'POST'])
+@index_blueprint.route('/index', methods=['GET', 'POST'])
 def index():
 	# if 'username' in session:
 	# 	return redirect(url_for('index.calendar'))
@@ -26,11 +27,26 @@ def index():
 	# 	return 'Invalid username/password'
 
 	# return 'Invalid username/password'
-	return render_template('index.html')
+	if request.method == 'POST':
+		email = request.form.get('email')
+		password = request.form.get('password')
+
+		user = PCM.searchUserEmail(email)
+
+		if not user or not bcrypt.hashpw(password.encode('utf-8'), user._password) == user._password:
+			flash('Please check your login details and try again.')
+			return redirect(url_for('index.index'))
+
+		login_user(user, remember=True)
+		return redirect(url_for('index.calendar'))
+
+	return render_template('/index.html')
 
 @index_blueprint.route('/logout')
+@login_required
 def logout():
-	return 'Logout'
+	logout_user()
+	return redirect(url_for('index.index'))
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -45,7 +61,7 @@ def register():
 		hashpw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 		# check if email already exists
-		if pcm.createUser(firstName, lastName, email, hashpw) is False:
+		if PCM.createUser(firstName, lastName, email, hashpw) is False:
 			flash('Email address already exists')
 			return redirect(url_for('index.register'))
 
@@ -54,5 +70,6 @@ def register():
 	return render_template('/register.html')
 
 @index_blueprint.route('/calendar', methods=['GET', 'POST'])
+@login_required
 def calendar():
-	return render_template('/calendar.html', user=session['username'])
+	return render_template('/calendar.html', name=current_user.getFirstName())

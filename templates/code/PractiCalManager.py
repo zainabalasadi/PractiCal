@@ -48,3 +48,9 @@ class PractiCalManager():
             if user.getEmail() == email:
                 return user
         return None
+
+    def searchUserID(self, id):
+        for user in self._users:
+            if user.getID() == id:
+                return user
+        return None
