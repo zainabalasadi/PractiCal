@@ -7,3 +7,15 @@ also the task of creating a default calendar for a new user.
 to searh for users in the Calendar Manager and to add invited events to 
 a user's calendar. I also created methods for invited users to accept,
 decline and maybe event invitations.
+---------------------------------------------------------------------------
+
+Sprint 2: 16/10 - 22/10
+- Finished 5hrs+ long react tutorial
+
+- Completed "Account access" user story with Derrick. In particular, I 
+changed route decorators to work with flask blueprint. I implemented new 
+user registration and saved details to a new user object. I also 
+implemented flask_login to authenticate users and keep them in session.
+In total, there is a login page, a register page, a forgot password page
+and a calendar page for when users are logged in. I also made minor styling
+edits.
