@@ -48,6 +48,17 @@ def logout():
 	logout_user()
 	return redirect(url_for('index.index'))
 
+@index_blueprint.route('/forgot', methods=['GET', 'POST'])
+def forgot():
+	if request.method == 'POST':
+		
+		email = request.form.get('email')
+		# TODO insert code to send reset password email
+		flash('Password reset has been sent to your email.')
+		return redirect(url_for('index.index'))
+
+	return render_template('/forgot.html')
+
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
 	if request.method == 'POST':
@@ -62,7 +73,7 @@ def register():
 
 		# check if email already exists
 		if PCM.createUser(firstName, lastName, email, hashpw) is False:
-			flash('Email address already exists')
+			flash('Email address already exists.')
 			return redirect(url_for('index.register'))
 
 		return redirect(url_for('index.index'))

@@ -12,6 +12,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
+            <h3>Log in to PractiCal</h3>
             <form method=POST action="{{ url_for('index.index') }}">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -26,6 +27,9 @@
             <br>
             <div>
                 Don't have an account? <a href="{{ url_for('index.register') }}">Sign up here</a>.
+            </div>
+            <div>
+                Forgot your password? <a href="{{ url_for('index.forgot') }}">Click here</a>
             </div>
         </div>
     </div>
