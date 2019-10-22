@@ -23,7 +23,7 @@ def getIntent():
         time = result.form['queryResult']['parameters']['time']
         duration = time + 1
         
-    #need event creation functions in db manager
+    #need event creation functions in pcal manager
     
     return
     
@@ -37,6 +37,6 @@ def createEvent():
     desc = request.form['desc']
     eventId = 1
     
-    #need event creation functions in db manager
+    #need event creation functions in pcal manager
     
     return
