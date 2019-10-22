@@ -13,20 +13,6 @@ PCM = PractiCalManager()
 @index_blueprint.route('/', methods=['GET', 'POST'])
 @index_blueprint.route('/index', methods=['GET', 'POST'])
 def index():
-	# if 'username' in session:
-	# 	return redirect(url_for('index.calendar'))
-
-	# get database of users
-	# find login name in DB
-	# loginUser = request.form['username']
-
-	# if loginUser:
-	# 	if bcrypt.hashpw(request.form['pass'].encode('utf-8'), '''db password.encode('utf-8')''') == '''dbpw.encode('utf-8')''':
-	# 		session['username'] = request.form['username']
-	# 		return redirect(url_for('index'))
-	# 	return 'Invalid username/password'
-
-	# return 'Invalid username/password'
 	if request.method == 'POST':
 		email = request.form.get('email')
 		password = request.form.get('password')
