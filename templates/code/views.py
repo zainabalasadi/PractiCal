@@ -17,9 +17,7 @@ def index():
 		email = request.form.get('email')
 		password = request.form.get('password')
 
-		########### Replace code with DatabaseManager Method ###########
 		user = PCM.searchUserEmail(email)
-		################################################################
 
 		if not user or not bcrypt.hashpw(password.encode('utf-8'), user._password) == user._password:
 			flash('Please check your login details and try again.')
@@ -59,9 +57,7 @@ def register():
 		# hash user password and then add user to database
 		hashpw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-		########### Replace code with DatabaseManager Method ###########
 		if PCM.createUser(firstName, lastName, email, hashpw) is False:
-		################################################################
 			flash('Email address already exists.')
 			return redirect(url_for('index.register'))
 
