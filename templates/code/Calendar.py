@@ -2,6 +2,8 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
+from templates.code.Event import Event
+from templates.code.User import User
 
 class Calendar():
     def __init__(self, name, colour, user):

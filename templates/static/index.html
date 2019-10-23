@@ -1,13 +1,38 @@
-<!? index.html ?>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <!-- Latest compiled and minified bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
-    <title>PractiCal</title>
-  </head>
-  <body>
-    <div id="content" />
-    <script src="public/bundle.js" type="text/javascript"></script>
-  </body>
-</html>
+{% extends "layout.html" %}
+{% block body %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }}
+    </div>
+{% endif %}
+{% endwith %}
+
+<div class="container">
+    <div class="row h-100 d-flex justify-content-center">
+       <!--  <div class="col-md-4 col-md-offset-4"> -->
+        <div class="column is-4">
+            <h3>Log in to PractiCal</h3>
+                <form autocomplete="off" method=POST action="{{ url_for('index.index') }}">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" class="form-control" name="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="pass">Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
+            <br>
+            <div>
+                Don't have an account? <a href="{{ url_for('index.register') }}">Sign up here</a>.
+            </div>
+            <div>
+                Forgot your password? <a href="{{ url_for('index.forgot') }}">Click here</a>.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -77,7 +77,11 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
+<<<<<<< HEAD
 /******/ 	__webpack_require__.p = "/tmp_amd/adams/export/adams/3/z5163652/Desktop/Ethics/PractiCal/templates/public";
+=======
+/******/ 	__webpack_require__.p = "/home/michael/Desktop/cs4920/PractiCal/templates/public";
+>>>>>>> LoginBranch
 /******/
 /******/
 /******/ 	// Load entry module and return exports
