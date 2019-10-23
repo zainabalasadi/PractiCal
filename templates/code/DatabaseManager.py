@@ -1,5 +1,11 @@
 import mysql.connector
 import argparse
+from templates.code.Calendar import Calandar
+from templates.code.Comment import Comment
+from templates.code.Event import Event
+#from templates.code.Group import Group
+from templates.code.Notification import Notification
+from templates.code.User import User
 
 HOST = "localhost"
 USER = "admin"
@@ -73,6 +79,22 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
+    def checkEmailExists(self, email):
+        cursor = self._db.cursor()
+        sql = "SELECT email FROM users WHERE email = %s"
+        val = (email.lower(), )
+        try:
+            cursor.execute(sql, val)
+            user = cursor.fetchone()
+            cursor.close()
+            if not user:
+                return 0
+            return 1
+        except Exception as e:
+            print(("Error encountered while accessing database.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+            
     def deleteUser(self, userID):
         cursor = self._db.cursor()
         sql = "DELETE FROM users WHERE uid = %s"
@@ -90,17 +112,35 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def getUser(self, email):
+    def getUser(self, email, password):
         cursor = self._db.cursor()
-        sql = "SELECT uid, first_name, last_name, email FROM users WHERE email = %s"
-        val = (email, )
+        sql = ("SELECT uid, first_name, last_name FROM users"
+               "WHERE email = %s, password = %s")
+        val = (email, password)
         try:
             cursor.execute(sql, val)
             user = cursor.fetchone()
             cursor.close()
             if not user:
-                raise Exception("User not found")
-            return user
+                raise Exception("Credentials provided dont match")
+            
+            events = self.getUserEvents(user[0])
+            if events = -1:
+                events = []
+            calendars = dict()
+            for e in events:
+                calName = e.getCalendar().getName()
+                if calName in calendars.keys():
+                    calendars[calName].append(e)
+                else:
+                    calendars[calName] = [e]
+            return User(userID=user[0], 
+                        firstName=user[1],
+                        lastName=user[2],
+                        email=email,
+                        password=password
+                        calendars=calendars)
+
         except Exception as e:
             print(("Error encountered while trying to locate user record.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -213,7 +253,13 @@ class DatabaseManager():
             cursor.close()
             if not event:
                 raise Exception("Event not found")
-            return event
+            return Event(eventId=event[0],
+                        user=event[1],
+                        name=event[2],
+                        description=event[3],
+                        startDateTime=event[4],
+                        endDateTime=event[5],
+                        calendar=event[6])
         except Exception as e:
             print(("Error encountered while trying to locate record.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -228,7 +274,17 @@ class DatabaseManager():
             cursor.execute(sql, val)
             events = cursor.fetchall()
             cursor.close()
-            return events
+            if events == None:
+                events = []
+            return [Event(eventId=e[0],
+                        user=e[1],
+                        name=e[2],
+                        description=e[3],
+                        startDateTime=e[4],
+                        endDateTime=e[5],
+                        calendar=e[6])
+                    for e in events]
+            
         except Exception as e:
             print(("Error encountered while trying to locate records.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -302,6 +358,72 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
+    def addInvite(self, eventID, userID, status='UNKNOWN'):
+        cursor = self._db.cursor()
+        sql = ("INSERT INTO invites (eid, uid, status)"
+               "VALUES (%s, %s, %s)")
+        val = (eventID, userID, status)
+        try:
+            cursor.execute(sql, val)
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("Invite not added")
+            return 1
+        except Exception as e:
+            print(("Error encountered while inserting invite.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+            
+    def deleteInvite(self, eventID, userID):
+        cursor = self._db.cursor()
+        sql = "DELETE FROM invites WHERE eid = %s, uid = %s"
+        val = (eventID, userID)
+        try:
+            cursor.execute(sql, val)
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("No changes made")
+            return 1
+        except Exception as e:
+            print(("Error encountered while updating invite.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
+    def getInvites(self, eventID="", userID="", status="*")
+        cursor = self._db.cursor()
+        sql = ("SELECT eid, uid, status FROM invites " 
+               "WHERE eid = %s, uid = %s, status = %s")
+        val = (eventID, userID, status)
+        try:
+            cursor.execute(sql, val)
+            invites = cursor.fetchall()
+            cursor.close()
+            return invites            
+        except Exception as e:
+            print(("Error encountered while getting invites.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+        
+
+    def setInviteStatus(self, eventID, userID, newStatus):
+        cursor = self._db.cursor()
+        sql = "UPDATE invites SET status = %s WHERE eid = %s, uid = %s"
+        val = (newStatus, eventID, userID)
+        try:
+            cursor.execute(sql, val)
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("Invite not added")
+            return 1
+        except Exception as e:
+            print(("Error encountered while inserting invite.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+        
+
 def arg_parser():
     parser = argparse.ArgumentParser(
         prog="PractiCal Database Manager",
@@ -367,6 +489,12 @@ if __name__ == "__main__":
                     "enddt DATETIME, "
                     "category VARCHAR(25), "
                     "PRIMARY KEY (eid), "
+                    "FOREIGN KEY (uid) REFERENCES users(uid))"))
+    cursor.execute(("CREATE TABLE invites ("
+                    "eid int NOT NULL, "
+                    "uid int NOT NULL, "
+                    "status ENUM('UNKNOWN', 'GOING', 'MAYBE', 'NOT_GOING'), "
+                    "FOREIGN KEY (eid) REFERENCES events(eid), "
                     "FOREIGN KEY (uid) REFERENCES users(uid))"))
     db.commit()
     cursor.close()

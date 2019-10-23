@@ -2,21 +2,24 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
-from src.code.Notification import Notification
+from template.code.Notification import Notification
+from template.code.DatabaseManager import DatabaseManager
 
 
 class User():
-    def __init__(self, userId, firstName, lastName, email, password):
+    def __init__(self, userId, firstName, lastName, email, password,
+                    calendars=[], contacts=[], groups=[], notifications=[],
+                    maybe_events=[]):
         self._id = userId
         self._firstName = firstName
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._calendars = []
-        self._contacts = []
-        self._groups = []
-        self._notifications = []
-        self._maybe_events = []
+        self._calendars = calendars
+        self._contacts = contacts
+        self._groups = groups
+        self._notifications = notifications
+        self._maybe_events = maybe_events
 
     def getID(self):
         return self._id

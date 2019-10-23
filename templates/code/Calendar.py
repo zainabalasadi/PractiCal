@@ -4,10 +4,10 @@
 
 
 class Calendar():
-    def __init__(self, name, colour, user):
+    def __init__(self, name, colour, user, events=[]):
         self._name = name
         self._colour = colour
-        self._events = []
+        self._events = events
         self._user = user
 
     def getName(self):

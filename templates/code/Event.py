@@ -1,5 +1,5 @@
-from src.code.Comment import Comment
-from src.code.Notification import Notification
+from template.code.Comment import Comment
+from template.code.Notification import Notification
 
 
 class Event():
