@@ -1,17 +1,14 @@
 import React from 'react';
 import { HashRouter, Route, hashHistory } from 'react-router-dom';
 
-import Calendar from './components/Calendar';
-
-
-
+// Components
+import Cal from './components/Calendar';
 
 
 export default (
-    <HashRouter history={hashHistory}>
+    <HashRouter>
         <div>
-            <Calendar />
-            
+            <Route path="/" component={Cal}/>  
         </div>
     </HashRouter>
 );
