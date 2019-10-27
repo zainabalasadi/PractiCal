@@ -77,11 +77,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-<<<<<<< HEAD
-/******/ 	__webpack_require__.p = "/tmp_amd/adams/export/adams/3/z5163652/Desktop/Ethics/PractiCal/templates/public";
-=======
-/******/ 	__webpack_require__.p = "/home/michael/Desktop/cs4920/PractiCal/templates/public";
->>>>>>> LoginBranch
+/******/ 	__webpack_require__.p = "/Users/zainabalasadi/Desktop/PractiCal/templates/public";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
@@ -90,15 +86,14 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./js/components/Home.jsx":
-/*!********************************!*\
-  !*** ./js/components/Home.jsx ***!
-  \********************************/
+/***/ "./js/components/Calendar.jsx":
+/*!************************************!*\
+  !*** ./js/components/Calendar.jsx ***!
+  \************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n\tvalue: true\n});\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nvar _react = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n\nvar _react2 = _interopRequireDefault(_react);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nfunction _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\"); } return call && (typeof call === \"object\" || typeof call === \"function\") ? call : self; }\n\nfunction _inherits(subClass, superClass) { if (typeof superClass !== \"function\" && superClass !== null) { throw new TypeError(\"Super expression must either be null or a function, not \" + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }\n\nvar Home = function (_Component) {\n\t_inherits(Home, _Component);\n\n\tfunction Home() {\n\t\t_classCallCheck(this, Home);\n\n\t\treturn _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).apply(this, arguments));\n\t}\n\n\t_createClass(Home, [{\n\t\tkey: 'render',\n\t\tvalue: function render() {\n\t\t\treturn _react2.default.createElement(\n\t\t\t\t'h1',\n\t\t\t\tnull,\n\t\t\t\t'Hello React!'\n\t\t\t);\n\t\t}\n\t}]);\n\n\treturn Home;\n}(_react.Component);\n\nexports.default = Home;//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9qcy9jb21wb25lbnRzL0hvbWUuanN4LmpzIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vL2pzL2NvbXBvbmVudHMvSG9tZS5qc3g/MzFkMCJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgUmVhY3QsIHsgQ29tcG9uZW50IH0gZnJvbSAncmVhY3QnO1xuZXhwb3J0IGRlZmF1bHQgY2xhc3MgSG9tZSBleHRlbmRzIENvbXBvbmVudCB7XG4gICAgcmVuZGVyKCkge1xuXHRcdHJldHVybiAoXG5cdFx0XHQ8aDE+SGVsbG8gUmVhY3QhPC9oMT5cblx0XHQpXG5cdH1cbn0iXSwibWFwcGluZ3MiOiI7Ozs7Ozs7O0FBQUE7QUFDQTs7Ozs7Ozs7Ozs7QUFBQTs7Ozs7Ozs7Ozs7QUFDQTtBQUNBO0FBQ0E7QUFBQTtBQUFBO0FBQUE7QUFFQTs7OztBQUxBO0FBQ0E7QUFEQSIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./js/components/Home.jsx\n");
+eval("throw new Error(\"Module build failed (from ./node_modules/babel-loader/lib/index.js):\\nSyntaxError: Unexpected token (43:13)\\n\\n\\u001b[0m \\u001b[90m 41 | \\u001b[39m  }\\n \\u001b[90m 42 | \\u001b[39m\\n\\u001b[31m\\u001b[1m>\\u001b[22m\\u001b[39m\\u001b[90m 43 | \\u001b[39m  selectSlot \\u001b[33m=\\u001b[39m (event) \\u001b[33m=>\\u001b[39m {\\n \\u001b[90m    | \\u001b[39m             \\u001b[31m\\u001b[1m^\\u001b[22m\\u001b[39m\\n \\u001b[90m 44 | \\u001b[39m    \\u001b[36mthis\\u001b[39m\\u001b[33m.\\u001b[39msetState({ isNewEvent\\u001b[33m:\\u001b[39m \\u001b[36mtrue\\u001b[39m })\\n \\u001b[90m 45 | \\u001b[39m    event\\u001b[33m.\\u001b[39mstart \\u001b[33m=\\u001b[39m event\\u001b[33m.\\u001b[39mslots[\\u001b[35m0\\u001b[39m]\\n \\u001b[90m 46 | \\u001b[39m    event\\u001b[33m.\\u001b[39mend \\u001b[33m=\\u001b[39m event\\u001b[33m.\\u001b[39mslots[event\\u001b[33m.\\u001b[39mslots\\u001b[33m.\\u001b[39mlength \\u001b[33m-\\u001b[39m \\u001b[35m1\\u001b[39m]\\u001b[0m\\n\");//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9qcy9jb21wb25lbnRzL0NhbGVuZGFyLmpzeC5qcyIsInNvdXJjZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./js/components/Calendar.jsx\n");
 
 /***/ }),
 
@@ -122,7 +117,7 @@ eval("\n\nvar _react = __webpack_require__(/*! react */ \"./node_modules/react/i
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\nvar _react = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactRouterDom = __webpack_require__(/*! react-router-dom */ \"./node_modules/react-router-dom/esm/react-router-dom.js\");\n\nvar _Home = __webpack_require__(/*! ./components/Home */ \"./js/components/Home.jsx\");\n\nvar _Home2 = _interopRequireDefault(_Home);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\n// import more components\nexports.default = _react2.default.createElement(\n  _reactRouterDom.HashRouter,\n  { history: _reactRouterDom.hashHistory },\n  _react2.default.createElement(\n    'div',\n    null,\n    _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _Home2.default })\n  )\n);//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9qcy9yb3V0ZXMuanMuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vanMvcm91dGVzLmpzP2YzOWEiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JztcclxuaW1wb3J0IHsgSGFzaFJvdXRlciwgUm91dGUsIGhhc2hIaXN0b3J5IH0gZnJvbSAncmVhY3Qtcm91dGVyLWRvbSc7XHJcbmltcG9ydCBIb21lIGZyb20gJy4vY29tcG9uZW50cy9Ib21lJztcclxuLy8gaW1wb3J0IG1vcmUgY29tcG9uZW50c1xyXG5leHBvcnQgZGVmYXVsdCAoXHJcbiAgICA8SGFzaFJvdXRlciBoaXN0b3J5PXtoYXNoSGlzdG9yeX0+XHJcbiAgICAgPGRpdj5cclxuICAgICAgPFJvdXRlIHBhdGg9Jy8nIGNvbXBvbmVudD17SG9tZX0gLz5cclxuICAgICA8L2Rpdj5cclxuICAgIDwvSGFzaFJvdXRlcj5cclxuKTtcclxuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7QUFBQTtBQUNBOzs7QUFBQTtBQUNBO0FBQUE7QUFDQTs7Ozs7QUFBQTtBQUVBO0FBQUE7QUFBQTtBQUNBO0FBQUE7QUFBQTtBQUNBO0FBREE7QUFEQSIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./js/routes.js\n");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n    value: true\n});\n\nvar _react = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n\nvar _react2 = _interopRequireDefault(_react);\n\nvar _reactRouterDom = __webpack_require__(/*! react-router-dom */ \"./node_modules/react-router-dom/esm/react-router-dom.js\");\n\nvar _Calendar = __webpack_require__(/*! ./components/Calendar */ \"./js/components/Calendar.jsx\");\n\nvar _Calendar2 = _interopRequireDefault(_Calendar);\n\nfunction _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }\n\nexports.default = _react2.default.createElement(\n    _reactRouterDom.HashRouter,\n    { history: _reactRouterDom.hashHistory },\n    _react2.default.createElement(\n        'div',\n        null,\n        _react2.default.createElement(_Calendar2.default, null)\n    )\n);//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9qcy9yb3V0ZXMuanMuanMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vanMvcm91dGVzLmpzP2YzOWEiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JztcclxuaW1wb3J0IHsgSGFzaFJvdXRlciwgUm91dGUsIGhhc2hIaXN0b3J5IH0gZnJvbSAncmVhY3Qtcm91dGVyLWRvbSc7XHJcblxyXG5pbXBvcnQgQ2FsZW5kYXIgZnJvbSAnLi9jb21wb25lbnRzL0NhbGVuZGFyJztcclxuXHJcblxyXG5cclxuXHJcblxyXG5leHBvcnQgZGVmYXVsdCAoXHJcbiAgICA8SGFzaFJvdXRlciBoaXN0b3J5PXtoYXNoSGlzdG9yeX0+XHJcbiAgICAgICAgPGRpdj5cclxuICAgICAgICAgICAgPENhbGVuZGFyIC8+XHJcbiAgICAgICAgICAgIFxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgPC9IYXNoUm91dGVyPlxyXG4pO1xyXG4iXSwibWFwcGluZ3MiOiI7Ozs7OztBQUFBO0FBQ0E7OztBQUFBO0FBQ0E7QUFDQTtBQUNBOzs7OztBQU1BO0FBQUE7QUFBQTtBQUNBO0FBQUE7QUFBQTtBQUNBO0FBREE7QUFEQSIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./js/routes.js\n");
 
 /***/ }),
 
@@ -354,7 +349,7 @@ eval("\n\nif (false) {} else {\n  module.exports = __webpack_require__(/*! ./cjs
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter */
+/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, __RouterContext, generatePath, matchPath, useHistory, useLocation, useParams, useRouteMatch, withRouter, BrowserRouter, HashRouter, Link, NavLink */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

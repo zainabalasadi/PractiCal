@@ -22,8 +22,12 @@
     "webpack-cli": "^3.3.9"
   },
   "dependencies": {
+    "@material-ui/core": "^4.5.1",
+    "@material-ui/pickers": "^3.2.7",
     "css-loader": "^3.2.0",
     "history": "^4.10.1",
+    "moment": "^2.24.0",
+    "react-big-calendar": "^0.22.1",
     "react-router-dom": "^5.1.2",
     "save-dev": "0.0.1-security",
     "style-loader": "^1.0.0"
