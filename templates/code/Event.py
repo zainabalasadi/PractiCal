@@ -69,7 +69,7 @@ class Event():
 
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
-        notif = Notification(self, 'invite', self.getUser(), invitee)
+        notif = Notification(self, 'invite', self.getUser(), invitee, '')
         inviteeNotifs = invitee.getNotifications()
         inviteeNotifs.append(notif)
 

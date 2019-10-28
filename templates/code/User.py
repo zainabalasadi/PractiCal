@@ -83,14 +83,14 @@ class User(UserMixin):
     def declineInvite(self, notif):
         event = notif.getEvent()
         inviter = event.getUser()
-        new_notif = Notification(event, 'declined_invite', self, inviter)
+        new_notif = Notification(event, 'declined_invite', self, inviter, '')
         inviter.addNotification(new_notif)
         self.removeNotification(notif)
 
     def maybeInvite(self, notif, calendar):
         event = notif.getEvent()
         inviter = event.getUser()
-        new_notif = Notification(event, 'maybe_invite', self, inviter)
+        new_notif = Notification(event, 'maybe_invite', self, inviter, '')
         inviter.addNotification(new_notif)
         calendar.addEvent(event)
         self.addMaybeEvent(event)
