@@ -123,24 +123,7 @@ class DatabaseManager():
             cursor.close()
             if not user:
                 raise Exception("Credentials provided dont match")
-            
-            events = self.getUserEvents(user[0])
-            if events = -1:
-                events = []
-            calendars = dict()
-            for e in events:
-                calName = e.getCalendar().getName()
-                if calName in calendars.keys():
-                    calendars[calName].append(e)
-                else:
-                    calendars[calName] = [e]
-            return User(userID=user[0], 
-                        firstName=user[1],
-                        lastName=user[2],
-                        email=email,
-                        password=password
-                        calendars=calendars)
-
+            return user
         except Exception as e:
             print(("Error encountered while trying to locate user record.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -253,13 +236,7 @@ class DatabaseManager():
             cursor.close()
             if not event:
                 raise Exception("Event not found")
-            return Event(eventId=event[0],
-                        user=event[1],
-                        name=event[2],
-                        description=event[3],
-                        startDateTime=event[4],
-                        endDateTime=event[5],
-                        calendar=event[6])
+            return event
         except Exception as e:
             print(("Error encountered while trying to locate record.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -276,14 +253,7 @@ class DatabaseManager():
             cursor.close()
             if events == None:
                 events = []
-            return [Event(eventId=e[0],
-                        user=e[1],
-                        name=e[2],
-                        description=e[3],
-                        startDateTime=e[4],
-                        endDateTime=e[5],
-                        calendar=e[6])
-                    for e in events]
+            return events
             
         except Exception as e:
             print(("Error encountered while trying to locate records.\n"
