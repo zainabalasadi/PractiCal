@@ -40,6 +40,7 @@ class Calendar():
                 for calendar in invitee.getCalendars():
                     if event in calendar.getEvents():
                         calendar.deleteEvent(event)
+                        #NOTIFY THEM IT WAS DELETED
 
         if event in self.getEvents():
             self._events.remove(event)

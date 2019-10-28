@@ -103,7 +103,7 @@ class Event():
 
     # Edits an event
     # Returns true if editing is successful, false if not
-    def editEvent(self, name, desc, startDateTime, endDateTime, invitees):
+    def editEvent(self, name, desc, startDateTime, endDateTime, calendar, category):
         # Update event details
 
         if startDateTime > endDateTime:
@@ -113,10 +113,12 @@ class Event():
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
+        self.setCalendar(calendar)
+        self.setCategory(category)
+
+        #SEND NOTIFICATION
 
         return True
-        # Add or delete invitees
-        # TODO
 
     def addComment(self, comment):
         self._comments.append(comment)
