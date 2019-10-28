@@ -109,9 +109,6 @@ class Event():
         # Add or delete invitees
         # TODO
 
-    def addComment(self, comment):
-        self._comments.append(comment)
-
     def removeComment(self, comment):
         for comments in self._comments:
             if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
