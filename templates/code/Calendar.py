@@ -45,3 +45,10 @@ class Calendar():
             self._events.remove(event)
             return True
         return False
+
+    def calculateHoursCategory(self, category):
+        time = 0
+        for event in self._events:
+            if event.getCategory() == category:
+                time += event.calculateHoursCategory()
+        return time

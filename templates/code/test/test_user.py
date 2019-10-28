@@ -1,10 +1,10 @@
 import datetime
 import pytest
 
-from src.code.Calendar import Calendar
-from src.code.Event import Event
-from src.code.Notification import Notification
-from src.code.User import User
+from templates.code.Calendar import Calendar
+from templates.code.Event import Event
+from templates.code.Notification import Notification
+from templates.code.User import User
 
 
 class TestUser():
@@ -13,18 +13,20 @@ class TestUser():
         self.user = User(1, "Derrick", "Foo", "derrick@gmail.com", "abc123")
         self.user1 = User(2, "Zainab", "Alasadi", "zainab@gmail.com", "abc123***")
 
-        self.event = Event(1, self.user, "COMP4920 Meeting", "Standup", datetime.datetime.now(), datetime.datetime.now(),
-                           "Work")
-        self.event1 = Event(2, self.user, "21st Birthday", "Bday party at Sydney", datetime.datetime.now(),
-                            datetime.datetime.now(), "Work")
-        self.event_edit = Event(1, 1, "COMP4920 Meeting 2.0", "Online", datetime.datetime.now(),
-                                datetime.datetime.now(), "Personal")
-        self.workCal = Calendar("Work", "red", 1)
-        self.personalCal = Calendar("Personal", "blue", 1)
+        self.event = Event(1, self.user, "COMP4920 Meeting", "Standup", datetime.datetime(2017, 11, 28, 22, 45),
+                           datetime.datetime(2017, 11, 28, 23, 45), "Work", "Work")
+        self.event1 = Event(2, self.user, "21st Birthday", "Bday party at Sydney",
+                            datetime.datetime(2017, 11, 28, 22, 45), datetime.datetime(2017, 11, 28, 23, 45), "Work",
+                            "Work")
+        self.event_edit = Event(1, self.user, "COMP4920 Meeting 2.0", "Online", datetime.datetime.now(),
+                                datetime.datetime.now(), "Personal", "Work")
+        self.workCal = Calendar("Work", "red", self.user)
+        self.personalCal = Calendar("Personal", "blue", self.user1)
 
         self.event.addInvitee(self.user1)
         self.workCal.addEvent(self.event)
         self.user1.addCalendars(self.personalCal)
+        self.user.addCalendars(self.workCal)
 
     def test_user(self, fixture):
         assert (self.user.getID() == 1)
@@ -52,3 +54,11 @@ class TestUser():
         assert (len(self.user1.getNotifications()) == 0)
         assert (len(self.personalCal.getEvents()) == 0)
         assert (len(self.user.getNotifications()) == 1)
+
+    def test_category_hours(self, fixture):
+        assert (self.user.calculateHoursCategory("Work") == 1)
+
+    def test_category_hours_multiple_calendars(self, fixture):
+        self.personalCal.addEvent(self.event1)
+        self.user.addCalendars(self.personalCal)
+        assert (self.user.calculateHoursCategory("Work") == 2)

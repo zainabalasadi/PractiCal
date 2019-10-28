@@ -1,10 +1,12 @@
+import datetime
+
 from templates.code.Comment import Comment
 from templates.code.Notification import Notification
 
 
 class Event():
 
-    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar):
+    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar, category):
         self._user = user
         self._name = name
         self._eventId = eventId
@@ -12,6 +14,7 @@ class Event():
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
         self._calendar = calendar
+        self._category = category
         self._comments = []
         self._invitees = []
         self._groups = []
@@ -43,6 +46,9 @@ class Event():
     def getCalendar(self):
         return self._calendar
 
+    def getCategory(self):
+        return self._category
+
     def setUser(self, user):
         self._user = user
 
@@ -63,6 +69,9 @@ class Event():
 
     def setCalendar(self, calendar):
         self._calendar = calendar
+
+    def setCategory(self, category):
+        self._category = category
 
     def addComment(self, comment):
         self._comments.append(comment)
@@ -117,3 +126,7 @@ class Event():
             if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
                 self._comments.remove(comments)
             comments.deleteComment(comment)
+
+    def calculateHoursCategory(self):
+        dateTimeDifference = self.getEndDateTime() - self.getStartDateTime()
+        return dateTimeDifference.total_seconds() / 3600

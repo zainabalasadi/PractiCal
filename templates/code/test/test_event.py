@@ -1,24 +1,25 @@
 import datetime
 import pytest
 
-from src.code.Calendar import Calendar
-from src.code.Comment import Comment
-from src.code.User import User
-from src.code.Event import Event
+from templates.code.Calendar import Calendar
+from templates.code.Comment import Comment
+from templates.code.User import User
+from templates.code.Event import Event
 
 
 class TestEvent():
     @pytest.fixture()
     def fixture(self):
         self.user = User(1, "Derrick", "Foo", "derrick@gmail.com", "abc123")
-        self.event = Event(1, 1, "COMP4920 Meeting", "Standup", datetime.datetime.now(),
-                           datetime.datetime.now(), "Work")
-        self.event1 = Event(2, 1, "21st Birthday", "Bday party at Sydnney", 
-                            datetime.datetime.now(), datetime.datetime.now(), "Work")
-        self.event_edit = Event(1, 1, "COMP4920 Meeting 2.0", "Online", datetime.datetime.now(),
-                                datetime.datetime.now(), "Personal")
-        self.workCal = Calendar("Work", "red", 1)
-        self.workPersonal = Calendar("Personal", "blue", 1)
+        self.event = Event(1, self.user, "COMP4920 Meeting", "Standup", datetime.datetime.now(),
+                           datetime.datetime.now(),
+                           "Work", "Work")
+        self.event1 = Event(2, self.user, "21st Birthday", "Bday party at Sydney", datetime.datetime.now(),
+                            datetime.datetime.now(), "Work", "Work")
+        self.event_edit = Event(1, self.user, "COMP4920 Meeting 2.0", "Online", datetime.datetime.now(),
+                                datetime.datetime.now(), "Personal", "Work")
+        self.workCal = Calendar("Work", "red", self.user)
+        self.workPersonal = Calendar("Personal", "blue", self.user)
         self.user.addCalendars(self.workCal)
 
         self.comment = Comment("Derrick", "So excited people!")
@@ -27,7 +28,7 @@ class TestEvent():
         self.commentReply1 = Comment("Michael", "Me too!")
 
     def test_event(self, fixture):
-        assert (self.event.getUser() == 1)
+        assert (self.event.getUser() == self.user)
         assert (self.event.getCalendar() == "Work")
         assert (self.event.getDescription() == "Standup")
         assert (self.event.getName() == "COMP4920 Meeting")
