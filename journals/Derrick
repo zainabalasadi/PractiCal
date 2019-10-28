@@ -11,3 +11,37 @@ very minor refactoring
 
 12/10
 started writing pytest as well as added getters and setters
+
+14/10
+in our tem meeting we decided on camelcase. We also introduced a new class, category to hold our events.
+since we reached our milestones early, we decided to start on our frontend
+
+16/10
+had to refator all the code for our new classes
+changed everything to camelcase and changed the words to give more clarity and understanding
+started to focus on adding minor but helpful functionality to the application such as if the dates are not valid, or if the event is shared and then deleted
+
+18/10
+spent all day writing pytest for all our functions, making sure all our backend is functional
+also started writing code for the notifications
+bugfixing
+
+19/10
+doing group project plan and lecture summaries
+
+20/10
+finished off the group project plan
+
+21/10
+finished off the login, stayed back with michael to do front end flask for login as well as linking it to backend
+used bcrypt to hash
+completed 3 html files with css
+
+24/10
+Started implementing the notification and event changes
+
+27/10
+Started doing the time breakdowns
+
+29/10
+Finished time breakdowns and also finished event notifications
