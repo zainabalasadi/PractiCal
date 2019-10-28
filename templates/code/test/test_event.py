@@ -38,7 +38,7 @@ class TestEvent():
     def test_edit_event(self, fixture):
         self.workCal.addEvent(self.event)
         self.event.editEvent("COMP4920 Meeting 2.0", "Online", datetime.datetime.now(), datetime.datetime.now(),
-                             self.event.getInvitees())
+                             self.event.getInvitees(), "Work")
         for event in self.workCal.getEvents():
             assert (event.getName() == "COMP4920 Meeting 2.0")
         assert (len(self.workCal.getEvents()) == 1)
@@ -46,7 +46,7 @@ class TestEvent():
     def test_bad_date_edit_event(self, fixture):
         self.workCal.addEvent(self.event)
         self.event.editEvent("COMP4920 Meeting 2.0", "Online", datetime.date(2012, 12, 31), datetime.date(2001, 12, 31)
-                              , self.event.getInvitees())
+                              , self.event.getInvitees(), "Work")
         for event in self.workCal.getEvents():
             assert (event.getName() == "COMP4920 Meeting")
         assert (len(self.workCal.getEvents()) == 1)

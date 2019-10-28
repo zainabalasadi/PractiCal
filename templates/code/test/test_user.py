@@ -3,7 +3,6 @@ import pytest
 
 from templates.code.Calendar import Calendar
 from templates.code.Event import Event
-from templates.code.Notification import Notification
 from templates.code.User import User
 
 
@@ -26,7 +25,6 @@ class TestUser():
         self.event.addInvitee(self.user1)
         self.workCal.addEvent(self.event)
         self.user1.addCalendars(self.personalCal)
-        self.user.addCalendars(self.workCal)
 
     def test_user(self, fixture):
         assert (self.user.getID() == 1)
@@ -56,9 +54,11 @@ class TestUser():
         assert (len(self.user.getNotifications()) == 1)
 
     def test_category_hours(self, fixture):
+        self.user.addCalendars(self.workCal)
         assert (self.user.calculateHoursCategory("Work") == 1)
 
     def test_category_hours_multiple_calendars(self, fixture):
+        self.user.addCalendars(self.workCal)
         self.personalCal.addEvent(self.event1)
         self.user.addCalendars(self.personalCal)
         assert (self.user.calculateHoursCategory("Work") == 2)
