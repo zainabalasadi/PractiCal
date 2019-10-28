@@ -3,6 +3,7 @@
 # Started 13/10/19
 from flask_login import UserMixin
 
+from templates.code.Event import Event
 from templates.code.Notification import Notification
 
 
@@ -95,3 +96,9 @@ class User(UserMixin):
         calendar.addEvent(event)
         self.addMaybeEvent(event)
         self.removeNotification(notif)
+
+    def updateEvent(self, event, name, desc, startDateTime, endDateTime, invitees):
+        event.editEvent(name, desc, startDateTime, endDateTime, invitees)
+        for invitee in event.getInvitees():
+            new_notif = Notification(event, 'updated_event', self, invitee, '')
+            invitee.addNotification(new_notif)
