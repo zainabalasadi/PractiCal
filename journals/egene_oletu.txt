@@ -5,7 +5,8 @@ Started setting up the MySQL server. So far created the user table, and started
 coding the manager functions for it.
 
 11/10/2019:
-Wrote and tested new methods to add, delete, and edit entries in the users table.
+Wrote and tested new methods to add, delete, and edit entries in the users
+table.
 
 13/10/2019:
 Refactored code. Added events table to database, basing the schema off the
@@ -19,3 +20,14 @@ of the sql statements used in the code. Did some basic testing of some methods.
 15-16/10/2019:
 Refactored code. Finished writing basic getters/setters for events and users
 tables. Also wrote a test script for all the methods.
+
+21/10/2019:
+Added invites table to represent status of invites users have received for
+events. Updated getUser function to require an email and password to retrieve
+user information. getUser and getEvent methods return a User and Event object
+respectively.
+
+28/10/2019:
+Changed getter functions in DatabaseManager to return tuples again to simplify
+the system. Added loadUser method to PracticalManager which loads a user and
+their events and calendars into appropriate classes.
