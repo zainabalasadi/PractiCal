@@ -78,7 +78,7 @@ class Event():
 
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
-        notif = Notification(self, 'invite', self.getUser(), invitee)
+        notif = Notification(self, 'invite', self.getUser(), invitee, '')
         inviteeNotifs = invitee.getNotifications()
         inviteeNotifs.append(notif)
 
@@ -103,7 +103,7 @@ class Event():
 
     # Edits an event
     # Returns true if editing is successful, false if not
-    def editEvent(self, name, desc, startDateTime, endDateTime, calendar, category):
+    def editEvent(self, name, desc, startDateTime, endDateTime):
         # Update event details
 
         if startDateTime > endDateTime:
@@ -113,15 +113,9 @@ class Event():
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
-        self.setCalendar(calendar)
-        self.setCategory(category)
-
         #SEND NOTIFICATION
 
         return True
-
-    def addComment(self, comment):
-        self._comments.append(comment)
 
     def removeComment(self, comment):
         for comments in self._comments:

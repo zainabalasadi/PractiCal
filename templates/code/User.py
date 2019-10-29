@@ -3,7 +3,9 @@
 # Started 13/10/19
 from flask_login import UserMixin
 
+from templates.code.Event import Event
 from templates.code.Notification import Notification
+from templates.code.Calendar import Calendar
 
 
 class User(UserMixin):
@@ -83,15 +85,15 @@ class User(UserMixin):
     def declineInvite(self, notif):
         event = notif.getEvent()
         inviter = event.getUser()
-        new_notif = Notification(event, 'declined_invite', self, inviter)
-        inviter.addNotification(new_notif)
+        newNotif = Notification(event, 'declined_invite', self, inviter, '')
+        inviter.addNotification(newNotif)
         self.removeNotification(notif)
 
     def maybeInvite(self, notif, calendar):
         event = notif.getEvent()
         inviter = event.getUser()
-        new_notif = Notification(event, 'maybe_invite', self, inviter)
-        inviter.addNotification(new_notif)
+        newNotif = Notification(event, 'maybe_invite', self, inviter, '')
+        inviter.addNotification(newNotif)
         calendar.addEvent(event)
         self.addMaybeEvent(event)
         self.removeNotification(notif)
@@ -102,3 +104,34 @@ class User(UserMixin):
         for calendar in self._calendars:
             time += calendar.calculateHoursCategory(category, week)
         return time
+    def updateEvent(self, event, name, desc, startDateTime, endDateTime):
+        # save existing event details
+        oldName = event.getName()
+        oldDesc = event. getDescription()
+        oldStartDateTime = event.getStartDateTime()
+        oldEndDateTime = event.getEndDateTime()
+
+        event.editEvent(name, desc, startDateTime, endDateTime)
+        
+        # check if updated event details are different to existing
+        if event.getName() != oldName:
+            notifDesc = ['name updated']
+        if event.getDescription() != oldDesc:
+            notifDesc.append('description updated')
+        if event.getStartDateTime() != oldStartDateTime:
+            notifDesc.append('start updated')
+        if event.getEndDateTime() != oldEndDateTime:
+            notifDesc.append('end updated')
+
+        # send notifications to invitees on updated details
+        for invitee in event.getInvitees():
+            newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
+            invitee.addNotification(newNotif)
+
+    # return true if event successfully deleted
+    def deleteEvent(self, event):
+        calendar = event.getCalendar()
+        if calendar.deleteEvent(event):
+            return True
+        else:
+            return False
