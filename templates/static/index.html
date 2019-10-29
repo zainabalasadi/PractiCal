@@ -13,14 +13,12 @@
     <div class="row h-100 d-flex justify-content-center">
        <!--  <div class="col-md-4 col-md-offset-4"> -->
         <div class="column is-4">
-            <h3>Log in to PractiCal</h3>
+            <h1>Log in to PractiCal</h1>
                 <form autocomplete="off" method=POST action="{{ url_for('index.index') }}">
                     <div class="form-group">
-                        <label for="email">Email</label>
                         <input type="text" class="form-control" name="email" placeholder="Email">
                     </div>
                     <div class="form-group">
-                        <label for="pass">Password</label>
                         <input type="password" class="form-control" name="password" placeholder="Password">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Log In</button>
