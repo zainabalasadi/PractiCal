@@ -1,9 +1,11 @@
 # Implementation of Calendar class
 # Completed by Zainab Alasadi
 # Started 13/10/19
+import datetime
 
 from templates.code.Event import Event
 from templates.code.User import User
+
 
 class Calendar():
     def __init__(self, name, colour, user):
@@ -40,16 +42,24 @@ class Calendar():
                 for calendar in invitee.getCalendars():
                     if event in calendar.getEvents():
                         calendar.deleteEvent(event)
-                        #NOTIFY THEM IT WAS DELETED
+                        # NOTIFY THEM IT WAS DELETED
 
         if event in self.getEvents():
             self._events.remove(event)
             return True
         return False
 
-    def calculateHoursCategory(self, category):
+    def calculateHoursCategory(self, category, week):
         time = 0
+
+        week = datetime.datetime(week.year, week.month, week.day, 0, 0)
+
+        while week.weekday() != 0:
+            week = week - datetime.timedelta(days=1)
+
+        weekend = week + datetime.timedelta(days=7)
+
         for event in self._events:
-            if event.getCategory() == category:
+            if event.getCategory() == category and event.getStartDateTime() > week and event.getEndDateTime() < weekend:
                 time += event.calculateHoursCategory()
         return time
