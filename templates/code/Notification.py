@@ -4,12 +4,12 @@
 
 
 class Notification():
-    def __init__(self, event, notifType, invoker, receiver, description):
+    def __init__(self, event, notifType, invoker, receiver, changes):
         self._event = event
         self._notifType = notifType
         self._invoker = invoker
         self._receiver = receiver
-        self._description = description
+        self._changes = changes
 
     def getEvent(self):
         return self._event
@@ -17,8 +17,8 @@ class Notification():
     def getNotifType(self):
         return self._notifType
 
-    def getDescription(self):
-        return self._description
+    def getChanges(self):
+        return self._changes
 
     def getInvoker(self):
         return self._invoker

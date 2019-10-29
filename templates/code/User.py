@@ -109,14 +109,13 @@ class User(UserMixin):
         
         # check if updated event details are different to existing
         if event.getName() != oldName:
-            notifDesc = 'name updated, '
+            notifDesc = ['name updated']
         if event.getDescription() != oldDesc:
-            notifDesc += 'description updated, '
+            notifDesc.append('description updated')
         if event.getStartDateTime() != oldStartDateTime:
-            notifDesc += 'start updated, '
+            notifDesc.append('start updated')
         if event.getEndDateTime() != oldEndDateTime:
-            notifDesc += 'end updated'
-        notifDesc.strip(', ')
+            notifDesc.append('end updated')
 
         # send notifications to invitees on updated details
         for invitee in event.getInvitees():
