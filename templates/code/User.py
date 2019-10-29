@@ -3,9 +3,7 @@
 # Started 13/10/19
 from flask_login import UserMixin
 
-from templates.code.Event import Event
 from templates.code.Notification import Notification
-from templates.code.Calendar import Calendar
 
 
 class User(UserMixin):
