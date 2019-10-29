@@ -46,7 +46,8 @@ class User(UserMixin):
         return self._calendars
 
     def addCalendars(self, newCalendar):
-        self._calendars.append(newCalendar)
+        if newCalendar not in self._calendars:
+            self._calendars.append(newCalendar)
 
     def getContacts(self):
         return self._contacts
@@ -102,34 +103,56 @@ class User(UserMixin):
         for calendar in self._calendars:
             time += calendar.calculateHoursCategory(category, week)
         return time
-    def updateEvent(self, event, name, desc, startDateTime, endDateTime):
+
+    def updateEvent(self, event, name, desc, startDateTime, endDateTime, calendar, category):
         # save existing event details
         oldName = event.getName()
-        oldDesc = event. getDescription()
+        oldDesc = event.getDescription()
         oldStartDateTime = event.getStartDateTime()
         oldEndDateTime = event.getEndDateTime()
+        oldCalendar = event.getCalendar()
+        oldCategory = event.getCategory()
 
-        event.editEvent(name, desc, startDateTime, endDateTime)
-        
+        event.editEvent(name, desc, startDateTime, endDateTime, calendar, category)
+
+        notifDesc = []
+
         # check if updated event details are different to existing
         if event.getName() != oldName:
-            notifDesc = ['name updated']
+            notifDesc.append('name updated')
         if event.getDescription() != oldDesc:
             notifDesc.append('description updated')
         if event.getStartDateTime() != oldStartDateTime:
             notifDesc.append('start updated')
         if event.getEndDateTime() != oldEndDateTime:
             notifDesc.append('end updated')
+        if event.getCalendar() != oldCalendar:
+            notifDesc.append('calendar updated')
+        if event.getCategory() != oldCategory:
+            notifDesc.append('category updated')
 
         # send notifications to invitees on updated details
         for invitee in event.getInvitees():
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
 
-    # return true if event successfully deleted
+    # remove from all calendars
     def deleteEvent(self, event):
+
+        for calendar in self._calendars:
+            calendar.deleteEvent(event)
+
+    #remove from one calendar
+    def deleteEventOneCalendar(self, event):
         calendar = event.getCalendar()
+
+        if calendar is None:
+            return False
+
         if calendar.deleteEvent(event):
             return True
         else:
             return False
+
+    def removeNotification(self, notification):
+        self._notifications.remove(notification)

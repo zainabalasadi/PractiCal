@@ -81,6 +81,19 @@ class Event():
 
     # Returns true if invitee exists in event and is successfully removed
     def removeInvitee(self, invitee):
+        #TODO
+
+        # if the invitee hasn't accepted, remove the invite notif
+        for notif in invitee.getNotifications():
+            if notif.getEvent() == self and notif.getNotifType() == 'invite':
+                invitee.removeNotification(notif)
+
+        # if the invitee has accepted already, remove event from their calendars
+        for calendar in invitee.getCalendars():
+            for event in calendar.getEvents():
+                if event == self:
+                    calendar.deleteEvent(event)
+
         try:
             self._invitees.remove(invitee)
             return True
@@ -110,15 +123,21 @@ class Event():
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
-        self.setCalendar(calendar)
         self.setCategory(category)
+
+        if self.getCalendar() != calendar:
+            self.getCalendar().deleteEvent(self)
+            calendar.addEvent(self)
+        self.setCalendar(calendar)
 
         return True
 
     def removeComment(self, comment):
         for comments in self._comments:
+            # if the comment matches, and its the same poster, remove it
             if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
                 self._comments.remove(comments)
+            #recursion
             comments.deleteComment(comment)
 
     def calculateHoursCategory(self):

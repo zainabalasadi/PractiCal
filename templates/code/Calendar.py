@@ -37,12 +37,18 @@ class Calendar():
         if event.getUser() == self._user:
             for invitee in event.getInvitees():
                 for calendar in invitee.getCalendars():
+                    # if they haven't accepted the invite notif, remove it
+                    for notif in invitee.getNotifications():
+                        if notif.getEvent() == event and notif.getNotifType() == 'invite':
+                            invitee.removeNotification(notif)
+
+                    # if they have, delete the event from their calendar and notify them
                     if event in calendar.getEvents():
                         newNotif = Notification(event, 'deleted_event', event.getUser(), invitee, '')
                         invitee.addNotification(newNotif)
                         calendar.deleteEvent(event)
-                        # NOTIFY THEM IT WAS DELETED
 
+        # if the event is in their list, remove it
         if event in self.getEvents():
             self._events.remove(event)
             return True
