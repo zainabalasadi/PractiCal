@@ -1,10 +1,10 @@
 import datetime
 import pytest
 
-from src.code.Calendar import Calendar
-from src.code.Event import Event
-from src.code.Notification import Notification
-from src.code.User import User
+from templates.code.Calendar import Calendar
+from templates.code.Event import Event
+from templates.code.Notification import Notification
+from templates.code.User import User
 
 
 class TestUser():
