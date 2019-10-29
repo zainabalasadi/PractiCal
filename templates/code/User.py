@@ -123,6 +123,10 @@ class User(UserMixin):
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
 
+    # return true if event successfully deleted
     def deleteEvent(self, event):
         calendar = event.getCalendar()
-        calendar.deleteEvent(event)
+        if calendar.deleteEvent(event):
+            return True
+        else:
+            return False

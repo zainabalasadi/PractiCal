@@ -2,7 +2,6 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
-from templates.code.Calendar import Calendar
 from templates.code.Event import Event
 from templates.code.Notification import Notification
 from templates.code.User import User
