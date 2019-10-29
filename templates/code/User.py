@@ -96,8 +96,9 @@ class User(UserMixin):
         self.addMaybeEvent(event)
         self.removeNotification(notif)
 
-    def calculateHoursCategory(self, category):
+    def calculateHoursCategory(self, category, week):
         time = 0
+
         for calendar in self._calendars:
-            time += calendar.calculateHoursCategory(category)
+            time += calendar.calculateHoursCategory(category, week)
         return time
