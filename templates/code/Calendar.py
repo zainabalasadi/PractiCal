@@ -2,7 +2,9 @@
 # Completed by Zainab Alasadi
 # Started 13/10/19
 
+from templates.code.Calendar import Calendar
 from templates.code.Event import Event
+from templates.code.Notification import Notification
 from templates.code.User import User
 
 class Calendar():
@@ -32,13 +34,13 @@ class Calendar():
     # Removes a given event from a user's calendar
     # Returns true if removal is successful, false if not
     def deleteEvent(self, event):
-        # TODO
         # If the event is shared, remove from everyone's calendar
-
         if event.getUser() == self._user:
             for invitee in event.getInvitees():
                 for calendar in invitee.getCalendars():
                     if event in calendar.getEvents():
+                        newNotif = Notification(event, 'deleted_event', event.getUser(), invitee, '')
+                        invitee.addNotification(newNotif)
                         calendar.deleteEvent(event)
 
         if event in self.getEvents():
