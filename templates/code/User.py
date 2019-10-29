@@ -97,8 +97,24 @@ class User(UserMixin):
         self.addMaybeEvent(event)
         self.removeNotification(notif)
 
-    def updateEvent(self, event, name, desc, startDateTime, endDateTime, invitees):
-        event.editEvent(name, desc, startDateTime, endDateTime, invitees)
+    def updateEvent(self, event, name, desc, startDateTime, endDateTime):
+        oldName = event.getName()
+        oldDesc = event. getDescription()
+        oldStartDateTime = event.getStartDateTime()
+        oldEndDateTime = event.getEndDateTime()
+
+        event.editEvent(name, desc, startDateTime, endDateTime)
+
+        if event.getName() != oldName:
+            notifDesc = 'name updated, '
+        if event.getDescription() != oldDesc:
+            notifDesc += 'description updated, '
+        if event.getStartDateTime() != oldStartDateTime:
+            notifDesc += 'start updated, '
+        if event.getEndDateTime() != oldEndDateTime:
+            notifDesc += 'end updated'
+        notifDesc.strip(', ')
+
         for invitee in event.getInvitees():
-            new_notif = Notification(event, 'updated_event', self, invitee, '')
+            new_notif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(new_notif)

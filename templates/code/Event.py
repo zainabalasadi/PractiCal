@@ -94,7 +94,7 @@ class Event():
 
     # Edits an event
     # Returns true if editing is successful, false if not
-    def editEvent(self, name, desc, startDateTime, endDateTime, invitees):
+    def editEvent(self, name, desc, startDateTime, endDateTime):
         # Update event details
 
         if startDateTime > endDateTime:
@@ -106,8 +106,6 @@ class Event():
         self.setEndDateTime(endDateTime)
 
         return True
-        # Add or delete invitees
-        # TODO
 
     def removeComment(self, comment):
         for comments in self._comments:
