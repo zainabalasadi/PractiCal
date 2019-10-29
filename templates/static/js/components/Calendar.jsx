@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
 import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/Core";
 import moment from "moment";
-import "!style-loader!css-loader!../../../public/css/calendar.css";
+
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
 
 // Initialise time localiser
@@ -163,51 +163,6 @@ class Cal extends Component {
     }
 
     render() {
-        // Actions to exit event
-        const eventActions = [
-            <Button
-              label="Cancel"
-              primary={false}
-              keyboardFocused={true}
-              onClick={this.handleClose}
-            />,
-            <Button
-              label="Delete"
-              secondary={true}
-              keyboardFocused={true}
-              onClick={() => {
-                this.deleteEvent(), this.handleClose();
-              }}
-            />,
-            <Button
-              label="Confirm Edit"
-              primary={true}
-              keyboardFocused={true}
-              onClick={this.handleClose}
-              onClick={() => {
-                this.updateEvent(), this.handleClose();
-              }}
-            />
-        ];
-
-        // Actions to create new event
-        // const slotActions = [
-        //     <Button 
-        //       label="Cancel" 
-        //       secondary={true} 
-        //       onClick={this.handleClose} 
-        //     />,
-        //     <Button
-        //       label="Submit"
-        //       primary={true}
-        //       keyboardFocused={true}
-        //       onClick={() => {
-        //         this.setNewAppointment(), this.handleClose();
-        //       }}
-        //     />
-        // ];
-
-
         return (
             <div className="App">
                 <Calendar
