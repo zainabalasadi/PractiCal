@@ -1,5 +1,48 @@
 body {
 	font-family: 'Roboto', sans-serif;
+	color: #222328;
+}
+
+h1 {
+	font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+}
+/* 
+h2 {
+
+}
+
+h3 {
+
+}
+
+h4 {
+
+}
+
+h5 {
+
+}
+
+h6 {
+
+}
+
+p {
+
+} */
+
+.form-control {
+	border: none;
+	border-bottom: 1px #222328 solid;
+	border-radius: 0;
+	padding: .375rem .4rem;
+}
+
+*:focus {
+	outline: none !important;
+	box-shadow: none !important;
 }
 
 .App {
