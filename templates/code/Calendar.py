@@ -52,8 +52,10 @@ class Calendar():
     def calculateHoursCategory(self, category, week):
         time = 0
 
+        week = datetime.datetime(week.year, week.month, week.day, 0, 0)
+
         while week.weekday() != 0:
-            week = datetime.datetime(week.year, week.month, week.day - 1, 0, 0)
+            week = week - datetime.timedelta(days=1)
 
         weekend = week + datetime.timedelta(days=7)
 
