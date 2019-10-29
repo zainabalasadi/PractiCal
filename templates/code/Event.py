@@ -78,7 +78,7 @@ class Event():
 
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
-        notif = Notification(self, 'invite', self.getUser(), invitee)
+        notif = Notification(self, 'invite', self.getUser(), invitee, '')
         inviteeNotifs = invitee.getNotifications()
         inviteeNotifs.append(notif)
 
@@ -116,12 +116,7 @@ class Event():
         self.setCalendar(calendar)
         self.setCategory(category)
 
-        #SEND NOTIFICATION
-
         return True
-
-    def addComment(self, comment):
-        self._comments.append(comment)
 
     def removeComment(self, comment):
         for comments in self._comments:

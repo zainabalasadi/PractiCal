@@ -83,8 +83,8 @@ class User(UserMixin):
     def declineInvite(self, notif):
         event = notif.getEvent()
         inviter = event.getUser()
-        new_notif = Notification(event, 'declined_invite', self, inviter)
-        inviter.addNotification(new_notif)
+        newNotif = Notification(event, 'declined_invite', self, inviter, '')
+        inviter.addNotification(newNotif)
         self.removeNotification(notif)
 
     def maybeInvite(self, notif, calendar):
@@ -95,6 +95,13 @@ class User(UserMixin):
         calendar.addEvent(event)
         self.addMaybeEvent(event)
         self.removeNotification(notif)
+
+    def calculateHoursCategory(self, category, week):
+        time = 0
+
+        for calendar in self._calendars:
+            time += calendar.calculateHoursCategory(category, week)
+        return time
 
     def updateEvent(self, event, name, desc, startDateTime, endDateTime):
         # save existing event details
@@ -119,13 +126,6 @@ class User(UserMixin):
         for invitee in event.getInvitees():
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
-
-    def calculateHoursCategory(self, category, week):
-        time = 0
-
-        for calendar in self._calendars:
-            time += calendar.calculateHoursCategory(category, week)
-        return time
 
     # return true if event successfully deleted
     def deleteEvent(self, event):

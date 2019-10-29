@@ -35,9 +35,7 @@ class Calendar():
     # Removes a given event from a user's calendar
     # Returns true if removal is successful, false if not
     def deleteEvent(self, event):
-        # TODO
         # If the event is shared, remove from everyone's calendar
-
         if event.getUser() == self._user:
             for invitee in event.getInvitees():
                 for calendar in invitee.getCalendars():
@@ -45,6 +43,7 @@ class Calendar():
                         newNotif = Notification(event, 'deleted_event', event.getUser(), invitee, '')
                         invitee.addNotification(newNotif)
                         calendar.deleteEvent(event)
+                        # NOTIFY THEM IT WAS DELETED
 
         if event in self.getEvents():
             self._events.remove(event)
@@ -54,8 +53,10 @@ class Calendar():
     def calculateHoursCategory(self, category, week):
         time = 0
 
+        week = datetime.datetime(week.year, week.month, week.day, 0, 0)
+
         while week.weekday() != 0:
-            week = datetime.datetime(week.year, week.month, week.day - 1, 0, 0)
+            week = week - datetime.timedelta(days=1)
 
         weekend = week + datetime.timedelta(days=7)
 
