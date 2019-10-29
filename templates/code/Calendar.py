@@ -4,6 +4,7 @@
 import datetime
 
 from templates.code.Event import Event
+from templates.code.Notification import Notification
 from templates.code.User import User
 
 
@@ -41,8 +42,9 @@ class Calendar():
             for invitee in event.getInvitees():
                 for calendar in invitee.getCalendars():
                     if event in calendar.getEvents():
+                        newNotif = Notification(event, 'deleted_event', event.getUser(), invitee, '')
+                        invitee.addNotification(newNotif)
                         calendar.deleteEvent(event)
-                        # NOTIFY THEM IT WAS DELETED
 
         if event in self.getEvents():
             self._events.remove(event)
