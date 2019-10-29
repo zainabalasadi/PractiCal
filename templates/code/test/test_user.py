@@ -55,10 +55,15 @@ class TestUser():
 
     def test_category_hours(self, fixture):
         self.user.addCalendars(self.workCal)
-        assert (self.user.calculateHoursCategory("Work") == 1)
+        assert (self.user.calculateHoursCategory("Work", datetime.datetime(2017, 11, 27, 22, 45)) == 1)
 
     def test_category_hours_multiple_calendars(self, fixture):
         self.user.addCalendars(self.workCal)
         self.personalCal.addEvent(self.event1)
         self.user.addCalendars(self.personalCal)
-        assert (self.user.calculateHoursCategory("Work") == 2)
+        assert (self.user.calculateHoursCategory("Work", datetime.datetime(2017, 11, 27, 22, 45)) == 2)
+
+    def test_category_hours_diff_weeks(self, fixture):
+        self.workCal.addEvent(self.event_edit)
+        self.user.addCalendars(self.workCal)
+        assert (self.user.calculateHoursCategory("Work", datetime.datetime(2017, 11, 27, 22, 45)) == 1)
