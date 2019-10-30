@@ -1,9 +1,8 @@
 from contextlib import redirect_stdout
 import io
 import importlib.util
-
 spec = importlib.util.spec_from_file_location("DatabaseManager",
-                                              "../DatabaseManager.py")
+    "../templates/DatabaseManager.py")
 DM = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(DM)
 
@@ -58,13 +57,13 @@ print("Passed")
 # Test addEvent
 print("Testng addEvent method...", end="")
 event1ID = dm.addEvent(user1ID, "test event 1", "Test event 1 description",
-                       "testCategory1", "2019-10-16 14:00:00", "2019-10-16 14:05:00")
+    "testCategory1", "2019-10-16 14:00:00", "2019-10-16 14:05:00")
 assert dm.getEvent(event1ID), "Test failed: Event 1 not created"
 event2ID = dm.addEvent(user1ID, "test event 2", "Test event 2 description",
-                       "testCategory2", "2019-10-16 14:00:00")
+    "testCategory2", "2019-10-16 14:00:00")
 assert dm.getEvent(event2ID), "Test failed: Event 2 not created"
 event3ID = dm.addEvent(user1ID, "test event 3", "Test event 3 description",
-                       "testCategory3", "2019-10-16 14:00:00", "2019-10-16 14:10:00")
+    "testCategory3", "2019-10-16 14:00:00", "2019-10-16 14:10:00")
 assert dm.getEvent(event3ID), "Test failed: Event 3 not created"
 print("Passed")
 
@@ -89,7 +88,7 @@ assert event[3] == "New test event 2 description", \
 dm.setEventDateTime(event2ID, "2019-11-01 12:00:00", "2019-11-02 13:00:00")
 event = dm.getEvent(event2ID)
 assert str(event[4]) == "2019-11-01 12:00:00" and \
-       str(event[5]) == "2019-11-02 13:00:00", \
+    str(event[5]) == "2019-11-02 13:00:00", \
     "Test failed: Event 2 date time did not change"
 dm.setEventCategory(event2ID, "newTestCategory2")
 event = dm.getEvent(event2ID)
