@@ -3,7 +3,6 @@ import pytest
 
 from templates.code.Calendar import Calendar
 from templates.code.Event import Event
-from templates.code.Notification import Notification
 from templates.code.User import User
 
 
@@ -22,6 +21,7 @@ class TestUser():
                                 datetime.datetime.now(), "Personal", "Work")
         self.workCal = Calendar("Work", "red", self.user)
         self.personalCal = Calendar("Personal", "blue", self.user1)
+        self.event.setCalendar(self.workCal)
 
         self.event.addInvitee(self.user1)
         self.workCal.addEvent(self.event)
@@ -38,14 +38,21 @@ class TestUser():
         assert (len(self.user.getGroups()) == 0)
 
     def test_accept_invite(self, fixture):
-        #HELP
+        assert (len(self.user1.getNotifications()) == 1)
+        assert (len(self.personalCal.getEvents()) == 0)
         for notif in self.user1.getNotifications():
             self.user1.acceptInvite(notif, self.personalCal)
         assert (len(self.user1.getNotifications()) == 0)
         assert (len(self.personalCal.getEvents()) == 1)
 
     def test_maybe_invite(self, fixture):
-        return
+        for notif in self.user1.getNotifications():
+            self.user1.maybeInvite(notif, self.personalCal)
+        assert (len(self.user1.getNotifications()) == 0)
+        assert (len(self.personalCal.getEvents()) == 1)
+        assert (len(self.user.getNotifications()) == 1)
+        for notif in self.user.getNotifications():
+            assert (notif.getNotifType() == 'maybe_invite')
 
     def test_decline_invite(self, fixture):
         for notif in self.user1.getNotifications():
@@ -53,13 +60,47 @@ class TestUser():
         assert (len(self.user1.getNotifications()) == 0)
         assert (len(self.personalCal.getEvents()) == 0)
         assert (len(self.user.getNotifications()) == 1)
+        for notif in self.user.getNotifications():
+            assert (notif.getNotifType() == 'declined_invite')
 
-    def test_category_hours(self, fixture):
-        self.user.addCalendars(self.workCal)
-        assert (self.user.calculateHoursCategory("Work") == 1)
+    def test_update_event(self, fixture):
+        self.user.updateEvent(self.event, "Wobcke Fanclub", "Wobcke Rocks!",
+                              datetime.datetime.now() - datetime.timedelta(days=5),
+                              datetime.datetime.now() - datetime.timedelta(days=5), self.personalCal, "Fun")
+        assert (self.event.getCategory() == "Fun")
+        assert (self.event.getName() == "Wobcke Fanclub")
+        assert (self.event.getDescription() == "Wobcke Rocks!")
+        assert (self.event.getCalendar() == self.personalCal)
 
-    def test_category_hours_multiple_calendars(self, fixture):
-        self.user.addCalendars(self.workCal)
-        self.personalCal.addEvent(self.event1)
-        self.user.addCalendars(self.personalCal)
-        assert (self.user.calculateHoursCategory("Work") == 2)
+    def test_update_event_with_invitees(self, fixture):
+        self.user1 = User(2, "Zainab", "Alasadi", "zainab@gmail.com", "abc123***")
+        self.workCal1 = Calendar("Work", "red", self.user1)
+        self.user1.addCalendars(self.workCal1)
+
+        self.workCal.addEvent(self.event)
+        self.event.addInvitee(self.user1)
+
+        assert (len(self.workCal.getEvents()) == 1)
+        assert (len(self.personalCal.getEvents()) == 0)
+
+        self.user.updateEvent(self.event, "Wobcke Fanclub", "Wobcke Rocks!",
+                              datetime.datetime.now() - datetime.timedelta(days=5),
+                              datetime.datetime.now() - datetime.timedelta(days=5), self.personalCal, "Fun")
+
+        assert(len(self.workCal.getEvents()) == 0)
+        assert (len(self.personalCal.getEvents()) == 1)
+
+        assert (len(self.user1.getNotifications()) == 1)
+        for notif in self.user1.getNotifications():
+            assert (len(notif.getChanges()) == 6)
+
+        self.user.updateEvent(self.event, "Wobcke Fanclub", "Wobcke Rocks!",
+                              datetime.datetime.now() - datetime.timedelta(days=5),
+                              datetime.datetime.now() - datetime.timedelta(days=5), self.personalCal, "Fun")
+
+        assert (len(self.workCal.getEvents()) == 0)
+        assert (len(self.personalCal.getEvents()) == 1)
+
+        assert (len(self.user1.getNotifications()) == 2)
+        for notif in self.user1.getNotifications():
+            assert (len(notif.getChanges()) == 6 or 2)
