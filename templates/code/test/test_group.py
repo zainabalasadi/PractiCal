@@ -32,3 +32,11 @@ class TestGroup():
     def test_delete_member_when_none(self, fixture):
         self.group.removeMember(self.user)
         assert (len(self.group.getMembers()) == 0)
+
+    def test_add_same_member_diff_groups(self, fixture):
+        self.group.addMember(self.user)
+        self.group1 = Group("Friends")
+        self.group1.addMember(self.user)
+
+        assert (len(self.group.getMembers()) == 1)
+        assert (len(self.group1.getMembers()) == 1)

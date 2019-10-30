@@ -56,15 +56,15 @@ class User(UserMixin):
         if contact not in self._contacts:
             self._contacts.append(contact)
 
-    def addContactByNameEmail(self, contactDetail):
+    def addContactByNameEmail(self, contactInfo):
         #for contact in db
-            #if name in db
+            #if contactInfo in email.db
                 #addContact(contact)
                 #return True
-            #if email in db
+            #if contactInfo in name.db
                 #addContact(contact)
                 #return True
-        #return False
+        return False
 
     def removeContact(self, contact):
         if contact in self._contacts:
