@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
-import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/Core";
+import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
 import moment from "moment";
 
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
