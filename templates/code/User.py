@@ -53,19 +53,36 @@ class User(UserMixin):
         return self._contacts
 
     def addContact(self, contact):
-        self._contacts.append(contact)
+        if contact not in self._contacts:
+            self._contacts.append(contact)
+
+    def addContactByNameEmail(self, contactDetail):
+        #for contact in db
+            #if name in db
+                #addContact(contact)
+                #return True
+            #if email in db
+                #addContact(contact)
+                #return True
+        #return False
+
+    def removeContact(self, contact):
+        if contact in self._contacts:
+            self._contacts.remove(contact)
 
     def getGroups(self):
         return self._groups
 
     def addGroup(self, group):
-        self._groups.append(group)
+        if group not in self._groups:
+            self._groups.append(group)
 
     def getNotifications(self):
         return self._notifications
 
     def addNotification(self, notif):
-        self._notifications.append(notif)
+        if notif not in self._notifications:
+            self._notifications.append(notif)
 
     def removeNotification(self, notif):
         if notif in self.getNotifications():
@@ -155,4 +172,5 @@ class User(UserMixin):
             return False
 
     def removeNotification(self, notification):
-        self._notifications.remove(notification)
+        if notification in self._notifications:
+            self._notifications.remove(notification)
