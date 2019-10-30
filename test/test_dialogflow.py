@@ -16,4 +16,4 @@ queryInput = dialogflow_v2.types.QueryInput(text=textInput)
 
 
 response = sessionClient.detect_intent(session=session, query_input=queryInput)
-print("Detected intent:", response.query_result.parameters.fields)
+print("Detected intent:", response.query_result.parameters.fields['date'])
