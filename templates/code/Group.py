@@ -17,3 +17,6 @@ class Group():
 
     def getName(self):
         return self._name
+
+    def setName(self, name):
+        self._name = name
