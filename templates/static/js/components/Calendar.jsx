@@ -238,7 +238,7 @@ class Cal extends Component {
                         <br />
                         <TextField
                           label="Description"
-                          multiLine={true}
+                          multiline={true}
                           defaultValue={this.state.desc}
                           onChange={e => {
                             this.setDescription(e.target.value);
