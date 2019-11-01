@@ -16,9 +16,6 @@ class Notification():
     def getNotifType(self):
         return self._notifType
 
-    def getStatus(self):
-        return self._status
-
     def getInvoker(self):
         return self._invoker
 

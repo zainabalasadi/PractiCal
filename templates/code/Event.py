@@ -1,10 +1,12 @@
-from template.code.Comment import Comment
-from template.code.Notification import Notification
+import datetime
+
+from templates.code.Comment import Comment
+from templates.code.Notification import Notification
 
 
 class Event():
 
-    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar):
+    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar, category):
         self._user = user
         self._name = name
         self._eventId = eventId
@@ -12,6 +14,7 @@ class Event():
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
         self._calendar = calendar
+        self._category = category
         self._comments = []
         self._invitees = []
         self._groups = []
@@ -43,6 +46,9 @@ class Event():
     def getCalendar(self):
         return self._calendar
 
+    def getCategory(self):
+        return self._category
+
     def setUser(self, user):
         self._user = user
 
@@ -64,17 +70,33 @@ class Event():
     def setCalendar(self, calendar):
         self._calendar = calendar
 
+    def setCategory(self, category):
+        self._category = category
+
     def addComment(self, comment):
         self._comments.append(comment)
 
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
-        notif = Notification(self, 'invite', self.getUser(), invitee)
+        notif = Notification(self, 'invite', self.getUser(), invitee, '')
         inviteeNotifs = invitee.getNotifications()
         inviteeNotifs.append(notif)
 
     # Returns true if invitee exists in event and is successfully removed
     def removeInvitee(self, invitee):
+        #TODO
+
+        # if the invitee hasn't accepted, remove the invite notif
+        for notif in invitee.getNotifications():
+            if notif.getEvent() == self and notif.getNotifType() == 'invite':
+                invitee.removeNotification(notif)
+
+        # if the invitee has accepted already, remove event from their calendars
+        for calendar in invitee.getCalendars():
+            for event in calendar.getEvents():
+                if event == self:
+                    calendar.deleteEvent(event)
+
         try:
             self._invitees.remove(invitee)
             return True
@@ -94,7 +116,7 @@ class Event():
 
     # Edits an event
     # Returns true if editing is successful, false if not
-    def editEvent(self, name, desc, startDateTime, endDateTime, invitees):
+    def editEvent(self, name, desc, startDateTime, endDateTime, calendar, category):
         # Update event details
 
         if startDateTime > endDateTime:
@@ -104,16 +126,24 @@ class Event():
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
+        self.setCategory(category)
+
+        if self.getCalendar() != calendar:
+            self.getCalendar().deleteEvent(self)
+            calendar.addEvent(self)
+        self.setCalendar(calendar)
 
         return True
-        # Add or delete invitees
-        # TODO
-
-    def addComment(self, comment):
-        self._comments.append(comment)
 
     def removeComment(self, comment):
         for comments in self._comments:
+            # if the comment matches, and its the same poster, remove it
             if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
                 self._comments.remove(comments)
+            #recursion
             comments.deleteComment(comment)
+
+    def calculateHoursCategory(self):
+        dateTimeDifference = self.getEndDateTime() - self.getStartDateTime()
+        return dateTimeDifference.total_seconds() / 3600
+
