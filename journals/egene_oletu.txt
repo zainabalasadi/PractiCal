@@ -31,3 +31,8 @@ respectively.
 Changed getter functions in DatabaseManager to return tuples again to simplify
 the system. Added loadUser method to PracticalManager which loads a user and
 their events and calendars into appropriate classes.
+
+01/11/2019:
+Pulled class definitions from master to my branch. Implemented login/logout
+and database update methods in practicalManager. Once tested, can merge to
+master for complete integration into frontend.
