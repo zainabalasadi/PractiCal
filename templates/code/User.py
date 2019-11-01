@@ -1,25 +1,41 @@
 # Implementation of User class
 # Completed by Zainab Alasadi
 # Started 13/10/19
+from flask_login import UserMixin
 
-from template.code.Notification import Notification
-from template.code.DatabaseManager import DatabaseManager
+from templates.code.Notification import Notification
 
 
-class User():
-    def __init__(self, userId, firstName, lastName, email, password,
-                    calendars=[], contacts=[], groups=[], notifications=[],
-                    maybe_events=[]):
-        self._id = userId
+class User(UserMixin):
+    def __init__(self, userID, firstName, lastName, email, password):
+        self._id = userID
         self._firstName = firstName
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._calendars = calendars
-        self._contacts = contacts
-        self._groups = groups
-        self._notifications = notifications
-        self._maybe_events = maybe_events
+        self._calendars = []
+        self._contacts = []
+        self._groups = []
+        self._notifications = []
+        self._maybe_events = []
+        self._isAuthenticated = False
+        self._isActive = True
+
+    # UserMixin required method - don't change name
+    def get_id(self):
+        try:
+            return unicode(self._id)
+        except AttributeError:
+            raise NotImplementedError('No `id` attribute - override `get_id`')
+
+    def is_authenticated(self):
+        return self._isAuthenticated
+
+    def setAuthenticated(self, isAuthenicated=True):
+        self._isAuthenticated = isAuthenticated
+
+    def is_active(self):
+        return self._isActive
 
     def getID(self):
         return self._id
@@ -41,7 +57,8 @@ class User():
         return self._calendars
 
     def addCalendars(self, newCalendar):
-        self._calendars.append(newCalendar)
+        if newCalendar not in self._calendars:
+            self._calendars.append(newCalendar)
 
     def getContacts(self):
         return self._contacts
@@ -78,15 +95,75 @@ class User():
     def declineInvite(self, notif):
         event = notif.getEvent()
         inviter = event.getUser()
-        new_notif = Notification(event, 'declined_invite', self, inviter)
-        inviter.addNotification(new_notif)
+        newNotif = Notification(event, 'declined_invite', self, inviter, '')
+        inviter.addNotification(newNotif)
         self.removeNotification(notif)
 
     def maybeInvite(self, notif, calendar):
         event = notif.getEvent()
         inviter = event.getUser()
-        new_notif = Notification(event, 'maybe_invite', self, inviter)
-        inviter.addNotification(new_notif)
+        newNotif = Notification(event, 'maybe_invite', self, inviter, '')
+        inviter.addNotification(newNotif)
         calendar.addEvent(event)
         self.addMaybeEvent(event)
         self.removeNotification(notif)
+
+    def calculateHoursCategory(self, category, week):
+        time = 0
+
+        for calendar in self._calendars:
+            time += calendar.calculateHoursCategory(category, week)
+        return time
+
+    def updateEvent(self, event, name, desc, startDateTime, endDateTime, calendar, category):
+        # save existing event details
+        oldName = event.getName()
+        oldDesc = event.getDescription()
+        oldStartDateTime = event.getStartDateTime()
+        oldEndDateTime = event.getEndDateTime()
+        oldCalendar = event.getCalendar()
+        oldCategory = event.getCategory()
+
+        event.editEvent(name, desc, startDateTime, endDateTime, calendar, category)
+
+        notifDesc = []
+
+        # check if updated event details are different to existing
+        if event.getName() != oldName:
+            notifDesc.append('name updated')
+        if event.getDescription() != oldDesc:
+            notifDesc.append('description updated')
+        if event.getStartDateTime() != oldStartDateTime:
+            notifDesc.append('start updated')
+        if event.getEndDateTime() != oldEndDateTime:
+            notifDesc.append('end updated')
+        if event.getCalendar() != oldCalendar:
+            notifDesc.append('calendar updated')
+        if event.getCategory() != oldCategory:
+            notifDesc.append('category updated')
+
+        # send notifications to invitees on updated details
+        for invitee in event.getInvitees():
+            newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
+            invitee.addNotification(newNotif)
+
+    # remove from all calendars
+    def deleteEvent(self, event):
+
+        for calendar in self._calendars:
+            calendar.deleteEvent(event)
+
+    #remove from one calendar
+    def deleteEventOneCalendar(self, event):
+        calendar = event.getCalendar()
+
+        if calendar is None:
+            return False
+
+        if calendar.deleteEvent(event):
+            return True
+        else:
+            return False
+
+    def removeNotification(self, notification):
+        self._notifications.remove(notification)
