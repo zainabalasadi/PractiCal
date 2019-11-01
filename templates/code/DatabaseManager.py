@@ -129,6 +129,43 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
+    def setUser(self, userID, newFName=None, newLName=None, newEmail=None,
+                newPassword=None) 
+        val = []
+        fields = []
+        if newFName:
+            fields.append("first_name = %s")
+            val.append(newFName)
+        if newLName:
+            fields.append("last_name = %s")
+            val.append(newLName)
+        if newEmail:
+            fields.append("email = %s")
+            val.append(newEmail)
+        if newPassword:
+            fields.append("password = %s")
+            val.append(newPassword)
+        sql = "UPDATE users SET {} WHERE uid = %s".format(", ".join(fields))
+        val.append(userID)
+        val = tuple(val)
+
+        try:
+            if len(val) == 1:
+                raise Exception("No new field values to update")
+
+            cursor = self._db.cursor()
+            cursor.execute(sql, val)
+            rowcount = cursor.rowcount
+            cursor.close()
+
+            if not rowcount:
+                raise Exception("Fields were not changed")
+            return 1
+        except Exception as e:
+            print(("Error encountered while trying to update record.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1 
+
     def setUserName(self, userID, newFName, newLName):
         cursor = self._db.cursor()
         sql = "UPDATE users SET first_name = %s, last_name = %s WHERE uid = %s"
@@ -180,7 +217,8 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def addEvent(self, userID, title, descr, category, startDT, endDT=None):
+    def addEvent(self, userID, title, descr, calendar, startDT,
+                 endDT=None):
         cursor = self._db.cursor()
 
         try:
@@ -191,7 +229,7 @@ class DatabaseManager():
                 raise ValueError("User does not exist")
 
             sql = ("INSERT INTO events (uid, title, descr, startdt, "
-                   "enddt, category) "
+                   "enddt, calendar) "
                    "VALUES (%s, %s, %s, %s, %s, %s)")
             val = (userID, title, descr, startDT, endDT, category)
             cursor.execute(sql, val)
@@ -207,10 +245,14 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def deleteEvent(self, eventID):
+    def deleteEvent(self, eventID, userID=None):
         cursor = self._db.cursor()
         sql = "DELETE FROM events WHERE eid = %s"
-        val = (eventID, )
+        val = [eventID]
+        if userID:
+            sql += ", uid = %s"
+            val.append(userID)
+        val = tuple(val)
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -259,7 +301,48 @@ class DatabaseManager():
             print(("Error encountered while trying to locate records.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
-            
+
+    def setEvent(self, eventID, newTitle=None, newDescr=None, newStartDT=None,
+                 newEndDT=None, newCalendar=None): 
+        val = []
+        fields = []
+        if newTitle:
+            fields.append("title = %s")
+            val.append(newTitle)
+        if newDescr:
+            fields.append("descr = %s")
+            val.append(newDescr)
+        if newStartDT:
+            fields.append("startdt = %s")
+            val.append(newStartDT)
+        if newEndDT:
+            fields.append("enddt = %s")
+            val.append(newEndDT)
+        if newCategory:
+            fields.append("calendar = %s")
+            val.append(newCategory)
+        sql = "UPDATE events SET {} WHERE eid = %s".format(", ".join(fields))
+        val.append(eventID)
+        val = tuple(val)
+
+        try:
+            if len(val) == 1:
+                raise Exception("No new field values to update")
+
+            cursor = self._db.cursor()
+            cursor.execute(sql, val)
+            rowcount = cursor.rowcount
+            cursor.close()
+
+            if not rowcount:
+                raise Exception("No fields were changed")
+            return 1
+
+        except Exception as e:
+            print(("Error encountered while trying to update records.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
     def setEventTitle(self, eventID, newTitle):
         cursor = self._db.cursor()
         sql = "UPDATE events SET title = %s WHERE eid = %s"
@@ -311,9 +394,9 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def setEventCategory(self, eventid, newCategory):
+    def setEventCalendar(self, eventid, newCategory):
         cursor = self._db.cursor()
-        sql = "UPDATE events SET category = %s WHERE eid = %s"
+        sql = "UPDATE events SET calendar = %s WHERE eid = %s"
         val = (newCategory, eventid)
         try:
             cursor.execute(sql, val)
@@ -361,11 +444,11 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def getInvites(self, eventID="", userID="", status="*")
+    def getInvitesByUser(self, userID)
         cursor = self._db.cursor()
-        sql = ("SELECT eid, uid, status FROM invites " 
-               "WHERE eid = %s, uid = %s, status = %s")
-        val = (eventID, userID, status)
+        sql = ("SELECT eid, uid, status, calendar FROM invites " 
+               "WHERE uid = %s")
+        val = (userID, )
         try:
             cursor.execute(sql, val)
             invites = cursor.fetchall()
@@ -392,6 +475,9 @@ class DatabaseManager():
             print(("Error encountered while inserting invite.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
+
+    def setInviteCalendar(self, eventID, userID, newCalendar):
+        cursor = 
         
 
 def arg_parser():
@@ -457,13 +543,15 @@ if __name__ == "__main__":
                     "descr TEXT, "
                     "startdt DATETIME NOT NULL, "
                     "enddt DATETIME, "
-                    "category VARCHAR(25), "
+                    "calendar VARCHAR(25), "
                     "PRIMARY KEY (eid), "
-                    "FOREIGN KEY (uid) REFERENCES users(uid))"))
+                    "FOREIGN KEY (uid) REFERENCES users(uid), "
+                    "FOREIGN KEY (oid) REFERENCES users(uid))"))
     cursor.execute(("CREATE TABLE invites ("
                     "eid int NOT NULL, "
                     "uid int NOT NULL, "
                     "status ENUM('UNKNOWN', 'GOING', 'MAYBE', 'NOT_GOING'), "
+                    "calendar VARCHAR(25), "
                     "FOREIGN KEY (eid) REFERENCES events(eid), "
                     "FOREIGN KEY (uid) REFERENCES users(uid))"))
     db.commit()
