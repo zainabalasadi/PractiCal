@@ -49,6 +49,21 @@ p {
 
 .App {
     text-align: center;
+    width: 80.1%;
+    /* display: flex !important; */
+}
+
+.draw {
+    width: 20%;
+    flex-shrink: 0;
+}
+
+.draw-paper {
+    width: 20%;
+}
+
+.cal-content {
+    flex-grow: 1;
 }
   
 .App-header {
@@ -64,6 +79,11 @@ p {
   
 .App-intro {
     font-size: large;
+}
+
+.nav {
+    border-bottom: 1px #DADCE0 solid;
+    background-color: #ffffff !important;
 }
   
 .calenderContainer {
