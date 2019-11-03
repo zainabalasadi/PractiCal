@@ -49,6 +49,9 @@ class Event():
     def getCategory(self):
         return self._category
 
+    def getGroups(self):
+        return self._groups
+
     def setUser(self, user):
         self._user = user
 

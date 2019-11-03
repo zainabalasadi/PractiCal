@@ -49,6 +49,10 @@ class User(UserMixin):
         if newCalendar not in self._calendars:
             self._calendars.append(newCalendar)
 
+    def removeCalendar(self, calendar):
+        if calendar in self.getCalendars():
+            self._calendars.remove(calendar)
+
     def getContacts(self):
         return self._contacts
 
@@ -153,11 +157,17 @@ class User(UserMixin):
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
 
+        #TODO
+        #update groups
+
     # remove from all calendars
     def deleteEvent(self, event):
 
         for calendar in self._calendars:
             calendar.deleteEvent(event)
+
+        # TODO
+        # update groups
 
     #remove from one calendar
     def deleteEventOneCalendar(self, event):

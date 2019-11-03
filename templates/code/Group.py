@@ -11,12 +11,16 @@ class Group():
     def addMember(self, member):
         if member not in self.getMembers():
             self._members.append(member)
-            #also add their invitations
+
+        #TODO
+        #send them notif of all events
 
     def removeMember(self, member):
         if member in self.getMembers():
             self._members.remove(member)
-            #also remove their invittations
+
+        #TODO
+        #also remove their invittations
 
     def getName(self):
         return self._name
@@ -30,12 +34,27 @@ class Group():
     def addEvent(self, event):
         if event not in self.getEvents():
             self._events.append(event)
-            #also invite everyone in group
+
+            for user in self.getMembers():
+                user.addNotification()
+
+        # TODO
+        #also invite everyone in group
 
     def removeEvent(self, event):
         if event in self.getEvents():
             self._events.remove(event)
-            #also remove everyone in group
+
+            for user in self.getMembers():
+                for calendar in user.getCalendars():
+                    if event in calendar.getEvents():
+                        calendar.deleteEvent(event)
+
+                for notif in user.getNotifications():
+                    if notif.getEvent() == event:
+                        user.removeNotification(notif)
+        #TODO
+        #also remove notifs/event in everyone in group
 
     def updateNotifications(self):
         return
