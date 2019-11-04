@@ -157,11 +157,17 @@ class User(UserMixin):
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
 
+        #TODO
+        #update groups
+
     # remove from all calendars
     def deleteEvent(self, event):
 
         for calendar in self._calendars:
             calendar.deleteEvent(event)
+
+        # TODO
+        # update groups
 
     #remove from one calendar
     def deleteEventOneCalendar(self, event):
