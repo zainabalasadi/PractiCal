@@ -184,3 +184,11 @@ class User(UserMixin):
     def removeNotification(self, notification):
         if notification in self._notifications:
             self._notifications.remove(notification)
+
+    def changeCalendarName(self, calendar, name):
+        if calendar in self.getCalendars():
+            calendar.setName(name)
+
+    def changeCalendarColour(self, calendar, colour):
+        if calendar in self.getCalendars():
+            calendar.setColour(colour)
