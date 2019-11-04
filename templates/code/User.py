@@ -175,6 +175,22 @@ class User(UserMixin):
         else:
             return False
 
-    def removeNotification(self, notification):
-        if notification in self._notifications:
-            self._notifications.remove(notification)
+    # search through own events by title
+    def searchEventsByTitle(self, title):
+        listOfEvents = []
+        for calendar in self._calendars:
+            for event in calendar.getEvents():
+                if event.getName().lower() in title.lower():
+                    listOfEvents.append(event)
+        return listOfEvents
+
+    # search through events by host
+    def searchEventsByHost(self, host):
+        listOfEvents = []
+        for calendar in self._calendars:
+            for event in calendar.getEvents():
+                user = event.getUser()
+                userName = user.getFirstName() + user.getLastName()
+                if userName.lower() in host.lower():
+                    listOfEvents.append(event)
+        return listOfEvents
