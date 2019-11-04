@@ -47,7 +47,12 @@ class User(UserMixin):
 
     def addCalendars(self, newCalendar):
         if newCalendar not in self._calendars:
+            for calendar in self._calendars:
+                if calendar.getName() == newCalendar.getName():
+                    return False
             self._calendars.append(newCalendar)
+            return True
+        return False
 
     def deleteCalendar(self, calendar):
         if calendar in self._calendars:
