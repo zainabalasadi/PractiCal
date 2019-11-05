@@ -6,7 +6,7 @@ from templates.code.Notification import Notification
 
 class Event():
 
-    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar, category):
+    def __init__(self, eventId, user, name, description, startDateTime, endDateTime):
         self._user = user
         self._name = name
         self._eventId = eventId
