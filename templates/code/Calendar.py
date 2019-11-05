@@ -54,7 +54,7 @@ class Calendar():
             return True
         return False
 
-    def calculateHoursCategory(self, category, week):
+    def calculateHoursCalendar(self, week):
         time = 0
 
         week = datetime.datetime(week.year, week.month, week.day, 0, 0)
@@ -65,6 +65,6 @@ class Calendar():
         weekend = week + datetime.timedelta(days=7)
 
         for event in self._events:
-            if event.getCategory() == category and event.getStartDateTime() > week and event.getEndDateTime() < weekend:
-                time += event.calculateHoursCategory()
+            if event.getStartDateTime() > week and event.getEndDateTime() < weekend:
+                time += (event.getEndDateTime() - event.getStartDateTime()) / 3600
         return time
