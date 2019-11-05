@@ -13,8 +13,6 @@ class Event():
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
-        self._calendar = calendar
-        self._category = category
         self._comments = []
         self._invitees = []
         self._groups = []
