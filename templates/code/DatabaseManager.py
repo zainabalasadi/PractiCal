@@ -1,11 +1,5 @@
 import mysql.connector
 import argparse
-from templates.code.Calendar import Calandar
-from templates.code.Comment import Comment
-from templates.code.Event import Event
-#from templates.code.Group import Group
-from templates.code.Notification import Notification
-from templates.code.User import User
 
 HOST = "localhost"
 USER = "admin"
@@ -20,7 +14,8 @@ class DatabaseManager():
                 host=host,
                 user=user,
                 passwd=password,
-                database=database
+                database=database,
+                auth_plugin='mysql_native_password'
             )
         except Exception as e:
             print(("Error loading database {} using provided credentials.\n"
@@ -81,7 +76,7 @@ class DatabaseManager():
 
     def checkEmailExists(self, email):
         cursor = self._db.cursor()
-        sql = "SELECT email FROM users WHERE email = %s"
+        sql = "SELECT uid FROM users WHERE email = %s"
         val = (email.lower(), )
         try:
             cursor.execute(sql, val)
@@ -89,7 +84,7 @@ class DatabaseManager():
             cursor.close()
             if not user:
                 return 0
-            return 1
+            return user[0]
         except Exception as e:
             print(("Error encountered while accessing database.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -112,10 +107,28 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
+    def searchUser(self, query):
+        cursor = self._db.cursor()
+        q = query.replace(' ', '%')
+        sql = ("SELECT first_name, last_name, email FROM users "
+               "WHERE CONCAT(first_name, ' ', last_name) LIKE CONCAT('%', %s, '%') "
+               "OR CONCAT(last_name, ' ', first_name) LIKE CONCAT('%', %s, '%') "
+               "OR email LIKE CONCAT('%', %s, '%')")
+        val = (q, q, q)
+        try:
+            cursor.execute(sql, q)
+            results = cursor.fetchall()
+            cursor.close()
+            return results
+        except Exception as e:
+            print(("Error encounterd while searching for users.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
     def getUser(self, email, password):
         cursor = self._db.cursor()
-        sql = ("SELECT uid, first_name, last_name FROM users"
-               "WHERE email = %s, password = %s")
+        sql = ("SELECT uid, first_name, last_name FROM users "
+               "WHERE email = %s AND password = %s")
         val = (email, password)
         try:
             cursor.execute(sql, val)
@@ -130,7 +143,7 @@ class DatabaseManager():
             return -1
 
     def setUser(self, userID, newFName=None, newLName=None, newEmail=None,
-                newPassword=None) 
+                newPassword=None): 
         val = []
         fields = []
         if newFName:
@@ -231,7 +244,7 @@ class DatabaseManager():
             sql = ("INSERT INTO events (uid, title, descr, startdt, "
                    "enddt, calendar) "
                    "VALUES (%s, %s, %s, %s, %s, %s)")
-            val = (userID, title, descr, startDT, endDT, category)
+            val = (userID, title, descr, startDT, endDT, calendar)
             cursor.execute(sql, val)
             self._db.commit()
             newID = cursor.lastrowid
@@ -269,7 +282,7 @@ class DatabaseManager():
 
     def getEvent(self, eventID):
         cursor = self._db.cursor()
-        sql = ("SELECT eid, uid, title, descr, startdt, enddt, category "
+        sql = ("SELECT eid, uid, title, descr, startdt, enddt, calendar "
                "FROM events WHERE eid = %s")
         val = (eventID, )
         try:
@@ -286,7 +299,7 @@ class DatabaseManager():
 
     def getUserEvents(self, userID):
         cursor = self._db.cursor()
-        sql = ("SELECT eid, uid, title, descr, startdt, enddt, category "
+        sql = ("SELECT eid, uid, title, descr, startdt, enddt, calendar "
                "FROM events WHERE uid = %s")
         val = (userID, )
         try:
@@ -318,9 +331,9 @@ class DatabaseManager():
         if newEndDT:
             fields.append("enddt = %s")
             val.append(newEndDT)
-        if newCategory:
+        if newCalendar:
             fields.append("calendar = %s")
-            val.append(newCategory)
+            val.append(newCalendar)
         sql = "UPDATE events SET {} WHERE eid = %s".format(", ".join(fields))
         val.append(eventID)
         val = tuple(val)
@@ -394,10 +407,10 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def setEventCalendar(self, eventid, newCategory):
+    def setEventCalendar(self, eventid, newCalendar):
         cursor = self._db.cursor()
         sql = "UPDATE events SET calendar = %s WHERE eid = %s"
-        val = (newCategory, eventid)
+        val = (newCalendar, eventid)
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -411,11 +424,13 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def addInvite(self, eventID, userID, status='UNKNOWN'):
+    def addInvite(self, eventID, receiverID, status, calendar='default'):
+        if self.getInvite(eventID, receiverID):
+            return 0
         cursor = self._db.cursor()
-        sql = ("INSERT INTO invites (eid, uid, status)"
-               "VALUES (%s, %s, %s)")
-        val = (eventID, userID, status)
+        sql = ("INSERT INTO invites (eid, receiver_id, status, calendar)"
+               "VALUES (%s, %s, %s, %s)")
+        val = (eventID, receiverID, status, calendar)
         try:
             cursor.execute(sql, val)
             rowcount = cursor.rowcount
@@ -427,58 +442,106 @@ class DatabaseManager():
             print(("Error encountered while inserting invite.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
-            
-    def deleteInvite(self, eventID, userID):
+
+    def deleteInvite(self, eventID, receiverID):
         cursor = self._db.cursor()
-        sql = "DELETE FROM invites WHERE eid = %s, uid = %s"
-        val = (eventID, userID)
+        sql = ("DELETE FROM invites WHERE eid = %s AND receiver_id = %s")
+        val = (eventID, receiverID)
         try:
             cursor.execute(sql, val)
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
-                raise Exception("No changes made")
+                raise Exception("Invite not deleted")
             return 1
         except Exception as e:
-            print(("Error encountered while updating invite.\n"
+            print(("Error encountered while deleting invite.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def getInvitesByUser(self, userID)
+    def getInvite(self, eventID, receiverID):
         cursor = self._db.cursor()
-        sql = ("SELECT eid, uid, status, calendar FROM invites " 
-               "WHERE uid = %s")
-        val = (userID, )
+        sql = ("SELECT eid, receiver_id, status, calendar "
+               "FROM invites WHERE eid = %s AND receiver_id = %s")
+        val = (eventID, receiverID)
+        try:
+            cursor.execute(sql, val)
+            invite = cursor.fetchone()
+            cursor.close()
+            return invite
+        except Exception as e:
+            print(("Error encountered while getting invite.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1 
+
+    def getInvites(self, receiverID):
+        cursor = self._db.cursor()
+        sql = ("SELECT eid, receiver_id, status, calendar "
+               "FROM invites WHERE receiver_id = %s")
+        val = (receiverID, )
+        try:
+            cursor.execute(sql, val)
+            invites = cursor.fetchall()
+            cursor.close()
+            return invites
+        except Exception as e:
+            print(("Error encountered while getting invites.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1 
+
+
+    def addNotification(self, eventID, senderID, receiverID, notifType):
+        if self.getNotification(eventID, senderID, receiverID, notifType):
+            return 0
+
+        cursor = self._db.cursor()
+        sql = ("INSERT INTO notifications "
+               "(eid, sender_id, receiver_id, notif_type)"
+               "VALUES (%s, %s, %s, %s)")
+        val = (eventID, senderID, receiverID, notifType)
+        try:
+            cursor.execute(sql, val)
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("Notification not added")
+            return 1
+        except Exception as e:
+            print(("Error encountered while inserting notification.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+            
+    def deleteNotification(self, eventID, senderID, receiverID, notifType):
+        cursor = self._db.cursor()
+        sql = ("DELETE FROM notifications WHERE eid = %s AND sender_id = %s AND "
+               "receiver_id = %s AND notif_type = %s")
+        val = (eventID, senderID, receiverID, notifType)
+        try:
+            cursor.execute(sql, val)
+            rowcount = cursor.rowcount
+            cursor.close()
+            if not rowcount:
+                raise Exception("Notification not deleted")
+            return 1
+        except Exception as e:
+            print(("Error encountered while deleting notification.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
+
+    def getNotifications(self, receiverID):
+        cursor = self._db.cursor()
+        sql = ("SELECT eid, sender_id, receiver_id, notif_type "
+               "FROM notifications WHERE receiver_id = %s")
+        val = (receiverID, )
         try:
             cursor.execute(sql, val)
             invites = cursor.fetchall()
             cursor.close()
             return invites            
         except Exception as e:
-            print(("Error encountered while getting invites.\n"
+            print(("Error encountered while getting notifications.\n"
                    "The following error was raised:\n\n{}".format(e)))
-            return -1
-        
-
-    def setInviteStatus(self, eventID, userID, newStatus):
-        cursor = self._db.cursor()
-        sql = "UPDATE invites SET status = %s WHERE eid = %s, uid = %s"
-        val = (newStatus, eventID, userID)
-        try:
-            cursor.execute(sql, val)
-            rowcount = cursor.rowcount
-            cursor.close()
-            if not rowcount:
-                raise Exception("Invite not added")
-            return 1
-        except Exception as e:
-            print(("Error encountered while inserting invite.\n"
-                   "The following error was raised:\n\n{}".format(e)))
-            return -1
-
-    def setInviteCalendar(self, eventID, userID, newCalendar):
-        cursor = 
-        
+            return -1 
 
 def arg_parser():
     parser = argparse.ArgumentParser(
@@ -505,13 +568,14 @@ if __name__ == "__main__":
     db = mysql.connector.connect(
         host=host,
         user=user,
-        passwd=password
+        passwd=password,
+        auth_plugin='mysql_native_password'
     )
 
     cursor = db.cursor()
     print("Checking databases...")
     cursor.execute("SHOW DATABASES")
-    if database in [x[0] for x in cursor]:
+    if database in [x[0].decode("utf-8") for x in cursor.fetchall()]:
         print(("Database already exists. Do you wish to reinitialise the "
                "{} database? (y/n)".format(database)))
         resp = input()
@@ -521,7 +585,7 @@ if __name__ == "__main__":
             cursor.execute("USE {}".format(database))
             print("Deleting data from database {}...".format(database))
             cursor.execute("SET foreign_key_checks = 0")
-            cursor.execute("DROP TABLE IF EXISTS users, events")
+            cursor.execute("DROP TABLE IF EXISTS users, events, invites")
             cursor.execute("SET foreign_key_checks = 1")
     else:
         print("Creating database {}...".format(database))
@@ -545,14 +609,34 @@ if __name__ == "__main__":
                     "enddt DATETIME, "
                     "calendar VARCHAR(25), "
                     "PRIMARY KEY (eid), "
-                    "FOREIGN KEY (uid) REFERENCES users(uid), "
-                    "FOREIGN KEY (oid) REFERENCES users(uid))"))
+                    "FOREIGN KEY (uid) REFERENCES users(uid))"))
     cursor.execute(("CREATE TABLE invites ("
                     "eid int NOT NULL, "
-                    "uid int NOT NULL, "
-                    "status ENUM('UNKNOWN', 'GOING', 'MAYBE', 'NOT_GOING'), "
+                    "receiver_id int NOT_NULL, "
+                    "status int NOT NULL, "
                     "calendar VARCHAR(25), "
                     "FOREIGN KEY (eid) REFERENCES events(eid), "
-                    "FOREIGN KEY (uid) REFERENCES users(uid))"))
+                    "FOREIGN KEY (receiver_id) REFERENCES users(uid))"
+    cursor.execute(("CREATE TABLE notifications ("
+                    "eid int NOT NULL, "
+                    "sender_id int NOT NULL, "
+                    "receiver_id int NOT NULL, "
+                    "notif_type int NOT NULL, "
+                    "FOREIGN KEY (eid) REFERENCES events(eid), "
+                    "FOREIGN KEY (sender_id) REFERENCES users(uid), "
+                    "FOREIGN KEY (receiver_id) REFERENCES users(uid))"))
+    print("Database initialised.")
+
+    print("Would you like to load in test data? (y/n)")
+    resp = input()
+    if resp.lower()[0] == "y":
+        cursor.execute(("INSERT INTO users "
+                        "(first_name, last_name, email, password)"
+                        "VALUES "
+                        "('egene', 'oletu', 'egene.o@email.com', 'password'), "
+                        "('zainab', 'alasadi', 'zainab.a@email.com', 'password'), "
+                        "('morgan', 'green', 'morgan.g@email.com', 'password'), "
+                        "('derrick', 'foo', 'derrick.f@email.com', 'password'), "
+                        "('michael', 'ho', 'michael.h@email.com', 'password')"))
     db.commit()
     cursor.close()
