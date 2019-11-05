@@ -5,6 +5,7 @@ import moment from "moment";
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Navbar from './Navbar'
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
 
 // Initialise time localiser
@@ -80,9 +81,11 @@ class Cal extends Component {
             desc: "",
             openSlot: false,
             openEvent: false,
-            clickedEvent: {}
+            clickedEvent: {},
+            search: ""
         };
         this.handleClose = this.handleClose.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
     };
 
     handleClose() {
@@ -164,141 +167,141 @@ class Cal extends Component {
         this.setState({ events: updatedEvents });
     }
 
+    // handle search bar
+    handleSearch(event) {
+      const {name, value} = event.target
+      this.setState({ [name]: value})
+      console.log(this.state.search)
+    }
+
     render() {
         return (
-			<div className="">
-				<AppBar position="fixed" elevation={0} className="nav" style = {{ width: "100%", zIndex: '1400' }}>
-        			<Toolbar>
-          				<Typography noWrap>
-            				Navbar here
-          				</Typography>
-        			</Toolbar>
-      			</AppBar>
+          <div className="">
+            <Navbar />
+            <main className="cal-content">
+              <div className="App" style = {{ position: "relative" }}>
+                <Calendar
+                  selectable
+                  popup
+                  localizer = {localizer}
+                  defaultDate = {new Date()}
+                  defaultView = "month"
+                  events = {this.state.events}
+                  onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
+                  onSelectEvent = {event => this.handleEventSelected(event)}
+                  style = {{ height: "85vh" }}
+                />
 
-				<main className="cal-content">
-					<div className="App">
-						<Calendar
-							selectable
-							popup
-							localizer = {localizer}
-							defaultDate = {new Date()}
-							defaultView = "month"
-							events = {this.state.events}
-							onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
-							onSelectEvent = {event => this.handleEventSelected(event)}
-							style = {{ height: "85vh" }}
-						/>
+                {/* Modal for booking new appointment */}
+                <Dialog open={this.state.openSlot} onClose={this.handleClose}>
+                  <DialogContent>
+                    <TextField
+                    label="Title"
+                    onChange={e => {
+                      this.setTitle(e.target.value);
+                    }}
+                    />
+                    <br />
+                    <TextField
+                    label="Description"
+                    onChange={e => {
+                      this.setDescription(e.target.value);
+                    }}
+                    />
+                    <TextField
+                    type="datetime-local"
+                    value={this.state.start}
+                    onChange={this.handleStartTime}
+                    />
+                    <TextField
+                    type="datetime-local"
+                    value={this.state.end}
+                    onChange={this.handleEndTime}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button 
+                    label="Cancel" 
+                    color="primary"
+                    onClick={this.handleClose} 
+                    >
+                    Cancel
+                    </Button>
+                    <Button
+                    label="Submit"
+                    variant="contained" 
+                    color="primary"
+                    onClick={() => {
+                      this.setNewAppointment(), this.handleClose();
+                    }}
+                    >
+                    Submit
+                    </Button>
+                  </DialogActions>
+                </Dialog>
 
-						{/* Modal for booking new appointment */}
-						<Dialog open={this.state.openSlot} onClose={this.handleClose}>
-							<DialogContent>
-								<TextField
-								label="Title"
-								onChange={e => {
-									this.setTitle(e.target.value);
-								}}
-								/>
-								<br />
-								<TextField
-								label="Description"
-								onChange={e => {
-									this.setDescription(e.target.value);
-								}}
-								/>
-								<TextField
-								type="datetime-local"
-								value={this.state.start}
-								onChange={this.handleStartTime}
-								/>
-								<TextField
-								type="datetime-local"
-								value={this.state.end}
-								onChange={this.handleEndTime}
-								/>
-							</DialogContent>
-							<DialogActions>
-								<Button 
-								label="Cancel" 
-								color="primary"
-								onClick={this.handleClose} 
-								>
-								Cancel
-								</Button>
-								<Button
-								label="Submit"
-								variant="contained" 
-								color="primary"
-								onClick={() => {
-									this.setNewAppointment(), this.handleClose();
-								}}
-								>
-								Submit
-								</Button>
-							</DialogActions>
-						</Dialog>
-
-						{/* Material-ui Modal for Existing Event */}
-						<Dialog open={this.state.openEvent} onClose={this.handleClose}>
-							<DialogContent>
-								<TextField
-								defaultValue={this.state.title}
-								label="Title"
-								onChange={e => {
-									this.setTitle(e.target.value);
-								}}
-								/>
-								<br />
-								<TextField
-								label="Description"
-								multiline={true}
-								defaultValue={this.state.desc}
-								onChange={e => {
-									this.setDescription(e.target.value);
-								}}
-								/>
-								<TextField
-								type="datetime-local"
-								defaultValue={this.state.start}
-								onChange={this.handleStartTime}
-								/>
-								<TextField
-								type="datetime-local"
-								defaultValue={this.state.end}
-								onChange={this.handleEndTime}
-								/>
-							</DialogContent>
-							<DialogActions>
-								<Button 
-								label="Cancel" 
-								color="primary"
-								onClick={this.handleClose} 
-								>
-								Cancel
-								</Button>
-								<Button
-								label="Delete"
-								variant="contained" 
-								color="primary"
-								onClick={() => {
-									this.deleteEvent(), this.handleClose();
-								}}
-								>
-								Delete
-								</Button>
-								<Button
-								label="Submit"
-								variant="contained" 
-								color="primary"
-								onClick={() => {
-									this.updateEvent(), this.handleClose();
-								}}
-								>
-								Submit
-								</Button>
-							</DialogActions>
-						</Dialog>
-					</div>
-				</main>
+                {/* Material-ui Modal for Existing Event */}
+                <Dialog open={this.state.openEvent} onClose={this.handleClose}>
+                  <DialogContent>
+                    <TextField
+                    defaultValue={this.state.title}
+                    label="Title"
+                    onChange={e => {
+                      this.setTitle(e.target.value);
+                    }}
+                    />
+                    <br />
+                    <TextField
+                    label="Description"
+                    multiline={true}
+                    defaultValue={this.state.desc}
+                    onChange={e => {
+                      this.setDescription(e.target.value);
+                    }}
+                    />
+                    <TextField
+                    type="datetime-local"
+                    defaultValue={this.state.start}
+                    onChange={this.handleStartTime}
+                    />
+                    <TextField
+                    type="datetime-local"
+                    defaultValue={this.state.end}
+                    onChange={this.handleEndTime}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button 
+                    label="Cancel" 
+                    color="primary"
+                    onClick={this.handleClose} 
+                    >
+                    Cancel
+                    </Button>
+                    <Button
+                    label="Delete"
+                    variant="contained" 
+                    color="primary"
+                    onClick={() => {
+                      this.deleteEvent(), this.handleClose();
+                    }}
+                    >
+                    Delete
+                    </Button>
+                    <Button
+                    label="Submit"
+                    variant="contained" 
+                    color="primary"
+                    onClick={() => {
+                      this.updateEvent(), this.handleClose();
+                    }}
+                    >
+                    Submit
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </div>
+            </main>
 
 				<Drawer
 				className="draw"
