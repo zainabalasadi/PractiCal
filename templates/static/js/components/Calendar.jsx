@@ -80,9 +80,11 @@ class Cal extends Component {
             desc: "",
             openSlot: false,
             openEvent: false,
-            clickedEvent: {}
+            clickedEvent: {},
+            search: ""
         };
         this.handleClose = this.handleClose.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
     };
 
     handleClose() {
@@ -164,19 +166,36 @@ class Cal extends Component {
         this.setState({ events: updatedEvents });
     }
 
+    // handle search bar
+    handleSearch(event) {
+      const {name, value} = event.target
+      this.setState({ [name]: value})
+      console.log(this.state.search)
+    }
+
     render() {
         return (
 			<div className="">
-				<AppBar position="fixed" elevation={0} className="nav" style = {{ width: "100%", zIndex: '1400' }}>
+				<AppBar position="absolute" elevation={0} className="nav" style = {{ width: "100%", zIndex: '1400' }}>
         			<Toolbar>
+                  <TextField
+                    id="outlined-search"
+                    label="Search field"
+                    type="search"
+                    margin="normal"
+                    variant="outlined"
+                    name="search"
+                    value={this.state.search}
+                    onChange={this.handleSearch}
+                  />
           				<Typography noWrap>
             				Navbar here
           				</Typography>
         			</Toolbar>
-      			</AppBar>
+        </AppBar>
 
 				<main className="cal-content">
-					<div className="App">
+					<div className="App" style = {{ position: "relative" }}>
 						<Calendar
 							selectable
 							popup
@@ -186,7 +205,7 @@ class Cal extends Component {
 							events = {this.state.events}
 							onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
 							onSelectEvent = {event => this.handleEventSelected(event)}
-							style = {{ height: "85vh" }}
+              style = {{ height: "85vh" }}
 						/>
 
 						{/* Modal for booking new appointment */}
