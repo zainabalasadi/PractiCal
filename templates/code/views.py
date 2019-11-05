@@ -9,6 +9,7 @@ from templates.code.User import User
 index_blueprint = Blueprint('index', __name__)
 
 PCM = PractiCalManager()
+eventId=1
 
 @index_blueprint.route('/', methods=['GET', 'POST'])
 @index_blueprint.route('/index', methods=['GET', 'POST'])
@@ -44,6 +45,22 @@ def forgot():
 		return redirect(url_for('index.index'))
 
 	return render_template('/forgot.html')
+
+@index_blueprint.route('/createEvent', methods=['POST'])
+def createEvent():
+	if request.method == 'POST':
+		userId = current_user.getID
+		name = request.form.get('eventName')
+		desc = request.form.get('description')
+		startDate = request.form.get('startDate')
+		endDate = request.form.get('endDate')
+		cal = current_user.getCalendarByName
+		if (cal != None):
+			eventId = eventId+1
+			cal.addEvent(Event(eventId, currentUser, name, desc, startDate, endDate))
+			return jsonify({"success":"True"})
+		
+		return return jsonify({"success":"False"})
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
