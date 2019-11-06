@@ -70,7 +70,8 @@ def editEvent():
 			desc = request.form.get('description')
 			startDate = request.form.get('startDate')
 			endDate = request.form.get('endDate')
-			if (current_user.updateEvent(event, name, desc, startDate, endDate) == True):
+			newCalendar = request.form.get('calendar'))
+			if (current_user.updateEvent(event, name, desc, startDate, endDate, newCalendar) == True):
 				return jsonify({"success":"True"})
 		
 		return return jsonify({"success":"False"})
