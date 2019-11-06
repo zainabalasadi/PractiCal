@@ -86,11 +86,6 @@ class Event():
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
 
-    # Returns true if invitee exists in event and is successfully removed
-    def removeInvitee(self, invitee):
-        if invitee in self._invitees:
-            self._invitees.remove(inivitee)
-
     def addGroup(self, group):
         self._groups.append(group)
 
@@ -102,6 +97,27 @@ class Event():
         except:
             return False
 
+    # Edits an event
+    # Returns true if editing is successful, false if not
+    def editEvent(self, name, desc, startDateTime, endDateTime, calendar, category):
+        # Update event details
+
+        if startDateTime > endDateTime:
+            return False
+
+        self.setName(name)
+        self.setDescription(desc)
+        self.setStartDateTime(startDateTime)
+        self.setEndDateTime(endDateTime)
+        self.setCategory(category)
+
+        if self.getCalendar() != calendar:
+            self.getCalendar().deleteEvent(self)
+            calendar.addEvent(self)
+        self.setCalendar(calendar)
+
+        return True
+
     def removeComment(self, comment):
         for comments in self._comments:
             # if the comment matches, and its the same poster, remove it
@@ -109,3 +125,7 @@ class Event():
                 self._comments.remove(comments)
             #recursion
             comments.deleteComment(comment)
+
+    def calculateHoursCategory(self):
+        dateTimeDifference = self.getEndDateTime() - self.getStartDateTime()
+        return dateTimeDifference.total_seconds() / 3600
