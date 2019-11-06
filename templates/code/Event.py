@@ -1,32 +1,35 @@
 import datetime
-
-from templates.code.Comment import Comment
-from templates.code.Notification import Notification
-
+from Comment import Comment
+from Notification import Notification
 
 class Event():
+    INVITESTATUS_NONE = 0
+    INVITESTATUS_GOING = 1
+    INVITESTATUS_MAYBE = 2
+    INVITESTATUS_DECLINED = 3
 
-    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, calendar, category):
-        self._user = user
-        self._name = name
-        self._eventId = eventId
+    def __init__(self, eventID, userID, title, description, startDateTime, 
+            endDateTime, category, location):
+        self._eventID = eventID
+        self._userID = userID
+        self._title = title
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
-        self._calendar = calendar
         self._category = category
+        self._location = location
         self._comments = []
         self._invitees = []
         self._groups = []
 
-    def getUser(self):
-        return self._user
+    def getUserID(self):
+        return self._userID
 
-    def getName(self):
-        return self._name
+    def getTitle(self):
+        return self._title
 
     def getID(self):
-        return self._eventId
+        return self._eventID
 
     def getComments(self):
         return self._comments
@@ -40,14 +43,14 @@ class Event():
     def getEndDateTime(self):
         return self._endDateTime
 
-    def getInvitees(self):
-        return self._invitees
-
-    def getCalendar(self):
-        return self._calendar
-
     def getCategory(self):
         return self._category
+
+    def getLocation(self):
+        return self._location
+
+    def getInvitees(self):
+        return self._invitees
 
     def getGroups(self):
         return self._groups
@@ -65,13 +68,18 @@ class Event():
         self._description = description
 
     def setStartDateTime(self, startDateTime):
-        self._startDateTime = startDateTime
+        if startDateTime < self._endDataeTime:
+            self._startDateTime = startDateTime
 
     def setEndDateTime(self, endDateTime):
-        self._endDateTime = endDateTime
+        if endDateTime > self._startDateTime:
+            self._endDateTime = endDateTime
 
-    def setCalendar(self, calendar):
-        self._calendar = calendar
+    def setCategory(self, category):
+        self._category = category
+
+    def setLocation(self, location):
+        self._location = location
 
     def setCategory(self, category):
         self._category = category
@@ -81,30 +89,6 @@ class Event():
 
     def addInvitee(self, invitee):
         self._invitees.append(invitee)
-        notif = Notification(self, 'invite', self.getUser(), invitee, '')
-        inviteeNotifs = invitee.getNotifications()
-        inviteeNotifs.append(notif)
-
-    # Returns true if invitee exists in event and is successfully removed
-    def removeInvitee(self, invitee):
-        #TODO
-
-        # if the invitee hasn't accepted, remove the invite notif
-        for notif in invitee.getNotifications():
-            if notif.getEvent() == self and notif.getNotifType() == 'invite':
-                invitee.removeNotification(notif)
-
-        # if the invitee has accepted already, remove event from their calendars
-        for calendar in invitee.getCalendars():
-            for event in calendar.getEvents():
-                if event == self:
-                    calendar.deleteEvent(event)
-
-        try:
-            self._invitees.remove(invitee)
-            return True
-        except:
-            return False
 
     def addGroup(self, group):
         self._groups.append(group)

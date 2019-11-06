@@ -1,10 +1,11 @@
 # Implementation of User class
-# Completed by Zainab Alasadi
+# Started by Zainab Alasadi
 # Started 13/10/19
+# Edited by Egene Oletu
+# Last modified 06/11/19
+
 from flask_login import UserMixin
-
-from templates.code.Notification import Notification
-
+from Notification import Notification
 
 class User(UserMixin):
     def __init__(self, userID, firstName, lastName, email, password):
@@ -17,15 +18,36 @@ class User(UserMixin):
         self._contacts = []
         self._groups = []
         self._notifications = []
-        self._maybe_events = []
+        self._maybeEvents = []
+        self._invites = []
+        self._isAuthenticated = False
+        self._isActive = True
 
-    # UserMixin required method - don't change name
+    #
+    # Flask login functions
+    #
     def get_id(self):
         try:
-            return self._id
+            return unicode(self._id)
         except AttributeError:
             raise NotImplementedError('No `id` attribute - override `get_id`')
 
+    def is_authenticated(self):
+        return self._isAuthenticated
+
+    def setAuthenticated(self, isAuthenticated=True):
+        self._isAuthenticated = isAuthenticated
+
+    def is_active(self):
+        return self._isActive
+    
+    # Validate if provided password matches user password
+    def validate(self, password):
+        return self._password == password
+
+    #
+    # Getters
+    #
     def getID(self):
         return self._id
 
@@ -35,16 +57,30 @@ class User(UserMixin):
     def getLastName(self):
         return self._lastName
 
-    # Validate if provided password matches user password
-    def validate(self, password):
-        return self._password == password
-
     def getEmail(self):
         return self._email
 
     def getCalendars(self):
         return self._calendars
 
+    def getContacts(self):
+        return self._contacts
+
+    def getGroups(self):
+        return self._groups
+
+    def getNotifications(self):
+        return self._notifications
+
+    def getMaybeEvents(self):
+        return self._maybe_events
+
+    def getInvites(self):
+        return self._invites
+
+    #
+    # Adders
+    #
     def addCalendars(self, newCalendar):
         if newCalendar not in self._calendars:
             for calendar in self._calendars:
@@ -53,13 +89,6 @@ class User(UserMixin):
             self._calendars.append(newCalendar)
             return True
         return False
-
-    def deleteCalendar(self, calendar):
-        if calendar in self._calendars:
-            self._calendars.remove(calendar)
-
-    def getContacts(self):
-        return self._contacts
 
     def addContact(self, contact):
         if contact not in self._contacts:
@@ -75,60 +104,32 @@ class User(UserMixin):
                 #return True
         return False
 
-    def removeContact(self, contact):
-        if contact in self._contacts:
-            self._contacts.remove(contact)
-
-    def getGroups(self):
-        return self._groups
-
     def addGroup(self, group):
         if group not in self._groups:
             self._groups.append(group)
-
-    def getNotifications(self):
-        return self._notifications
 
     def addNotification(self, notif):
         if notif not in self._notifications:
             self._notifications.append(notif)
 
-    def removeNotification(self, notif):
-        if notif in self.getNotifications():
-            self._notifications.remove(notif)
-
-    def getMaybeEvents(self):
-        return self._maybe_events
-
     def addMaybeEvent(self, event):
-        self._maybe_events.append(event)
+        if event not in self._maybeEvents:
+            self._maybeEvents.append(event)
 
-    def acceptInvite(self, notif, calendar):
-        calendar.addEvent(notif.getEvent())
-        self.removeNotification(notif)
+    def addInvite(self, event):
+        if event not in self._invites:
+            self._invites.append(event)
 
-    def declineInvite(self, notif):
-        event = notif.getEvent()
-        inviter = event.getUser()
-        newNotif = Notification(event, 'declined_invite', self, inviter, '')
-        inviter.addNotification(newNotif)
-        self.removeNotification(notif)
+    #
+    # Setters
+    #
+    def changeCalendarName(self, calendar, name):
+        if calendar in self.getCalendars():
+            calendar.setName(name)
 
-    def maybeInvite(self, notif, calendar):
-        event = notif.getEvent()
-        inviter = event.getUser()
-        newNotif = Notification(event, 'maybe_invite', self, inviter, '')
-        inviter.addNotification(newNotif)
-        calendar.addEvent(event)
-        self.addMaybeEvent(event)
-        self.removeNotification(notif)
-
-    def calculateHoursCategory(self, category, week):
-        time = 0
-
-        for calendar in self._calendars:
-            time += calendar.calculateHoursCategory(category, week)
-        return time
+    def changeCalendarColour(self, calendar, colour):
+        if calendar in self.getCalendars():
+            calendar.setColour(colour)
 
     def updateEvent(self, event, name, desc, startDateTime, endDateTime, calendar, category):
         # save existing event details
@@ -165,6 +166,21 @@ class User(UserMixin):
         #TODO
         #update groups
 
+    #
+    # Removers
+    #
+    def deleteCalendar(self, calendar):
+        if calendar in self._calendars:
+            self._calendars.remove(calendar)
+
+    def removeNotification(self, notif):
+        if notif in self.getNotifications():
+            self._notifications.remove(notif)
+
+    def removeContact(self, contact):
+        if contact in self._contacts:
+            self._contacts.remove(contact)
+
     # remove from all calendars
     def deleteEvent(self, event):
 
@@ -186,17 +202,50 @@ class User(UserMixin):
         else:
             return False
 
-    def removeNotification(self, notification):
-        if notification in self._notifications:
-            self._notifications.remove(notification)
+    #
+    # Invite response methods
+    #
+    def acceptInvite(self, event, calendar):
+        # Check user invited to event
+        if not self._email in event.getInvitee(): return
+        # Check calendar belongs to user
+        if not calendar in self._calendars: return
 
-    def changeCalendarName(self, calendar, name):
-        if calendar in self.getCalendars():
-            calendar.setName(name)
+        # If event in invites or maybe events, remove it, else exit
+        if event in self._invites:
+            self._invites.remove(event)
+        elif event in self._maybeEvents:
+            self._maybeEvents.remove(event)
+        else:
+            return
 
-    def changeCalendarColour(self, calendar, colour):
-        if calendar in self.getCalendars():
-            calendar.setColour(colour)
+        # Add event to calendar
+        calendar.addEvent(event)
+
+    def declineInvite(self, event):
+        # Check user invited to event
+        if not self._email in event.getInvitee(): return
+        
+        # If event in invites or maybe events, remove it, else exit
+        if event in self._invites:
+            self._invites.remove(event)
+        elif event in self._maybeEvents:
+            self._maybeEvents.remove(event)
+        
+    def maybeInvite(self, event):
+        # Check user invited to event
+        if not self._email in event.getInvitee(): return
+ 
+        # If event in invites, remove it
+        if event in self._invites:
+            self._invites.remove(event)
+
+        self.addMaybeEvent(event)
+
+    #
+    # Search
+    #
+
     # search through own events by title
     def searchEventsByTitle(self, title):
         listOfEvents = []
@@ -216,3 +265,13 @@ class User(UserMixin):
                 if userName.lower() in host.lower():
                     listOfEvents.append(event)
         return listOfEvents
+
+    #
+    # Other
+    #
+    def calculateHoursCategory(self, category, week):
+        time = 0
+
+        for calendar in self._calendars:
+            time += calendar.calculateHoursCategory(category, week)
+        return time

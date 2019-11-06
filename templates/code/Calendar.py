@@ -3,8 +3,7 @@
 # Started 13/10/19
 import datetime
 
-from templates.code.Notification import Notification
-
+from Notification import Notification
 
 class Calendar():
     def __init__(self, name, colour, user):
@@ -69,6 +68,7 @@ class Calendar():
 
         return False
 
+
     def calculateHoursCategory(self, category, week):
         time = 0
 
@@ -80,6 +80,8 @@ class Calendar():
         weekend = week + datetime.timedelta(days=7)
 
         for event in self._events:
-            if event.getCategory() == category and event.getStartDateTime() > week and event.getEndDateTime() < weekend:
+            if event.getCategory() == category and \
+                    event.getStartDateTime() > week and \
+                    event.getEndDateTime() < weekend:
                 time += event.calculateHoursCategory()
         return time
