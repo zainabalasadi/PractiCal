@@ -19,3 +19,25 @@ implemented flask_login to authenticate users and keep them in session.
 In total, there is a login page, a register page, a forgot password page
 and a calendar page for when users are logged in. I also made minor styling
 edits.
+---------------------------------------------------------------------------
+
+Sprint 3: 23/10 - 29/10
+- Completed "Respond to event invitations" user story with Derrick. In
+particular, I created the functionality to send the appropriate 
+notifications when users  accept, decline and maybe event invitations.
+
+- Completed "Notifications of event updates" user story with Derrick. This
+included refactoring the notifications class to be able to hold different
+types of notifications (not just invites).
+
+---------------------------------------------------------------------------
+
+Sprint 4: 30/10 - 5/11
+- Started on the "Search for events in calendar" user story. Created the 
+the search methods for searching by title and searching by host.
+
+- Added several front end components. The navbar at the top was added
+using material-ui components. The navbar includes the 'PractiCal' name,
+a search bar, notifications icon and an account/profile icon. As this is
+my first time using react I struggled a bit with this task and some loose
+ends still need to be fixed.
