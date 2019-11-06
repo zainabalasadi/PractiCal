@@ -167,7 +167,14 @@ class PractiCalManager():
 
     # Add a new event to manager and database. Returns new event object
     def addEvent(self, userID, title, description, startDateTime, endDateTime):
-        eventID = self._db.addEvent(userID, title, description, 
+        eventID = self._db.addEvent(userID, title, description, startDateTime,
+            endDateTime)
+        if eventID == -1: return None
+
+        event = Event(eventID, userID, title, description, startDateTime,
+            endDateTime)
+        self._events[eventID] = event
+        return event    
 
     # Sends event invites to list of users if event exists in manager
     def sendInvite(self, eventID, senderID, receiverEmails)
