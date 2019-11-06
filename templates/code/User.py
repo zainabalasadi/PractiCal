@@ -136,14 +136,17 @@ class User(UserMixin):
             time += calendar.calculateHoursCategory(category, week)
         return time
 
-    def updateEvent(self, event, name, desc, startDateTime, endDateTime):
+    def updateEvent(self, event, name, desc, startDateTime, endDateTime, calendar):
         # save existing event details
         oldName = event.getName()
         oldDesc = event.getDescription()
         oldStartDateTime = event.getStartDateTime()
         oldEndDateTime = event.getEndDateTime()
-
-
+        
+        for (i in self._calendars):
+            if (i.getName() == calendar):
+                if (event not in calendar.getEvent):
+                    #Todo
         if (event.editEvent(name, desc, startDateTime, endDateTime) == False):
             return False
 
