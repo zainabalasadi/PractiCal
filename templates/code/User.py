@@ -2,11 +2,11 @@
 # Started by Zainab Alasadi
 # Started 13/10/19
 # Edited by Egene Oletu
-# Last modified 04/11/19
+# Last modified 06/11/19
 
 from flask_login import UserMixin
 
-from templates.code.Notification import Notification
+from Notification import Notification
 
 
 class User(UserMixin):
@@ -20,7 +20,7 @@ class User(UserMixin):
         self._contacts = []
         self._groups = []
         self._notifications = []
-        self._maybe_events = []
+        self._maybeEvents = []
         self._invites = []
         self._isAuthenticated = False
         self._isActive = True
@@ -35,7 +35,7 @@ class User(UserMixin):
     def is_authenticated(self):
         return self._isAuthenticated
 
-    def setAuthenticated(self, isAuthenicated=True):
+    def setAuthenticated(self, isAuthenticated=True):
         self._isAuthenticated = isAuthenticated
 
     def is_active(self):
@@ -60,7 +60,7 @@ class User(UserMixin):
     def getCalendars(self):
         return self._calendars
 
-    def addCalendars(self, newCalendar):
+    def addCalendar(self, newCalendar):
         if newCalendar not in self._calendars:
             self._calendars.append(newCalendar)
 
@@ -90,7 +90,7 @@ class User(UserMixin):
         return self._maybe_events
 
     def addMaybeEvent(self, event):
-        self._maybe_events.append(event)
+        self._maybeEvents.append(event)
 
     def getInvites(self):
         return self._invites
@@ -98,25 +98,39 @@ class User(UserMixin):
     def addInvite(self, event):
         self._invites.append(event)
 
-    def acceptInvite(self, notif, calendar):
-        calendar.addEvent(notif.getEvent())
-        self.removeNotification(notif)
+    def acceptInvite(self, event, calendar):
+        # Check user invited to event
+        if not self._email in event.getInvitee(): return
+        # Check calendar belongs to user
+        if not calendar in self._calendars: return
 
-    def declineInvite(self, notif):
-        event = notif.getEvent()
-        inviter = event.getUser()
-        newNotif = Notification(event, 'declined_invite', self, inviter, '')
-        inviter.addNotification(newNotif)
-        self.removeNotification(notif)
+        # If event in invites or maybe events, remove it, else exit
+        if event in self._invites:
+            self._invites.remove(event)
+        elif event in self._maybeEvents:
+            self._maybeEvents.remove(event)
+        else:
+            return
 
-    def maybeInvite(self, notif, calendar):
-        event = notif.getEvent()
-        inviter = event.getUser()
-        newNotif = Notification(event, 'maybe_invite', self, inviter, '')
-        inviter.addNotification(newNotif)
+        # Add event to calendar
         calendar.addEvent(event)
-        self.addMaybeEvent(event)
-        self.removeNotification(notif)
 
-    def removeNotification(self, notification):
-        self._notifications.remove(notification)
+    def declineInvite(self, event):
+        # Check user invited to event
+        if not self._email in event.getInvitee(): return
+        
+        # If event in invites or maybe events, remove it, else exit
+        if event in self._invites:
+            self._invites.remove(event)
+        elif event in self._maybeEvents:
+            self._maybeEvents.remove(event)
+        
+    def maybeInvite(self, event):
+        # Check user invited to event
+        if not self._email in event.getInvitee(): return
+ 
+        # If event in invites, remove it
+        if event in self._invites:
+            self._invites.remove(event)
+
+        self.addMaybeEvent(event)
