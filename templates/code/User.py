@@ -47,7 +47,12 @@ class User(UserMixin):
 
     def addCalendars(self, newCalendar):
         if newCalendar not in self._calendars:
+            for calendar in self._calendars:
+                if calendar.getName() == newCalendar.getName():
+                    return False
             self._calendars.append(newCalendar)
+            return True
+        return False
 
     def deleteCalendar(self, calendar):
         if calendar in self._calendars:
@@ -157,11 +162,17 @@ class User(UserMixin):
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
 
+        #TODO
+        #update groups
+
     # remove from all calendars
     def deleteEvent(self, event):
 
         for calendar in self._calendars:
             calendar.deleteEvent(event)
+
+        # TODO
+        # update groups
 
     #remove from one calendar
     def deleteEventOneCalendar(self, event):
@@ -178,3 +189,30 @@ class User(UserMixin):
     def removeNotification(self, notification):
         if notification in self._notifications:
             self._notifications.remove(notification)
+
+    def changeCalendarName(self, calendar, name):
+        if calendar in self.getCalendars():
+            calendar.setName(name)
+
+    def changeCalendarColour(self, calendar, colour):
+        if calendar in self.getCalendars():
+            calendar.setColour(colour)
+    # search through own events by title
+    def searchEventsByTitle(self, title):
+        listOfEvents = []
+        for calendar in self._calendars:
+            for event in calendar.getEvents():
+                if event.getName().lower() in title.lower():
+                    listOfEvents.append(event)
+        return listOfEvents
+
+    # search through events by host
+    def searchEventsByHost(self, host):
+        listOfEvents = []
+        for calendar in self._calendars:
+            for event in calendar.getEvents():
+                user = event.getUser()
+                userName = user.getFirstName() + user.getLastName()
+                if userName.lower() in host.lower():
+                    listOfEvents.append(event)
+        return listOfEvents

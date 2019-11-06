@@ -16,8 +16,14 @@ class Calendar():
     def getName(self):
         return self._name
 
+    def setName(self, name):
+        self._name = name
+
     def getColour(self):
         return str(self._colour)
+
+    def setColour(self, colour):
+        self._colour = colour
 
     def getEvents(self):
         return self._events
@@ -33,8 +39,10 @@ class Calendar():
     # Removes a given event from a user's calendar
     # Returns true if removal is successful, false if not
     def deleteEvent(self, event):
+        flag = False
         # If the event is shared, remove from everyone's calendar
         if event.getUser() == self._user:
+            flag = True
             for invitee in event.getInvitees():
                 for calendar in invitee.getCalendars():
                     # if they haven't accepted the invite notif, remove it
@@ -52,6 +60,13 @@ class Calendar():
         if event in self.getEvents():
             self._events.remove(event)
             return True
+
+        #TODO
+        if flag:
+            for group in event.getGroups():
+                group.removeEvent(event)
+        #remove from groups that have this event
+
         return False
 
     def calculateHoursCategory(self, category, week):
