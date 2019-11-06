@@ -1,6 +1,9 @@
 import mysql.connector
 import argparse
 
+from Event import Event
+from Notification import Notification
+
 HOST = "localhost"
 USER = "admin"
 PASSWORD = "password"
@@ -230,8 +233,8 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def addEvent(self, userID, title, descr, calendar, startDT,
-                 endDT=None):
+    def addEvent(self, userID, title, descr, calendar, category, startDT,
+                 endDT=None, location=None):
         cursor = self._db.cursor()
 
         try:
@@ -242,15 +245,16 @@ class DatabaseManager():
                 raise ValueError("User does not exist")
 
             sql = ("INSERT INTO events (uid, title, descr, startdt, "
-                   "enddt, calendar) "
-                   "VALUES (%s, %s, %s, %s, %s, %s)")
-            val = (userID, title, descr, startDT, endDT, calendar)
+                   "enddt, calendar, category, location) "
+                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+            val = (userID, title, descr, startDT, endDT, calendar, category,
+                location)
             cursor.execute(sql, val)
             self._db.commit()
             newID = cursor.lastrowid
             cursor.close()
             if not newID:
-                raise Exception("No changes made")
+                raise Exception("Event not created")
             return newID
 
         except Exception as e:
@@ -282,8 +286,8 @@ class DatabaseManager():
 
     def getEvent(self, eventID):
         cursor = self._db.cursor()
-        sql = ("SELECT eid, uid, title, descr, startdt, enddt, calendar "
-               "FROM events WHERE eid = %s")
+        sql = ("SELECT eid, uid, title, descr, startdt, enddt, calendar, "
+               "category, location FROM events WHERE eid = %s")
         val = (eventID, )
         try:
             cursor.execute(sql, val)
@@ -299,8 +303,8 @@ class DatabaseManager():
 
     def getUserEvents(self, userID):
         cursor = self._db.cursor()
-        sql = ("SELECT eid, uid, title, descr, startdt, enddt, calendar "
-               "FROM events WHERE uid = %s")
+        sql = ("SELECT eid, uid, title, descr, startdt, enddt, calendar, "
+               "category, location FROM events WHERE uid = %s")
         val = (userID, )
         try:
             cursor.execute(sql, val)
@@ -316,7 +320,8 @@ class DatabaseManager():
             return -1
 
     def setEvent(self, eventID, newTitle=None, newDescr=None, newStartDT=None,
-                 newEndDT=None, newCalendar=None): 
+                 newEndDT=None, newCalendar=None, newCategory=None,
+                 newLocation=None): 
         val = []
         fields = []
         if newTitle:
@@ -334,6 +339,12 @@ class DatabaseManager():
         if newCalendar:
             fields.append("calendar = %s")
             val.append(newCalendar)
+        if newCategory:
+            fields.append("category = %s")
+            val.append(newCategory)
+        if newLocation:
+            fields.append("location = %s")
+            val.append(newLocation)
         sql = "UPDATE events SET {} WHERE eid = %s".format(", ".join(fields))
         val.append(eventID)
         val = tuple(val)
@@ -344,6 +355,7 @@ class DatabaseManager():
 
             cursor = self._db.cursor()
             cursor.execute(sql, val)
+            self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
 
@@ -424,7 +436,7 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def addInvite(self, eventID, receiverID, status, calendar='default'):
+    def addInvite(self, eventID, receiverID, status, calendar=None):
         if self.getInvite(eventID, receiverID):
             return 0
         cursor = self._db.cursor()
@@ -433,6 +445,7 @@ class DatabaseManager():
         val = (eventID, receiverID, status, calendar)
         try:
             cursor.execute(sql, val)
+            self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
@@ -449,6 +462,7 @@ class DatabaseManager():
         val = (eventID, receiverID)
         try:
             cursor.execute(sql, val)
+            self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
@@ -489,6 +503,38 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1 
 
+    def setInvite(self, eventID, receiverID, newStatus=None, newCalendar=None):
+        val = []
+        fields = []
+        if newStatus:
+            fields.append("status = %s")
+            val.append(newStatus)
+        if newCalendar:
+            fields.append("calendar = %s")
+            val.append(newCalendar)
+        sql = ("UPDATE invites SET {} WHERE eid = %s and "
+               "receiver_id = %s".format(", ".join(fields)))
+        val += [eventID, receiverID]
+        val = tuple(val)
+
+        try:
+            if len(val) == 2:
+                raise Exception("No new field values to update")
+
+            cursor = self._db.cursor()
+            cursor.execute(sql, val)
+            self._db.commit()
+            rowcount = cursor.rowcount
+            cursor.close()
+
+            if not rowcount:
+                raise Exception("Invite not changed")
+            return 1
+
+        except Exception as e:
+            print(("Error encountered while trying to update records.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1
 
     def addNotification(self, eventID, senderID, receiverID, notifType):
         if self.getNotification(eventID, senderID, receiverID, notifType):
@@ -501,6 +547,7 @@ class DatabaseManager():
         val = (eventID, senderID, receiverID, notifType)
         try:
             cursor.execute(sql, val)
+            self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
@@ -518,6 +565,7 @@ class DatabaseManager():
         val = (eventID, senderID, receiverID, notifType)
         try:
             cursor.execute(sql, val)
+            self._db.commit()
             rowcount = cursor.rowcount
             cursor.close()
             if not rowcount:
@@ -527,6 +575,22 @@ class DatabaseManager():
             print(("Error encountered while deleting notification.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
+
+    def getNotification(self, eventID, senderID, receiverID, notifType):
+        cursor = self._db.cursor()
+        sql = ("SELECT eid, sender_id, receiver_id, notif_type "
+               "FROM notifications WHERE eid = %s AND sender_id = %s AND "
+               "receiver_id = %s AND notif_type = %s")
+        val = (eventID, senderID, receiverID, notifType)
+        try:
+            cursor.execute(sql, val)
+            invites = cursor.fetchall()
+            cursor.close()
+            return invites            
+        except Exception as e:
+            print(("Error encountered while getting notifications.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1 
 
     def getNotifications(self, receiverID):
         cursor = self._db.cursor()
@@ -585,7 +649,8 @@ if __name__ == "__main__":
             cursor.execute("USE {}".format(database))
             print("Deleting data from database {}...".format(database))
             cursor.execute("SET foreign_key_checks = 0")
-            cursor.execute("DROP TABLE IF EXISTS users, events, invites")
+            cursor.execute(("DROP TABLE IF EXISTS users, events, invites, "
+                            "notifications"))
             cursor.execute("SET foreign_key_checks = 1")
     else:
         print("Creating database {}...".format(database))
@@ -610,15 +675,17 @@ if __name__ == "__main__":
                     "startdt DATETIME NOT NULL, "
                     "enddt DATETIME, "
                     "calendar VARCHAR(25), "
+                    "category VARCHAR(25), "
+                    "location TEXT, "
                     "PRIMARY KEY (eid), "
                     "FOREIGN KEY (uid) REFERENCES users(uid))"))
     cursor.execute(("CREATE TABLE invites ("
                     "eid int NOT NULL, "
-                    "receiver_id int NOT_NULL, "
+                    "receiver_id int NOT NULL, "
                     "status int NOT NULL, "
                     "calendar VARCHAR(25), "
                     "FOREIGN KEY (eid) REFERENCES events(eid), "
-                    "FOREIGN KEY (receiver_id) REFERENCES users(uid))"
+                    "FOREIGN KEY (receiver_id) REFERENCES users(uid))"))
     cursor.execute(("CREATE TABLE notifications ("
                     "eid int NOT NULL, "
                     "sender_id int NOT NULL, "
@@ -640,5 +707,36 @@ if __name__ == "__main__":
                         "('morgan', 'green', 'morgan.g@email.com', 'password'), "
                         "('derrick', 'foo', 'derrick.f@email.com', 'password'), "
                         "('michael', 'ho', 'michael.h@email.com', 'password')"))
+        cursor.execute(("INSERT INTO events "
+                        "(uid, title, descr, startdt, enddt, calendar) "
+                        "VALUES "
+                        "(1, 'Event 1 title', 'Event 1 description', '2019-11-06 "
+                        "12:00:00', '2019-11-06 13:00:00', 'Calendar1') ,"
+                        "(1, 'Event 2 title', 'Event 2 description', '2019-11-07 "
+                        "12:00:00', '2019-11-07 13:00:00', 'Calendar1') ,"
+                        "(1, 'Event 3 title', 'Event 3 description', '2019-11-08 "
+                        "12:00:00', '2019-11-08 13:00:00', 'Calendar1') ,"
+                        "(1, 'Event 4 title', 'Event 4 description', '2019-11-09 "
+                        "12:00:00', '2019-11-09 13:00:00', 'Calendar2') ,"
+                        "(1, 'Event 5 title', 'Event 5 description', '2019-11-10 "
+                        "12:00:00', '2019-11-10 13:00:00', 'Calendar2') ,"
+
+                        "(2, 'Event 6 title', 'Event 6 description', '2019-11-06 "
+                        "13:30:00', '2019-11-06 13:45:00', 'Calendar1') ,"
+                        "(2, 'Event 7 title', 'Event 7 description', '2019-11-07 "
+                        "13:30:00', '2019-11-07 13:45:00', 'Calendar1') ,"
+                        "(2, 'Event 8 title', 'Event 8 description', '2019-11-08 "
+                        "13:30:00', '2019-11-08 13:45:00', 'Calendar2') ,"
+                        "(2, 'Event 9 title', 'Event 9 description', '2019-11-09 "
+                        "13:30:00', '2019-11-09 13:45:00', 'Calendar2') ,"
+                        "(2, 'Event 10 title', 'Event 10 description', '2019-11-10 "
+                        "13:30:00', '2019-11-10 13:45:00', 'Calendar3') ,"
+
+                        "(3, 'Event 11 title', 'Event 11 description', '2019-11-06 "
+                        "09:30:00', '2019-11-06 17:00:00', 'Calendar1') ,"
+                        "(3, 'Event 11 title', 'Event 11 description', '2019-11-07 "
+                        "09:30:00', '2019-11-07 17:00:00', 'Calendar1') ,"
+                        "(3, 'Event 11 title', 'Event 11 description', '2019-11-08 "
+                        "09:30:00', '2019-11-08 17:00:00', 'Calendar1')"))
     db.commit()
     cursor.close()
