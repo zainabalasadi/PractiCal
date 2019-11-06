@@ -36,3 +36,12 @@ their events and calendars into appropriate classes.
 Pulled class definitions from master to my branch. Implemented login/logout
 and database update methods in practicalManager. Once tested, can merge to
 master for complete integration into frontend.
+
+05/11/2019:
+Added methods for handling invites and notifications to PractiCalManager and
+did some tests on the updated database.
+
+06/11/2019:
+Added category and location fields to events table. Added addEvent method.
+Refactoring and several bug fixes (mainly syntax errors). Tested code and
+merged DatabaseIntegrationBranch with master.
