@@ -136,16 +136,15 @@ class User(UserMixin):
             time += calendar.calculateHoursCategory(category, week)
         return time
 
-    def updateEvent(self, event, name, desc, startDateTime, endDateTime, calendar, category):
+    def updateEvent(self, event, name, desc, startDateTime, endDateTime):
         # save existing event details
         oldName = event.getName()
         oldDesc = event.getDescription()
         oldStartDateTime = event.getStartDateTime()
         oldEndDateTime = event.getEndDateTime()
-        oldCalendar = event.getCalendar()
-        oldCategory = event.getCategory()
 
-        event.editEvent(name, desc, startDateTime, endDateTime, calendar, category)
+
+        event.editEvent(name, desc, startDateTime, endDateTime)
 
         notifDesc = []
 
@@ -158,10 +157,6 @@ class User(UserMixin):
             notifDesc.append('start updated')
         if event.getEndDateTime() != oldEndDateTime:
             notifDesc.append('end updated')
-        if event.getCalendar() != oldCalendar:
-            notifDesc.append('calendar updated')
-        if event.getCategory() != oldCategory:
-            notifDesc.append('category updated')
 
         # send notifications to invitees on updated details
         for invitee in event.getInvitees():
