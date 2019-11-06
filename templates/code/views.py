@@ -61,6 +61,21 @@ def createEvent():
 			return jsonify({"success":"True"})
 		
 		return return jsonify({"success":"False"})
+	
+@index_blueprint.route('/editEvent', methods=['POST'])
+def editEvent():
+	if request.method == 'POST':
+		event = current_user.getEventById(request.form.get('id'))
+		if (event != None)
+			userId = current_user.getID
+			name = request.form.get('eventName')
+			desc = request.form.get('description')
+			startDate = request.form.get('startDate')
+			endDate = request.form.get('endDate')
+			if (current_user.updateEvent(event, name, desc, startDate, endDate) == True):
+				return jsonify({"success":"True"})
+		
+		return return jsonify({"success":"False"})
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
