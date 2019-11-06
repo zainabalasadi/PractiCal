@@ -56,7 +56,7 @@ def createEvent():
 		endDate = request.form.get('endDate')
 		cal = current_user.getCalendarByName(request.form.get('calendar'))
 		if (cal != None):
-			PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate, cal)
+			cal.addEvent(PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate))
 			return jsonify({"success":"True"})
 		
 		return return jsonify({"success":"False"})
