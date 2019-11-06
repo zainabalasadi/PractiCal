@@ -144,7 +144,10 @@ class User(UserMixin):
         oldEndDateTime = event.getEndDateTime()
         oldEndDateTime = event.getEndDateTime()
         oldCategory = event.getCategory()
-        calChanged = False
+                        
+        if (event.editEvent(name, desc, startDateTime, endDateTime, category) == False):
+            return False
+
         for (i in self._calendars):
             if (i.getName() == calendar):
                 if (event not in calendar.getEvents()):
@@ -152,12 +155,7 @@ class User(UserMixin):
                         j.moveDelete(i)
                     i.addEvent(event)
                     calChanged = True
-                        
-        if (event.editEvent(name, desc, startDateTime, endDateTime, category) == False):
-            if (calChanged == True):
-                return True
-            return False
-
+        
         notifDesc = []
 
         # check if updated event details are different to existing
