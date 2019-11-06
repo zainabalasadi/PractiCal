@@ -20,14 +20,20 @@ class PractiCalManager():
         self._updateQueue = dict()
 
     class DBUpdate():
-        DBUPDATE_CREATE = 0
-        DBUPDATE_MODIFY = 1
-        DBUPDATE_DELETE = 2
+        DB_UPDATE_EVENT = 0
+        DB_UPDATE_USER = 1
+        DB_UPDATE_INVITE = 2
+        DB_DELETE_EVENT = 3
+        DB_DELETE_USER = 4
 
-        def __init__(self, obj, calendar, updateType):
+        def __init__(self, userID, obj, calendar, updateType):
+            self._userID = userID
             self._obj = obj
             self._calendar = calendar
             self._updateType = updateType
+
+        def getUserID(self):
+            return self._userID
 
         def getObject(self):
             return self._obj
@@ -187,21 +193,22 @@ class PractiCalManager():
                 senderID == event.getUserID()):
             return
 
+        emailsToNotify = receiverEmails
         for email in receiverEmails:
             # Check user exists
             receiverID = self._db.checkEmailExists(email)
-            if not receiver > 0: continue
+            if not receiver > 0:
+                emailsToNotify.remove(email)
+                continue
 
             # Send invite to user if logged in else send to database
             if receiverID in self._users.keys():
-                self._users[receiverID].addNotification(
-                    Notification(self._events[eventID],
-                        Notification.NOTIF_EVENTINVITE, senderID))
                 self._users[receiverID].addInvite(self._events[eventID])
             else:
-                self._db.addNotification(eventID, senderID, receiverID,
-                    Notification.NOTIF_EVENTINVITE)
                 self._db.addInvite(eventID, receiverID, Event.INVITESTATUS_NONE)
+
+        self.sendNotification(eventID, senderID, emailsToNotify, 
+            Notification.NOTIF_EVENTIVITE)
                 
     # Updates invite status for user and sends response notification to
     # event owner
@@ -220,7 +227,6 @@ class PractiCalManager():
         if eventOwnerID in self._users.keys():
             eventOwner = self._users[eventOwnerID]
             event = self._events[eventID]
-            eventOwner.addNotification(Notification(event, response, userID)
             # Remove old response notification if there is one
             for notif in eventOwner.getNotifications():
                 if notif.getEvent() == event and notif.getSenderID() == userID:
@@ -235,8 +241,7 @@ class PractiCalManager():
             self._db.deleteNotification(eventID, userID, eventOwnerID,
                 Notification.NOTIF_INVITERESP_DECLINE)
             
-            # Add notification to database
-            self._db.addNotification(eventID, userID, eventOwnerID, response)
+        self.sendNotification(eventID, userID, eventOwnerID, response)
 
     # Sends notification to list of users
     def sendNotification(self, eventID, senderID, receiverEmails, notifType):
@@ -264,22 +269,29 @@ class PractiCalManager():
             
 
     # Adds object to queue of database updates to be done once user has
-    # logged out
-    def addToUpdateQueue(self, obj, updateType, calendar=None):
-        if type(obj) == User:
-            uid = obj.getID()
+    # logged out. Add calendar object if object is an event
+    def addToUpdateQueue(self, userID, obj, updateType, calendar=None):
+        # Check user logged in
+        if not userID in self._users.keys(): return
+        # If user object, check userID matches id in the object
+        if type(obj) == User and userID != obj.getID(): return
+        # If event object, check user is the owner
+        if type(obj) == Event and userID != obj.getUserID(): return
+        # Check updateType is valid
+        if updateType < self.DBUpdate.DB_UPDATE_EVENT or\
+                updateType > self.DBUpdate.DB_DELETE_USER: return
 
-        if type(obj) == Event:
-            uid = obj.getUser().getID()
+        if not userID in self._updateQueue.keys():
+            self._updateQueue[userID] = []
+        
+        # Check if update for same object in queue already. If so delete it
+        for update in self._updateQueue[userID]:
+            if update.getObject() == obj:
+                self._updateQueue[userID].remove(update)
+                break
 
-        update = DBUpdate(obj, calendar, updateType)
-        if not uid in self._updateQueue.keys():
-            self._updateQueue[uid] = []
-
-        # Skip if obj already in queue
-        if obj in self._updateQueue[uid]:
-            return
-        self._updateQueue[uid].append(update)
+        self._updateQueue[uid].append(DBUpdate(userID, obj, calendar,
+            updateType))
 
     # Applies changes to database corresponding to list of objects given
     def updateDatabase(self, updates):
@@ -288,57 +300,28 @@ class PractiCalManager():
                 updateType = update.getUpdateType()
                 updateObject = update.getObject()
 
-                if updateType == DBUpdate.DBUPDATE_CREATE:
-                    if type(updateObject) == Event:
-                        self._db.addEvent(
-                            updateObject.getUser().getID(),
-                            updateObject.getName(),
-                            updateObject.getDescription(),
-                            update.getCalendar().getName(),
-                            updateObject.getStartDateTime(),
-                            updateObject.getEndDateTime())
-
-                    elif type(updateObject) == Calendar:
-                        event_updates = [
-                            self.DBUpdate(event, self.DBUpdate.DBUPDATE_CREATE)
-                            for event in updateObject.getEvents()]
-                        self.updateDatabase(event_updates)
-
-                    elif type(updateObject) == Notification
-
-                elif updateType == DBUpdate.DBUPDATE_MODIFY:
-                    if type(updateObject) == User:
-                        self._db.setUser(
-                            updateObject.getID(),
-                            updateObject.getFirstName(),
-                            updateObject.getLastName(),
-                            updateObject.getEmail(),
-                            updateObject.getPassword())
-
-                    elif type(updateObject) == Event:
-                        self._db.setEvent(
-                            updateObject.getID(),
-                            updateObject.getName(),
-                            updateObject.getDescription(),
-                            updateObject.getStartDateTime(),
-                            updateObject.getEndDateTime(),
-                            updateObject.getCalendar().getName())
-
-                elif updateType == DBUpdate.DBUPDATE_DELETE:
-                    if type(updateObject) == User:
-                        self._db.deleteUser(updateObject.getID())
-
-                    elif type(updateObject) == Event:
-                        self._db.deleteEvent(updateObject.getID())
-
-                    elif type(updateObject) == Calendar:
-                        for event in updateObject.getEvents():
-                            self._db.deleteEvent(event.getID())
-                            del event
-
-                    del updateObject
-
-                del update
+                if updateType == self.DBUpdate.DB_UPDATE_EVENT:
+                    self._db.setEvent(
+                        updateObject.getID(),
+                        updateObject.getName(),
+                        updateObject.getDescription(),
+                        updateObject.getStartDateTime(),
+                        updateObject.getEndDateTime(),
+                        update.getCalendar().getName())
+                elif updateType == self.DBUpdate.DB_UPDATE_USER:
+                    self._db.setUser(
+                        updateObject.getID(),
+                        updateObject.getFirstName(),
+                        updateObject.getLastName(),
+                        updateObject.getEmail(),
+                        updateObject.getPassword())
+                elif updateType == self.DBUpdate.DB_UPDATE_INVITE:
+                    # TODO
+                    pass
+                elif updateType == self.DBUpdate.DB_DELETE_EVENT:
+                    self._db.deleteEvent(updateObject.getID())
+                elif updateType == self.DBUpdate.DB_DELETE_USER:
+                    self._db.deleteUser(updateObject.getID())
 
         except Exception as e:
             print(("Error encountered while trying to update database.\n"
