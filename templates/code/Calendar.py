@@ -3,7 +3,7 @@
 # Started 13/10/19
 import datetime
 
-from templates.code.Notification import Notification
+from Notification import Notification
 
 
 class Calendar():
