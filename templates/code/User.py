@@ -211,6 +211,13 @@ class User(UserMixin):
                 if event.getName().lower() in title.lower():
                     listOfEvents.append(event)
         return listOfEvents
+    
+    def getEventById(self, ident):
+        for calendar in self._calendars:
+            for event in calendar.getEvents():
+                if event.getID == ident:
+                    return event
+        return None
 
     # search through events by host
     def searchEventsByHost(self, host):
