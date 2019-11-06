@@ -189,7 +189,7 @@ class Cal extends Component {
                   events = {this.state.events}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
-                  style = {{ height: "85vh" }}
+                  style = {{ height: "85vh", padding: "50px" }}
                 />
 
                 {/* Modal for booking new appointment */}

@@ -147,7 +147,7 @@ export default function PrimarySearchAppBar() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="relative" elevation={0} style = {{ width: "100%", zIndex: '1400' }}>
+      <AppBar position="fixed" elevation={0} style = {{ width: "100%", zIndex: '1400' }}>
         <Toolbar>
           <Typography className={classes.title} variant="h6" noWrap>
             PractiCal
@@ -157,6 +157,7 @@ export default function PrimarySearchAppBar() {
               <SearchIcon />
             </div>
             <InputBase
+              fullWidth='true'
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,
