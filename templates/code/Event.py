@@ -1,7 +1,7 @@
 import datetime
 
-from templates.code.Comment import Comment
-from templates.code.Notification import Notification
+from Comment import Comment
+from Notification import Notification
 
 
 class Event():
@@ -10,13 +10,16 @@ class Event():
     INVITESTATUS_MAYBE = 2
     INVITESTATUS_DECLINED = 3
 
-    def __init__(self, eventID, userID, title, description, startDateTime, endDateTime):
-        self._eventID = eventId
-        self._userID = user
+    def __init__(self, eventID, userID, title, description, startDateTime, 
+            endDateTime, category, location):
+        self._eventID = eventID
+        self._userID = userID
         self._title = title
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
+        self._category = category
+        self._location = location
         self._comments = []
         self._invitees = []
         self._groups = []
@@ -28,7 +31,7 @@ class Event():
         return self._title
 
     def getID(self):
-        return self._eventId
+        return self._eventID
 
     def getComments(self):
         return self._comments
@@ -41,6 +44,12 @@ class Event():
 
     def getEndDateTime(self):
         return self._endDateTime
+
+    def getCategory(self):
+        return self._category
+
+    def getLocation(self):
+        return self._location
 
     def getInvitees(self):
         return self._invitees
@@ -64,6 +73,12 @@ class Event():
     def setEndDateTime(self, endDateTime):
         if endDateTime > self._startDateTime:
             self._endDateTime = endDateTime
+
+    def setCategory(self, category):
+        self._category = category
+
+    def setLocation(self, location):
+        self._location = location
 
     def addComment(self, comment):
         self._comments.append(comment)
