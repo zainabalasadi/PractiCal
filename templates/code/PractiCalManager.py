@@ -24,12 +24,16 @@ class PractiCalManager():
         DBUPDATE_MODIFY = 1
         DBUPDATE_DELETE = 2
 
-        def __init__(self, obj, updateType):
+        def __init__(self, obj, calendar, updateType):
             self._obj = obj
+            self._calendar = calendar
             self._updateType = updateType
 
         def getObject(self):
             return self._obj
+
+        def getCalendar(self):
+            return self._calendar
 
         def getUpdateType():
             return self._updateType
@@ -73,11 +77,7 @@ class PractiCalManager():
         userID = u[0]
         userFName = u[1]
         userLName = u[2]
-        user = User(userId=userID,
-                    firstName=userFName,
-                    lastName=userLName,
-                    email=email,
-                    password=password)
+        user = User(userID, userFName, userLName, email, password)
         self._users[userID] = user
 
         # Get events from database
@@ -92,13 +92,9 @@ class PractiCalManager():
 
             # Load event if not already loaded
             if not e[0] in self._events.keys():
-                self._events[e[0]] = Event(
-                                        eventID=e[0],
-                                        userID=userID,
-                                        title=e[2],
-                                        description=e[3],
-                                        startDateTime=e[4],
-                                        endDateTime=e[5])
+                self._events[e[0]] = Event(eventID=e[0], userID=userID,
+                    title=e[2], description=e[3], startDateTime=e[4],
+                    endDateTime=e[5])
             if not self._events[e[0]] in calendars[e[6]].getEvents():
                 calendars[e[6]].addEvent(self._events[e[0]]
 
@@ -109,13 +105,10 @@ class PractiCalManager():
         for i in invites:
             if not i[0] in self._events.keys():
                 e = self._db.getEvent(i[0])
-                self._events[e[0]] = Event(
-                                        eventID=e[0],
-                                        userID=userID,
-                                        title=e[2],
-                                        description=e[3],
-                                        startDateTime=e[4],
-                                        endDateTime=e[5])
+                self._events[e[0]] = Event(eventID=e[0], userID=userID,
+                    title=e[2], description=e[3], startDateTime=e[4],
+                    endDateTime=e[5])
+
             event = self._events[i[0]]
             if i[2] == Event.INVITESTATUS_NONE:
                 user.addInvite(event)
@@ -135,19 +128,15 @@ class PractiCalManager():
             # Load event if not already loaded
             if not n[0] in self._events.keys():
                 e = self._db.getEvent(n[0])
-                self._events[e[0]] = Event(
-                                        eventId=e[0],
-                                        user=userID,
-                                        name=e[2],
-                                        description=e[3],
-                                        startDateTime=e[4],
-                                        endDateTime=e[5])
+                self._events[e[0]] = Event(eventId=e[0], user=userID,
+                    name=e[2], description=e[3], startDateTime=e[4],
+                    endDateTime=e[5])
 
-            user.addNotification(
-                Notification(
-                    event=self._events[n[0]],
-                    notifType=n[3],
-                    senderID=n[1])
+            user.addNotification(Notification(event=self._events[n[0]],
+                notifType=n[3], senderID=n[1])
+
+            # Delete notification from database
+            self._db.deleteNotification(n[0], n[1], n[2], n[3])
                  
         for c in calendars.values():
             user.addCalendars(c)
@@ -156,10 +145,18 @@ class PractiCalManager():
         return user
 
     # Logs user out of system
+    # TODO: remove user events from system that arent used by other users (invitees)
+    # TODO: garbage cleanup
     def logoutUser(self, userID):
         if not userID in self._users.keys(): return False
 
         self._users[userID].setAuthenicated(False)
+
+        # Save notifications to database
+        for notif in self._users[userID].getNotifications():
+            self._db.addNotification(notif.getEvent().getID(),
+                notif.getSenderID(), userID, notif.getNotifType())
+
         del self._users[userID]
 
         if userID in self._updateQueue.keys():
@@ -168,10 +165,20 @@ class PractiCalManager():
             
         return True
 
+    # Add a new event to manager and database. Returns new event object
+    def addEvent(self, userID, title, description, startDateTime, endDateTime):
+        eventID = self._db.addEvent(userID, title, description, 
+
     # Sends event invites to list of users if event exists in manager
     def sendInvite(self, eventID, senderID, receiverEmails)
         # Check event is loaded
         if not eventID in self._events.keys(): return
+        event = self._events[eventID]
+
+        # Check sender is logged in and owner of event
+        if not (senderID in self._users.keys() and \
+                senderID == event.getUserID()):
+            return
 
         for email in receiverEmails:
             # Check user exists
@@ -225,20 +232,40 @@ class PractiCalManager():
             self._db.addNotification(eventID, userID, eventOwnerID, response)
 
     # Sends notification to list of users
-    def sendNotification(self, eventID, userIDs, notif_type):
-        #TODO
-        pass
+    def sendNotification(self, eventID, senderID, receiverEmails, notifType):
+        # Check event loaded
+        if not eventID in self._events.keys(): return
+        # Check sender logged in
+        if not senderID in self._users.keys(): return
+        # Check response is valid
+        if not (notifType >= Notification.NOTIF_EVENTCHANGE and \
+                notifType <= Notification.NOTIF_INVITERESP_NONE):
+            return
+
+        event = self._events[eventID]
+        for email in receiverEmails:
+            receiverID = self._db.checkEmailExists(email)
+            if not receiver > 0: continue
+            
+            # Send notification to user if logged in else save to database
+            if receiverID in self._users.keys():
+                self._users[receiverID].addNotification(
+                    Notification(event, notifType, senderID))
+            else:
+                self._db.addNotification(eventID, senderID, receiverID,
+                    Notification.NOTIF_EVENTINVITE)
+            
 
     # Adds object to queue of database updates to be done once user has
     # logged out
-    def addToUpdateQueue(self, obj, updateType):
+    def addToUpdateQueue(self, obj, updateType, calendar=None):
         if type(obj) == User:
             uid = obj.getID()
 
         if type(obj) == Event:
             uid = obj.getUser().getID()
 
-        update = DBUpdate(obj, updateType)
+        update = DBUpdate(obj, calendar, updateType)
         if not uid in self._updateQueue.keys():
             self._updateQueue[uid] = []
 
@@ -260,7 +287,7 @@ class PractiCalManager():
                             updateObject.getUser().getID(),
                             updateObject.getName(),
                             updateObject.getDescription(),
-                            updateObject.getCalendar().getName(),
+                            update.getCalendar().getName(),
                             updateObject.getStartDateTime(),
                             updateObject.getEndDateTime())
 
@@ -269,6 +296,8 @@ class PractiCalManager():
                             self.DBUpdate(event, self.DBUpdate.DBUPDATE_CREATE)
                             for event in updateObject.getEvents()]
                         self.updateDatabase(event_updates)
+
+                    elif type(updateObject) == Notification
 
                 elif updateType == DBUpdate.DBUPDATE_MODIFY:
                     if type(updateObject) == User:
