@@ -37,7 +37,7 @@ commitments which pushes draft UI creation a day further.
 
 ## Meeting 3 (Sprint #2) - 16/10/19
 Today, we held a sprint review to discuss the success of Sprint #1 as well as planning
-the following sprint that commences today. We worked together to assign stories for the
+the following sprint that commences tmrw. We worked together to assign stories for the
 backlog, assigned tasks and spoke about how to improve the agile process for Sprint #2. 
 
 What did I do yesterday? Yesterday, I on checking and accepting the user stories as part
@@ -50,3 +50,124 @@ and research DialogFlow so that I can complete the NLP user story for this sprin
 
 Is anything in my way? Learning NLP before beginning to work on the user story might 
 slow down my progress slightly. 
+
+
+## Meeting 4 (Sprint #2) - 21/10/19
+Today, we held a meeting to discuss the end of Sprint #2 as well as planning for the
+following sprint. The team again, worked on assigning the user stories.
+
+What did I do yesterday? Yesterday, I worked on setting up the Flask and React file
+structure with Morgan.
+
+What will I do today? Today, I will continue to work on setting up the Flask and React
+so that the team and I are able to start creating the front end.
+
+Is anything in my way? Lack of familiarity with Webpack (a resource that we are using)
+to set up the file structure may be problematic.
+
+
+
+## Meeting 5 (Sprint #3) - 23/10/19
+Today, we held a sprint meeting to discuss the user stories we hope to tackle for this
+new sprint and assigned tasks to everyone. Egene also updated the team on the progress
+of the database so that everyone is on the same page, especially those working on the 
+back0end of the application.
+
+What did I do yesterday? Yesterday, I began setting up the calendar UI so that we have
+a interface to play around with.
+
+What will I do today? I will continue setting up the basic calendar UI and create acceptance
+criteria for the user stories.
+
+Is anything in my way? I am having some trouble with the React routing. I believe it has
+something to do with the webpack configuration but I will continue to fix the BUG
+which I have added to Pivotal Tracker.
+
+
+## Meeting 6 (Sprint #3) - 28/10/19
+Today, we met up to check the status of everyone regarding the progress on the user
+stories and tasks. There was some confusion on how to store notifications and when 
+notifications should be triggered for users. After some discussion, we arrived at a 
+method that satisfied everyone and was user-focused too.
+
+What did I do yesterday? Yesterday, I continued working on the monthly view and set
+up buttons to use when the other calendar views are finished.
+
+What will I do today? I will work on adding acceptance criteria and more tasks to 
+Pivotal Tracker for the next sprint that will start tomorrow.
+
+Is anything in my way? No.
+
+
+
+## Meeting 7 (Sprint #4) - 30/10/19
+Today, we held our sprint review with the class. We presented the calendar view and 
+the login screens that were a part of the previous iterations. 
+
+What did I do yesterday? Yesterday, I worked on creating a universal stylesheet to added.
+I also imported the font styles and defined basic colours and headings so that the interface
+is consistent. I also worked on the group contact back-end feature with Derrick.
+
+What will I do today? Today, I will work onn organising the interface files as more team
+members are going to jump on the front end portion of the application soon.
+
+Is anything in my way? Today, we found a bug within the system. The interface was not 
+rendering on other teammates computers. I suspect this is because some dependencies have
+not been uploaded (from my end). 
+
+
+
+## Meeting 8 (Sprint #4) - 4/11/19
+Today, we held another meeting to discuss the progress of the database that Egene is in
+charge of. We also discussed other questions team mates have regarding their assigned
+user stories.
+
+What did I do yesterday? Yesterday, I worked on creating tasks and user acceptance criteria
+to the user stories that are upcoming in the next iteration.
+
+What will I do today? Today, I will work on the schedule overview of events. The basic
+structure of the interface for the schedule view is already created but requires some 
+modifications that require some time.
+
+Is anything in my way? No.
+
+
+
+## Meeting 9 (Sprint #5) - 6/11/19
+Today, 
+
+What did I do yesterday? 
+
+What will I do today? 
+
+Is anything in my way?  
+
+
+## Meeting 10 (Sprint #5) - 11/11/19
+Today, 
+
+What did I do yesterday? 
+
+What will I do today? 
+
+Is anything in my way? 
+
+
+## Meeting 11 (Sprint #6) - 13/11/19
+Today, 
+
+What did I do yesterday? 
+
+What will I do today? 
+
+Is anything in my way? 
+
+
+## Meeting 12 (Sprint #6) - 18/11/19
+Today, 
+
+What did I do yesterday? 
+
+What will I do today? 
+
+Is anything in my way? 
