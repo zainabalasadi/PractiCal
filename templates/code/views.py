@@ -9,7 +9,7 @@ from templates.code.User import User
 index_blueprint = Blueprint('index', __name__)
 
 PCM = PractiCalManager()
-eventId=1
+
 
 @index_blueprint.route('/', methods=['GET', 'POST'])
 @index_blueprint.route('/index', methods=['GET', 'POST'])
@@ -54,10 +54,9 @@ def createEvent():
 		desc = request.form.get('description')
 		startDate = request.form.get('startDate')
 		endDate = request.form.get('endDate')
-		cal = current_user.getCalendarByName
+		cal = current_user.getCalendarByName(request.form.get('calendar'))
 		if (cal != None):
-			eventId = eventId+1
-			cal.addEvent(Event(eventId, currentUser, name, desc, startDate, endDate))
+			PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate, cal)
 			return jsonify({"success":"True"})
 		
 		return return jsonify({"success":"False"})
