@@ -6,13 +6,14 @@ from templates.code.Notification import Notification
 
 class Event():
 
-    def __init__(self, eventId, user, name, description, startDateTime, endDateTime):
+    def __init__(self, eventId, user, name, description, startDateTime, endDateTime, category):
         self._user = user
         self._name = name
         self._eventId = eventId
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
+        self._category = category
         self._comments = []
         self._invitees = []
         self._groups = []
@@ -117,12 +118,12 @@ class Event():
 
     # Edits an event
     # Returns true if editing is successful, false if not
-    def editEvent(self, name, desc, startDateTime, endDateTime):
+    def editEvent(self, name, desc, startDateTime, endDateTime, category):
         # Update event details
 
         if startDateTime > endDateTime:
             return False
-
+        self.setCategory(category
         self.setName(name)
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
