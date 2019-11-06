@@ -66,8 +66,7 @@ def createEvent():
 def editEvent():
 	if request.method == 'POST':
 		event = current_user.getEventById(request.form.get('id'))
-		if (event != None)
-			userId = current_user.getID
+		if (event != None):
 			name = request.form.get('eventName')
 			desc = request.form.get('description')
 			startDate = request.form.get('startDate')
@@ -76,6 +75,15 @@ def editEvent():
 				return jsonify({"success":"True"})
 		
 		return return jsonify({"success":"False"})
+
+@index_blueprint.route('/deleteEvent', methods=['POST'])
+def deleteEvent():
+	if request.method == 'POST':
+		event = current_user.getEventById(request.form.get('id'))
+		if (event != None):
+			userId = current_user.deleteEvent(event)
+			
+		return jsonify({"success":"True"})
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
