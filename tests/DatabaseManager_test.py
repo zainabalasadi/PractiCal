@@ -164,33 +164,51 @@ assert event[6] == "newTestCalendar2", \
 print("Passed")
 
 # Test addInvite
-#print("Testing addInvite method...", end="")
-#dm.addInvite(event1ID, user4ID)
-#dm.addInvite(event2ID, user4ID)
-#invites = dm.getInvitesByUser(user4ID) 
-#assert invites and len(invites) == 2, \
-#    "Test failed: One or more invites not created"
-#print("Passed")
+print("Testing addInvite method...", end="")
+dm.addInvite(event1ID, user4ID, 0)
+dm.addInvite(event2ID, user4ID, 0)
+invites = dm.getInvites(user4ID) 
+assert invites and len(invites) == 2, \
+    "Test failed: One or more invites not created"
+print("Passed")
 
 # Test deleteInvite
-#print("Testing deleteInvite method...", end="")
-#dm.deleteInvite(event2ID, user4ID)
-#invites = dm.getInvitesByUser(user4ID)
-#assert invites != -1 and len(invites) == 1, \
-#    "Test failed: Invite not deleted"
-#print("Passed")
+print("Testing deleteInvite method...", end="")
+dm.deleteInvite(event2ID, user4ID)
+invites = dm.getInvites(user4ID)
+assert invites != -1 and len(invites) == 1, \
+    "Test failed: Invite not deleted"
+print("Passed")
 
 # Test invites table setters
-#print("Testing invites table setter methods...", end="")
-#dm.setInviteStatus(event1ID, user4ID, "GOING")
-#invites = dm.getInvitesByUser(user4ID)
-#assert invites and invites[0][2] == "GOING", \
-#    "Test failed: Invite status not changed"
-#with redirect_stdout(ef):
-#    assert dm.setInviteStatus(event1ID, user4ID, "invalid_status") == -1, \
-#        "Test failed: Invite status changed to invalid value"
-#dm.setInviteCalendar(event1ID, user4ID, "newCalendar")
-#invites = dm.getInvitesByUser(user4ID)
-#assert invites and invites[0][3] == "newCalendar", \
-#    "Test failed: Invite calendar not changed"
-#print("Passed")
+print("Testing invites table setter methods...", end="")
+dm.setInvite(event1ID, user4ID, newStatus=1)
+invite = dm.getInvite(event1ID, user4ID)
+assert invite != -1 and invite[2] == 1, \
+    "Test failed: Invite status not changed"
+dm.setInvite(event1ID, user4ID, newCalendar='default')
+invite = dm.getInvite(event1ID, user4ID)
+assert invite != -1 and invite[3] == 'default', \
+    "Test failed: Invite calendar not changed"
+dm.setInvite(event1ID, user4ID, newStatus=2, newCalendar='newCal')
+invite = dm.getInvite(event1ID, user4ID)
+assert invite != -1 and invite[2] == 2 and invite[3] == 'newCal', \
+    "Test failed: Invite status or calendar not changed"
+print("Passed")
+
+# Test addNotification
+print("Testing addNotification method...", end="")
+dm.addNotification(event1ID, user1ID, user4ID, 0)
+dm.addNotification(event2ID, user1ID, user4ID, 2)
+notifs = dm.getNotifications(user4ID) 
+assert notifs and len(notifs) == 2, \
+    "Test failed: One or more notifications not created"
+print("Passed")
+
+# Test deleteNotification
+print("Testing deleteNotification method...", end="")
+dm.deleteNotification(event1ID, user1ID, user4ID, 0)
+notifs = dm.getNotifications(user4ID)
+assert notifs != -1 and len(notifs) == 1, \
+    "Test failed: Notification not deleted"
+print("Passed")
