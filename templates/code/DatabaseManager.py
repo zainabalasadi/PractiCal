@@ -599,6 +599,8 @@ if __name__ == "__main__":
                     "last_name VARCHAR(70) NOT NULL, "
                     "email VARCHAR(255) NOT NULL UNIQUE, "
                     "password VARCHAR(128) NOT NULL, "
+                    "contacts TEXT, "
+                    "preferences TEXT, "
                     "PRIMARY KEY (uid))"))
     cursor.execute(("CREATE TABLE events ("
                     "eid int NOT NULL AUTO_INCREMENT, "
