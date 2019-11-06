@@ -144,7 +144,8 @@ class User(UserMixin):
         oldEndDateTime = event.getEndDateTime()
 
 
-        event.editEvent(name, desc, startDateTime, endDateTime)
+        if (event.editEvent(name, desc, startDateTime, endDateTime) == False):
+            return False
 
         notifDesc = []
 
@@ -162,6 +163,8 @@ class User(UserMixin):
         for invitee in event.getInvitees():
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
+            
+        return True
 
         #TODO
         #update groups
