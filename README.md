@@ -6,6 +6,10 @@ Calendar application with Natural Language Processing for event creation.
 ```
 source venv/bin/activate
 ```
+1.0.0.0.0.0.0.0.1. add google creds
+```
+GOOGLE_APPLICATION_CREDENTIALS=./googlekey.json
+```
 2. Install requirements
 ```
 pip3 install -r requirements.txt
