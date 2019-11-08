@@ -84,6 +84,34 @@ def deleteEvent():
 			userId = current_user.deleteEvent(event)
 			
 		return jsonify({"success":"True"})
+	
+@index_blueprint.route('/getEvents', methods=['POST'])
+def getEvents():
+	ret = []
+	for cal in current_user.getCalendars():
+		calObj = {}
+		calObj['name'] = cal.getName()
+		calObj['colour'] = cal.getColour()
+		calObj['user'] = cal.getUser().firstName()
+		eventList = []
+		for event in cal.getEvents():
+			eventDict = {}
+			eventDict['creator'] = event.getUser().firstName()
+			eventDict['name'] = event.getName()
+			eventDict['eventId'] = event.getID()
+			eventDict['description'] = event.getDescription()
+			eventDict['startDateTime'] = event.getStartDateTime()
+			eventDict['endDateTime'] = event.getEndDateTime()
+			eventDict['category'] = event.getCategory()
+			eventDict['comments'] = event.getComments()
+			eventDict['invitees'] = event.getInvitees()
+			eventDict['groups'] = event.getGroups()
+			eventList.append(eventDict)
+		calObj['events'] = eventList
+		ret.append(calObj)
+	return jsonify(ret)
+		
+	
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
