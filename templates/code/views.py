@@ -20,63 +20,61 @@ PCM = PractiCalManager('practiCal_db', 'localhost', 'admin', 'password')
 @index_blueprint.route('/', methods=['GET', 'POST'])
 @index_blueprint.route('/index', methods=['GET', 'POST'])
 def index():
-	if request.method == 'POST':
-		email = request.form.get('email')
-		password = request.form.get('password')
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-		user = PCM.loginUser(email,
-                    bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()))
+        user = PCM.loginUser(email, password)
 
-		if not user:
-			flash('Please check your login details and try again.')
-			return redirect(url_for('index.index'))
+        if not user:
+            flash('Please check your login details and try again.')
+            return redirect(url_for('index.index'))
 
-		login_user(user, remember=True)
-		return redirect(url_for('index.calendar'))
+        login_user(user, remember=True)
+        return redirect(url_for('index.calendar'))
 
-	return render_template('/index.html')
+    return render_template('/index.html')
 
 @index_blueprint.route('/logout')
 @login_required
 def logout():
-	logout_user()
-	return redirect(url_for('index.index'))
+    PCM.logoutUser(current_user.getID())
+    logout_user()
+    return redirect(url_for('index.index'))
 
 @index_blueprint.route('/forgot', methods=['GET', 'POST'])
 def forgot():
-	if request.method == 'POST':
-		
-		email = request.form.get('email')
-		# TODO insert code to send reset password email
-		flash('Password reset has been sent to your email.')
-		return redirect(url_for('index.index'))
+    if request.method == 'POST':
+        email = request.form.get('email')
+        # TODO insert code to send reset password email
+        flash('Password reset has been sent to your email.')
+        return redirect(url_for('index.index'))
 
-	return render_template('/forgot.html')
+    return render_template('/forgot.html')
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-	if request.method == 'POST':
-		
-		email = request.form.get('email')
-		firstName = request.form.get('firstName')
-		lastName = request.form.get('lastName')
-		password = request.form.get('password')
-		
-		# hash user password and then add user to database
-		hashpw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    if request.method == 'POST':
+        email = request.form.get('email')
+        firstName = request.form.get('firstName')
+        lastName = request.form.get('lastName')
+        password = request.form.get('password')
 
-		if PCM.createUser(firstName, lastName, email, hashpw) is False:
-			flash('Email address already exists.')
-			return redirect(url_for('index.register'))
+        # hash user password and then add user to database
+        hashpw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-		return redirect(url_for('index.index'))
+        if PCM.createUser(firstName, lastName, email, hashpw) is False:
+            flash('Email address already exists.')
+            return redirect(url_for('index.register'))
 
-	return render_template('/register.html')
+        return redirect(url_for('index.index'))
+
+    return render_template('/register.html')
 
 @index_blueprint.route('/calendar', methods=['GET', 'POST'])
 @login_required
 def calendar():
-	return render_template('/calendar.html', name=current_user.getFirstName())
+    return render_template('/calendar.html', name=current_user.getFirstName())
 
 post_blueprint = Blueprint('post',__name__)
 @post_blueprint.route("/getIntent", methods=['POST'])
