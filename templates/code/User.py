@@ -5,7 +5,7 @@
 # Last modified 06/11/19
 
 from flask_login import UserMixin
-from Notification import Notification
+from templates.code.Notification import Notification
 
 class User(UserMixin):
     def __init__(self, userID, firstName, lastName, email, password):

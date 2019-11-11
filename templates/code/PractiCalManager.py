@@ -4,13 +4,13 @@
 # Edited by Egene Oletu
 # Last modified 06/11/19
 
-from Calendar import Calendar
-from Comment import Comment
-from Event import Event
+from templates.code.Calendar import Calendar
+from templates.code.Comment import Comment
+from templates.code.Event import Event
 #from templates.code.Group import Group
-from Notification import Notification
-from User import User
-from DatabaseManager import DatabaseManager
+from templates.code.Notification import Notification
+from templates.code.User import User
+from templates.code.DatabaseManager import DatabaseManager
 
 
 class PractiCalManager():

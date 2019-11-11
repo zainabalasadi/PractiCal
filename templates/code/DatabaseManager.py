@@ -1,8 +1,6 @@
 import mysql.connector
 import argparse
-
-from Event import Event
-from Notification import Notification
+import bcrypt
 
 HOST = "localhost"
 USER = "admin"
@@ -702,11 +700,13 @@ if __name__ == "__main__":
         cursor.execute(("INSERT INTO users "
                         "(first_name, last_name, email, password)"
                         "VALUES "
-                        "('egene', 'oletu', 'egene.o@email.com', 'password'), "
-                        "('zainab', 'alasadi', 'zainab.a@email.com', 'password'), "
-                        "('morgan', 'green', 'morgan.g@email.com', 'password'), "
-                        "('derrick', 'foo', 'derrick.f@email.com', 'password'), "
-                        "('michael', 'ho', 'michael.h@email.com', 'password')"))
+                        "('egene', 'oletu', 'egene.o@email.com', '{password}'), "
+                        "('zainab', 'alasadi', 'zainab.a@email.com', '{password}'), "
+                        "('morgan', 'green', 'morgan.g@email.com', '{password}'), "
+                        "('derrick', 'foo', 'derrick.f@email.com', '{password}'), "
+                        "('michael', 'ho', 'michael.h@email.com', '{password}')"
+                        "".format(password=bcrypt.hashpw('password'.encode('utf-8'),
+                            bcrypt.gensalt()))))
         cursor.execute(("INSERT INTO events "
                         "(uid, title, descr, startdt, enddt, calendar) "
                         "VALUES "

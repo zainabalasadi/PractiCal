@@ -1,6 +1,6 @@
 import datetime
-from Comment import Comment
-from Notification import Notification
+from templates.code.Comment import Comment
+from templates.code.Notification import Notification
 
 class Event():
     INVITESTATUS_NONE = 0
