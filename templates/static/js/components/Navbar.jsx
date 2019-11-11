@@ -11,6 +11,7 @@ import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import { func } from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -96,6 +97,16 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
   };
 
+  const search = () => {
+    const response = fetch('/searchEvent', {
+      method: 'POST',
+      body: JSON.stringify({"queryString": searchText}),
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      }
+    }).then(response => response.json()).then(data => console.log(data))
+  }
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -168,6 +179,11 @@ export default function PrimarySearchAppBar() {
               onChange={e => {
                 setSearchText(e.target.value)
                 console.log(searchText)
+              }}
+              onKeyPress={e => {
+                if (e.key === "Enter") {
+                  search()
+                }
               }}
             />
           </div>
