@@ -8,6 +8,7 @@ from flask_login import UserMixin
 from templates.code.Group import Group
 from templates.code.Notification import Notification
 
+
 class User(UserMixin):
     def __init__(self, userID, firstName, lastName, email, password):
         self._id = userID
@@ -41,7 +42,7 @@ class User(UserMixin):
 
     def is_active(self):
         return self._isActive
-    
+
     # Validate if provided password matches user password
     def validate(self, password):
         return self._password == password
@@ -63,7 +64,7 @@ class User(UserMixin):
 
     def getCalendars(self):
         return self._calendars
-    
+
     def getCalendarByName(self, name):
         for cal in self._calendars:
             if cal.getName == name:
@@ -80,7 +81,7 @@ class User(UserMixin):
         return self._notifications
 
     def getMaybeEvents(self):
-        return self._maybe_events
+        return self._maybeEvents
 
     def getInvites(self):
         return self._invites
@@ -102,14 +103,14 @@ class User(UserMixin):
             self._contacts.append(contact)
 
     def addContactByNameEmail(self, contactInfo):
-        #for contact in db
-            #if contactInfo in email.db
-                #addContact(contact)
-                #return True
-            #if contactInfo in name.db
-                #addContact(contact)
-                #return True
-        return False
+        # for contact in db
+        # if contactInfo in email.db
+        # addContact(contact)
+        # return True
+        # if contactInfo in name.db
+        # addContact(contact)
+        # return True
+        return
 
     def addGroup(self, group):
         if group not in self._groups:
@@ -144,20 +145,19 @@ class User(UserMixin):
         oldDesc = event.getDescription()
         oldStartDateTime = event.getStartDateTime()
         oldEndDateTime = event.getEndDateTime()
-        oldEndDateTime = event.getEndDateTime()
         oldCategory = event.getCategory()
-                        
-        if (event.editEvent(name, desc, startDateTime, endDateTime, category) == False):
+
+        if not event.editEvent(name, desc, startDateTime, endDateTime, category):
             return False
 
         for i in self._calendars:
             if i.getName() == calendar:
-                if (event not in calendar.getEvents()):
+                if event not in calendar.getEvents():
                     for j in self._calendars:
                         j.moveDelete(i)
                     i.addEvent(event)
                     calChanged = True
-        
+
         notifDesc = []
 
         # check if updated event details are different to existing
@@ -171,16 +171,15 @@ class User(UserMixin):
             notifDesc.append('end updated')
         if event.getName() != oldName:
             notifDesc.append('name updated')
+        if event.getCategory() != oldCategory:
+            notifDesc.append('category updated')
 
         # send notifications to invitees on updated details
         for invitee in event.getInvitees():
-            newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
+            newNotif = Notification(event, 'updated_event', self)
             invitee.addNotification(newNotif)
-            
-        return True
 
-        #TODO
-        #update groups
+        return True
 
     #
     # Removers
@@ -203,10 +202,7 @@ class User(UserMixin):
         for calendar in self._calendars:
             calendar.deleteEvent(event)
 
-        # TODO
-        # update groups
-
-    #remove from one calendar
+    # remove from one calendar
     def deleteEventOneCalendar(self, event):
         calendar = event.getCalendar()
 
@@ -215,17 +211,18 @@ class User(UserMixin):
 
         if calendar.deleteEvent(event):
             return True
-        else:
-            return False
+        return False
 
     #
     # Invite response methods
     #
     def acceptInvite(self, event, calendar):
         # Check user invited to event
-        if not self._email in event.getInvitee(): return
+        if self._email not in event.getInvitee():
+            return
         # Check calendar belongs to user
-        if not calendar in self._calendars: return
+        if calendar not in self._calendars:
+            return
 
         # If event in invites or maybe events, remove it, else exit
         if event in self._invites:
@@ -240,18 +237,20 @@ class User(UserMixin):
 
     def declineInvite(self, event):
         # Check user invited to event
-        if not self._email in event.getInvitee(): return
-        
+        if self._email not in event.getInvitee():
+            return
+
         # If event in invites or maybe events, remove it, else exit
         if event in self._invites:
             self._invites.remove(event)
         elif event in self._maybeEvents:
             self._maybeEvents.remove(event)
-        
+
     def maybeInvite(self, event):
         # Check user invited to event
-        if not self._email in event.getInvitee(): return
- 
+        if self._email not in event.getInvitee():
+            return
+
         # If event in invites, remove it
         if event in self._invites:
             self._invites.remove(event)
@@ -270,14 +269,14 @@ class User(UserMixin):
                 if event.getName().lower() in title.lower():
                     listOfEvents.append(event)
         return listOfEvents
-    
+
     def getEventById(self, ident):
         for calendar in self._calendars:
             for event in calendar.getEvents():
                 if event.getID == ident:
                     return event
         return None
-    
+
     def getEventsByQuery(self, queryString):
         return self.searchEventsByHost(queryString) + self.searchEventsByHost(queryString)
 
@@ -301,6 +300,7 @@ class User(UserMixin):
         for calendar in self._calendars:
             time += calendar.calculateHoursCategory(category, week)
         return time
+
     def createGroup(self, name, members):
         group = Group(name)
         for user in members:
