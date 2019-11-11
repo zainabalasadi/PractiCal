@@ -49,14 +49,18 @@ def forgot():
 @index_blueprint.route('/createEvent', methods=['POST'])
 def createEvent():
 	if request.method == 'POST':
-		userId = current_user.getID
+		userId = current_user.getID()
 		name = request.form.get('eventName')
 		desc = request.form.get('description')
 		startDate = request.form.get('startDate')
 		endDate = request.form.get('endDate')
 		cal = current_user.getCalendarByName(request.form.get('calendar'))
+		invitees = request.form('invitees')
+		groups = request.form('groups')
 		if (cal != None):
-			cal.addEvent(PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate))
+			event = PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate)
+			cal.addEvent(event)
+
 			return jsonify({"success":"True"})
 		
 		return return jsonify({"success":"False"})
