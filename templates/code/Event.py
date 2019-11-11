@@ -2,14 +2,15 @@ import datetime
 from templates.code.Comment import Comment
 from templates.code.Notification import Notification
 
+
 class Event():
     INVITESTATUS_NONE = 0
     INVITESTATUS_GOING = 1
     INVITESTATUS_MAYBE = 2
     INVITESTATUS_DECLINED = 3
 
-    def __init__(self, eventID, userID, title, description, startDateTime, 
-            endDateTime, category, location):
+    def __init__(self, eventID, userID, title, description, startDateTime,
+                 endDateTime, category, location):
         self._eventID = eventID
         self._userID = userID
         self._title = title
@@ -25,7 +26,7 @@ class Event():
     def getUserID(self):
         return self._userID
 
-    def getTitle(self):
+    def getName(self):
         return self._title
 
     def getID(self):
@@ -56,19 +57,19 @@ class Event():
         return self._groups
 
     def setUser(self, user):
-        self._user = user
+        self._userID = user
 
-    def setTitle(self, name):
-        self._title = name
+    def setName(self, title):
+        self._title = title
 
     def setEventID(self, ID):
-        self._eventId = ID
+        self._eventID = ID
 
     def setDescription(self, description):
         self._description = description
 
     def setStartDateTime(self, startDateTime):
-        if startDateTime < self._endDataeTime:
+        if startDateTime < self._endDateTime:
             self._startDateTime = startDateTime
 
     def setEndDateTime(self, endDateTime):
@@ -109,7 +110,7 @@ class Event():
         if startDateTime > endDateTime:
             return False
         self.setCategory(category)
-        self.setTitle(name)
+        self.setName(name)
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
@@ -120,7 +121,7 @@ class Event():
             # if the comment matches, and its the same poster, remove it
             if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
                 self._comments.remove(comments)
-            #recursion
+            # recursion
             comments.deleteComment(comment)
 
     def calculateHoursCategory(self):
