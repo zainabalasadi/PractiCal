@@ -81,7 +81,7 @@ class User(UserMixin):
         return self._notifications
 
     def getMaybeEvents(self):
-        return self._maybe_events
+        return self._maybeEvents
 
     def getInvites(self):
         return self._invites
@@ -110,7 +110,7 @@ class User(UserMixin):
         # if contactInfo in name.db
         # addContact(contact)
         # return True
-        return False
+        return
 
     def addGroup(self, group):
         if group not in self._groups:
@@ -176,7 +176,7 @@ class User(UserMixin):
 
         # send notifications to invitees on updated details
         for invitee in event.getInvitees():
-            newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
+            newNotif = Notification(event, 'updated_event', self)
             invitee.addNotification(newNotif)
 
         return True
@@ -211,8 +211,7 @@ class User(UserMixin):
 
         if calendar.deleteEvent(event):
             return True
-        else:
-            return False
+        return False
 
     #
     # Invite response methods

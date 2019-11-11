@@ -1,9 +1,4 @@
-import datetime
-from templates.code.Comment import Comment
-from templates.code.Notification import Notification
-
-
-class Event():
+class Event:
     INVITESTATUS_NONE = 0
     INVITESTATUS_GOING = 1
     INVITESTATUS_MAYBE = 2
@@ -81,9 +76,6 @@ class Event():
 
     def setLocation(self, location):
         self._location = location
-
-    def setCategory(self, category):
-        self._category = category
 
     def addComment(self, comment):
         self._comments.append(comment)

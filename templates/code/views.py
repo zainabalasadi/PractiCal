@@ -70,7 +70,6 @@ def createEvent():
         if cal is not None:
             event = PCM.addEvent(userId, name, desc, cal, startDate, endDate)
             cal.addEvent(event)
-
             return jsonify({"success": "True"})
 
         return jsonify({"success": "False"})
@@ -188,9 +187,9 @@ def getIntent():
 @index_blueprint.route('/sendInvite', methods=['GET', 'POST'])
 def sendInvite():
     if request.method == 'POST':
-        eventID = request.form('eventID')
+        eventID = request.form.get('eventID')
         sender = current_user.getID()
-        invitees = request.form('invitees')
+        invitees = request.form.get('invitees')
         PCM.sendInvite(eventID, sender, invitees)
 
 
@@ -206,3 +205,12 @@ def getNotifs():
 
         notifList.append(notifObj)
     return jsonify(notifList)
+
+
+@index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
+def getCategoryHours():
+    if request.method == 'POST':
+        category = request.form.get('category')
+        week = request.form.get('week')
+
+        return current_user.calculateHoursCategory(category, week)

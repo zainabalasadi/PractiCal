@@ -6,7 +6,7 @@ import datetime
 from templates.code.Notification import Notification
 
 
-class Calendar():
+class Calendar:
     def __init__(self, name, colour, user):
         self._name = name
         self._colour = colour
@@ -53,7 +53,7 @@ class Calendar():
 
                     # if they have, delete the event from their calendar and notify them
                     if event in calendar.getEvents():
-                        newNotif = Notification(event, 'deleted_event', event.getUser(), invitee, '')
+                        newNotif = Notification(event, 'deleted_event', event.getUser())
                         invitee.addNotification(newNotif)
                         calendar.deleteEvent(event)
 
