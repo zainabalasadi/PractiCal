@@ -115,6 +115,10 @@ def getEvents():
 		ret.append(calObj)
 	return jsonify(ret)
 		
+@index_blueprint.route('/searchEvents', methods=['POST'])
+def searchEvents():
+	if request.method == 'POST':
+		return jsonify(current_user.getEventsByQuery(request.form.get('queryString')))
 	
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
