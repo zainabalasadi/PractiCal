@@ -3,6 +3,7 @@
 # Started 13/10/19
 from flask_login import UserMixin
 
+from templates.code.Group import Group
 from templates.code.Notification import Notification
 
 
@@ -238,3 +239,17 @@ class User(UserMixin):
                 if userName.lower() in host.lower():
                     listOfEvents.append(event)
         return listOfEvents
+
+    def createGroup(self, name, members):
+        group = Group(name)
+        for user in members:
+            group.addMember(user)
+        self._groups.append(group)
+
+    def addUserToGroup(self, user, group):
+        if group in self._groups:
+            group.addMember(user)
+
+    def removeUserFromGroup(self, user, group):
+        if group in self._groups:
+            group.removeMember(user)
