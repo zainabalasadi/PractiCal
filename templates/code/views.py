@@ -62,8 +62,8 @@ def createEvent():
 		startDate = request.form.get('startDate')
 		endDate = request.form.get('endDate')
 		cal = current_user.getCalendarByName(request.form.get('calendar'))
-		invitees = request.form('invitees')
-		groups = request.form('groups')
+		invitees = request.form.get('invitees')
+		groups = request.form.get('groups')
 		if (cal != None):
 			event = PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate)
 			cal.addEvent(event)
@@ -155,7 +155,7 @@ def calendar():
 post_blueprint = Blueprint('post',__name__)
 @post_blueprint.route("/getIntent", methods=['POST'])
 def getIntent():
-    textMsg = request.form['message']
+    textMsg = request.form.get['message']
 
     SESSION_ID = current_user.getId() #needs to be replaced with the logged in users id
     session = sessionClient.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
