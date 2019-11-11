@@ -17,6 +17,7 @@ index_blueprint = Blueprint('index', __name__)
 
 PCM = PractiCalManager('practiCal_db', 'localhost', 'admin', 'password')
 
+
 @index_blueprint.route('/', methods=['GET', 'POST'])
 @index_blueprint.route('/index', methods=['GET', 'POST'])
 def index():
@@ -51,6 +52,81 @@ def forgot():
         return redirect(url_for('index.index'))
 
     return render_template('/forgot.html')
+
+@index_blueprint.route('/createEvent', methods=['POST'])
+def createEvent():
+	if request.method == 'POST':
+		userId = current_user.getID()
+		name = request.form.get('eventName')
+		desc = request.form.get('description')
+		startDate = request.form.get('startDate')
+		endDate = request.form.get('endDate')
+		cal = current_user.getCalendarByName(request.form.get('calendar'))
+		invitees = request.form('invitees')
+		groups = request.form('groups')
+		if (cal != None):
+			event = PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate)
+			cal.addEvent(event)
+
+			return jsonify({"success":"True"})
+		
+		return jsonify({"success":"False"})
+	
+@index_blueprint.route('/editEvent', methods=['POST'])
+def editEvent():
+	if request.method == 'POST':
+		event = current_user.getEventById(request.form.get('id'))
+		if (event != None):
+			name = request.form.get('eventName')
+			desc = request.form.get('description')
+			startDate = request.form.get('startDate')
+			endDate = request.form.get('endDate')
+			newCalendar = request.form.get('calendar')
+			if (current_user.updateEvent(event, name, desc, startDate, endDate, newCalendar) == True):
+				return jsonify({"success":"True"})
+		
+		return jsonify({"success":"False"})
+
+@index_blueprint.route('/deleteEvent', methods=['POST'])
+def deleteEvent():
+	if request.method == 'POST':
+		event = current_user.getEventById(request.form.get('id'))
+		if (event != None):
+			userId = current_user.deleteEvent(event)
+			
+		return jsonify({"success":"True"})
+	
+@index_blueprint.route('/getEvents', methods=['POST'])
+def getEvents():
+	ret = []
+	for cal in current_user.getCalendars():
+		calObj = {}
+		calObj['name'] = cal.getName()
+		calObj['colour'] = cal.getColour()
+		calObj['user'] = cal.getUser().firstName()
+		eventList = []
+		for event in cal.getEvents():
+			eventDict = {}
+			eventDict['creator'] = event.getUser().firstName()
+			eventDict['name'] = event.getName()
+			eventDict['eventId'] = event.getID()
+			eventDict['description'] = event.getDescription()
+			eventDict['startDateTime'] = event.getStartDateTime()
+			eventDict['endDateTime'] = event.getEndDateTime()
+			eventDict['category'] = event.getCategory()
+			eventDict['comments'] = event.getComments()
+			eventDict['invitees'] = event.getInvitees()
+			eventDict['groups'] = event.getGroups()
+			eventList.append(eventDict)
+		calObj['events'] = eventList
+		ret.append(calObj)
+	return jsonify(ret)
+		
+@index_blueprint.route('/searchEvents', methods=['POST'])
+def searchEvents():
+	if request.method == 'POST':
+		return jsonify(current_user.getEventsByQuery(request.form.get('queryString')))
+	
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -93,3 +169,13 @@ def getIntent():
                         "timeStart" : response.query_result.parameters.fields["timeStart"].string_value,
                         "timeEnd" : response.query_result.parameters.fields["timeEnd"].string_value
         })
+
+
+@index_blueprint.route('/sendInvite', methods=['GET', 'POST'])
+def sendInvite():
+    if request.method == 'POST':
+        eventID = request.form('eventID')
+        sender = current_user.getID()
+        invitees = request.form('invitees')
+        PCM.sendInvite(eventID, sender, invitees)
+

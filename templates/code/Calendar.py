@@ -35,6 +35,10 @@ class Calendar():
             return True
         return False
 
+    
+    def moveDelete(event):
+        self._events.remove(event)
+    
     # Removes a given event from a user's calendar
     # Returns true if removal is successful, false if not
     def deleteEvent(self, event):

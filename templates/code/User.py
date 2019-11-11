@@ -5,6 +5,7 @@
 # Last modified 06/11/19
 
 from flask_login import UserMixin
+from templates.code.Group import Group
 from templates.code.Notification import Notification
 
 class User(UserMixin):
@@ -62,6 +63,12 @@ class User(UserMixin):
 
     def getCalendars(self):
         return self._calendars
+    
+    def getCalendarByName(self, name):
+        for cal in self._calendars:
+            if cal.getName == name:
+                return cal
+        return None
 
     def getContacts(self):
         return self._contacts
@@ -137,11 +144,20 @@ class User(UserMixin):
         oldDesc = event.getDescription()
         oldStartDateTime = event.getStartDateTime()
         oldEndDateTime = event.getEndDateTime()
-        oldCalendar = event.getCalendar()
+        oldEndDateTime = event.getEndDateTime()
         oldCategory = event.getCategory()
+                        
+        if (event.editEvent(name, desc, startDateTime, endDateTime, category) == False):
+            return False
 
-        event.editEvent(name, desc, startDateTime, endDateTime, calendar, category)
-
+        for i in self._calendars:
+            if i.getName() == calendar:
+                if (event not in calendar.getEvents()):
+                    for j in self._calendars:
+                        j.moveDelete(i)
+                    i.addEvent(event)
+                    calChanged = True
+        
         notifDesc = []
 
         # check if updated event details are different to existing
@@ -153,15 +169,15 @@ class User(UserMixin):
             notifDesc.append('start updated')
         if event.getEndDateTime() != oldEndDateTime:
             notifDesc.append('end updated')
-        if event.getCalendar() != oldCalendar:
-            notifDesc.append('calendar updated')
-        if event.getCategory() != oldCategory:
-            notifDesc.append('category updated')
+        if event.getName() != oldName:
+            notifDesc.append('name updated')
 
         # send notifications to invitees on updated details
         for invitee in event.getInvitees():
             newNotif = Notification(event, 'updated_event', self, invitee, notifDesc)
             invitee.addNotification(newNotif)
+            
+        return True
 
         #TODO
         #update groups
@@ -254,6 +270,16 @@ class User(UserMixin):
                 if event.getName().lower() in title.lower():
                     listOfEvents.append(event)
         return listOfEvents
+    
+    def getEventById(self, ident):
+        for calendar in self._calendars:
+            for event in calendar.getEvents():
+                if event.getID == ident:
+                    return event
+        return None
+    
+    def getEventsByQuery(self, queryString):
+        return self.searchEventsByHost(queryString) + self.searchEventsByHost(queryString)
 
     # search through events by host
     def searchEventsByHost(self, host):
@@ -275,3 +301,16 @@ class User(UserMixin):
         for calendar in self._calendars:
             time += calendar.calculateHoursCategory(category, week)
         return time
+    def createGroup(self, name, members):
+        group = Group(name)
+        for user in members:
+            group.addMember(user)
+        self._groups.append(group)
+
+    def addUserToGroup(self, user, group):
+        if group in self._groups:
+            group.addMember(user)
+
+    def removeUserFromGroup(self, user, group):
+        if group in self._groups:
+            group.removeMember(user)

@@ -103,23 +103,16 @@ class Event():
 
     # Edits an event
     # Returns true if editing is successful, false if not
-    def editEvent(self, name, desc, startDateTime, endDateTime, calendar, category):
+    def editEvent(self, name, desc, startDateTime, endDateTime, category):
         # Update event details
 
         if startDateTime > endDateTime:
             return False
-
+        self.setCategory(category
         self.setName(name)
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
-        self.setCategory(category)
-
-        if self.getCalendar() != calendar:
-            self.getCalendar().deleteEvent(self)
-            calendar.addEvent(self)
-        self.setCalendar(calendar)
-
         return True
 
     def removeComment(self, comment):
