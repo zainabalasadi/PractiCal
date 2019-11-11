@@ -3,8 +3,6 @@ import { Calendar, momentLocalizer} from 'react-big-calendar';
 import { Dialog, DialogActions, Typography, DialogContent, Button, TextField } from "@material-ui/core";
 import moment from "moment";
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Navbar from './Navbar'
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -12,7 +10,7 @@ import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.c
 const localizer = momentLocalizer(moment)
 
 // Load events
-class Cal extends Component {
+class Cal extends Component {  
     constructor() {
         super();
         this.state = {
@@ -21,8 +19,9 @@ class Cal extends Component {
               {
                 id: 0,
                 title: 'All Day Event very long title',
-                start: new Date(2019, 9, 27,5,0),
-                end: new Date(2019,9,27, 6,0),
+                allDay: true,
+                start: new Date(2019, 9, 27),
+                end: new Date(2018, 9, 27),
               },
               {
                 id: 1,
@@ -39,8 +38,8 @@ class Cal extends Component {
               {
                 id: 3,
                 title: 'Party',
-                start: new Date(2019, 9, 27,5,0),
-                end: new Date(2019,9,27, 6,0),
+                start: new Date(2019, 10, 5, 0, 0, 0),
+                end: new Date(2019, 10, 5, 0, 0, 0),
               },  
               {
                 id: 4,
@@ -87,20 +86,68 @@ class Cal extends Component {
         this.handleSearch = this.handleSearch.bind(this);
     };
 
+    create_event(event) {
+        console.log(event.state)
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "cal": event.cal}))
+        let response = fetch('/createEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": event.title, "desc": event.desc, 
+                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "groups": event.groups, "cal": event.cal})
+        }).then((data) => data.json()).then(event => createEvent(event));
+    }
+
+    edit_event(event) {
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "cal": event.cal}))
+        let response = fetch('/createEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": event.title, "desc": event.desc, 
+                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "groups": event.groups, "cal": event.cal})
+        }).then((data) => data.json()).then(event => editEvent(event));
+    }
+
+    get_calendars() {
+        let response = fetch('/getEvents', {
+            method: 'POST'
+
+        }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
+    }
+
+    // DO LATER
+    get_events_by_calendar() {
+        let response = fetch('/getEvents', {
+            method: 'POST'
+
+        }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
+    }
+
+
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
     }
         
     //  Allows user to click on calendar slot and handles if appointment exists
-    handleSlotSelected(slotInfo) {
-        console.log("Real slotInfo", slotInfo);
+    handleSlotSelected(eventToEdit) {
+        console.log("Edit calendar info", eventToEdit);
         this.setState ({
             openSlot: true,
-            title: "",
-            desc: "",
-            start: slotInfo.start,
-            end: slotInfo.end
-            
+            title: eventToEdit.title,
+            desc: eventToEdit.desc,
+            start: eventToEdit.start,
+            end: eventToEdit.end,
+            invitees: eventToEdit.invitees,
+            groups: eventToEdit.groups,
         });
     }
         
@@ -112,16 +159,37 @@ class Cal extends Component {
             start: event.start,
             end: event.end,
             title: event.title,
-            desc: event.desc
+            desc: event.desc,
+            invitees: event.invitees,
+            groups: event.groups,
         });
     }
         
     setTitle(e) {
+        console.log(e);
         this.setState({ title: e });
     }
         
     setDescription(e) {
         this.setState({ desc: e });
+        console.log(e);
+    }
+
+    setInvitees(e) {
+        this.setState({ invitees: e });
+    }
+
+    setGroup(e) {
+        this.setState({ group: e });
+    }
+
+    setStart(e) {
+        this.setState({ start: e });
+        console.log(e);
+    }
+
+    setEnd(e) {
+        this.setState({ end: e });
     }
         
     handleStartTime = (event, date) => {
@@ -134,27 +202,29 @@ class Cal extends Component {
         
     // Onclick callback function that pushes new appointment into events array.
     setNewAppointment() {
-        const { start, end, title, desc } = this.state;
-        let appointment = { title, start, end, desc };
+        const { start, end, title, desc, invitees, groups } = this.state;
+        let appointment = { title, start, end, desc, invitees, groups };
         let events = this.state.events.slice();
         events.push(appointment);
-        // localStorage.setItem("cachedEvents", JSON.stringify(events));
         this.setState({ events });
+        this.create_event(appointment)
     }
         
-    //  Updates Existing Appointments Title and/or Description
+    //  Updates Existing Event Title and/or Description
     updateEvent() {
-        const { title, desc, start, end, events, clickedEvent } = this.state;
+        const { title, desc, start, end, events, invitees, groups, clickedEvent } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
         updatedEvent[index].start = start;
         updatedEvent[index].end = end;
-        // localStorage.setItem("cachedEvents", JSON.stringify(updatedEvent));
+        updatedEvent[index].invitees = invitees;
+        updatedEvent[index].groups = groups;
         this.setState({
             events: updatedEvent
         });
+        this.edit_event(updatedEvent)
     }
         
     //  filters out specific event that is to be deleted and set that variable to state
@@ -188,10 +258,10 @@ class Cal extends Component {
                   events = {this.state.events}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
-                  style = {{ height: "85vh" }}
+                  style = {{ height: "85vh", padding: "50px" }}
                 />
 
-                {/* Modal for booking new appointment */}
+                {/* Modal for booking new event */}
                 <Dialog open={this.state.openSlot} onClose={this.handleClose}>
                   <DialogContent>
                     <TextField
@@ -210,13 +280,29 @@ class Cal extends Component {
                     <TextField
                     type="datetime-local"
                     value={this.state.start}
-                    onChange={this.handleStartTime}
+                    onChange={e => {
+                        this.setStart(e.target.value), this.handleStartTime;
+                    }}
                     />
                     <TextField
                     type="datetime-local"
                     value={this.state.end}
-                    onChange={this.handleEndTime}
+                    onChange={e => {
+                        this.setEnd(e.target.value), this.handleEndTime;
+                    }}
                     />
+                    <TextField
+                    label="Invitees"
+                    onChange={e => {
+                        this.setInvitees(e.target.value);
+                    }}
+                    />
+                    <TextField
+                    label="Groups"
+                    onChange={e => {
+                        this.setGroup(e.target.value);
+                    }}
+                    />                    
                   </DialogContent>
                   <DialogActions>
                     <Button 
@@ -261,13 +347,31 @@ class Cal extends Component {
                     <TextField
                     type="datetime-local"
                     defaultValue={this.state.start}
-                    onChange={this.handleStartTime}
+                    onChange={e => {
+                        this.setStart(e.target.value), this.handleStartTime;
+                    }}
                     />
                     <TextField
                     type="datetime-local"
                     defaultValue={this.state.end}
-                    onChange={this.handleEndTime}
+                    onChange={e => {
+                        this.setEnd(e.target.value), this.handleEndTime;
+                    }}
                     />
+                    <TextField
+                    defaultValue={this.state.invitees}
+                    label="Invitees"
+                    onChange={e => {
+                        this.setInvitees(e.target.value);
+                    }}
+                    />
+                    <TextField
+                    defaultValue={this.state.group}
+                    label="Groups"
+                    onChange={e => {
+                        this.setGroup(e.target.value);
+                    }}
+                    />  
                   </DialogContent>
                   <DialogActions>
                     <Button 
