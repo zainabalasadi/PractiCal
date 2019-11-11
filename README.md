@@ -6,19 +6,19 @@ Calendar application with Natural Language Processing for event creation.
 ```
 source venv/bin/activate
 ```
-1.0.0.0.0.0.0.0.1. add google creds
+2. add google creds
 ```
 GOOGLE_APPLICATION_CREDENTIALS=./googlekey.json
 ```
-2. Install requirements
+3. Install requirements
 ```
 pip3 install -r requirements.txt
 ```
-3. Navigate to static folder and install npm dependencies
+4. Navigate to static folder and install npm dependencies
 ```
 npm install
 ```
-4. Start the development watch server from the static folder
+5. Start the development watch server from the static folder
 ```
 npm run watch
 ```
@@ -26,7 +26,7 @@ If you get an error here similar to **npm WARN babel-loader@8.0.2 requires a pee
 ```
 npm install babel-loader@^7 --save-dev
 ```
-5. Open a terminal at the root directory and start the python server
+6. Open a terminal at the root directory and start the python server
 ```
 python run.py
 ```
