@@ -21,9 +21,8 @@ class Cal extends Component {
               {
                 id: 0,
                 title: 'All Day Event very long title',
-                allDay: true,
-                start: new Date(2019, 9, 27),
-                end: new Date(2018, 9, 27),
+                start: new Date(2019, 9, 27,5,0),
+                end: new Date(2019,9,27, 6,0),
               },
               {
                 id: 1,
@@ -40,8 +39,8 @@ class Cal extends Component {
               {
                 id: 3,
                 title: 'Party',
-                start: new Date(2019, 10, 5, 0, 0, 0),
-                end: new Date(2019, 10, 5, 0, 0, 0),
+                start: new Date(2019, 9, 27,5,0),
+                end: new Date(2019,9,27, 6,0),
               },  
               {
                 id: 4,
@@ -189,7 +188,7 @@ class Cal extends Component {
                   events = {this.state.events}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
-                  style = {{ height: "85vh", padding: "50px" }}
+                  style = {{ height: "85vh" }}
                 />
 
                 {/* Modal for booking new appointment */}
