@@ -61,7 +61,7 @@ def register():
         password = request.form.get('password')
 
         # hash user password and then add user to database
-        hashpw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        hashpw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
         if PCM.createUser(firstName, lastName, email, hashpw) is False:
             flash('Email address already exists.')
