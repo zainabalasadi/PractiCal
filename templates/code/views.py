@@ -15,7 +15,7 @@ sessionClient = dialogflow_v2.SessionsClient()
 
 index_blueprint = Blueprint('index', __name__)
 
-PCM = PractiCalManager()
+PCM = PractiCalManager('practiCal_db', 'localhost', 'admin', 'password')
 
 @index_blueprint.route('/', methods=['GET', 'POST'])
 @index_blueprint.route('/index', methods=['GET', 'POST'])
@@ -24,9 +24,10 @@ def index():
 		email = request.form.get('email')
 		password = request.form.get('password')
 
-		user = PCM.searchUserEmail(email)
+		user = PCM.loginUser(email,
+                    bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()))
 
-		if not user or not bcrypt.hashpw(password.encode('utf-8'), user._password) == user._password:
+		if not user:
 			flash('Please check your login details and try again.')
 			return redirect(url_for('index.index'))
 
