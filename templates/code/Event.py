@@ -58,8 +58,8 @@ class Event():
     def setUser(self, user):
         self._user = user
 
-    def setName(self, name):
-        self._name = name
+    def setTitle(self, name):
+        self._title = name
 
     def setEventID(self, ID):
         self._eventId = ID
@@ -108,8 +108,8 @@ class Event():
 
         if startDateTime > endDateTime:
             return False
-        self.setCategory(category
-        self.setName(name)
+        self.setCategory(category)
+        self.setTitle(name)
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
