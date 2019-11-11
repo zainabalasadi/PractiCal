@@ -63,7 +63,7 @@ def createEvent():
 
 			return jsonify({"success":"True"})
 		
-		return return jsonify({"success":"False"})
+		return jsonify({"success":"False"})
 	
 @index_blueprint.route('/editEvent', methods=['POST'])
 def editEvent():
@@ -74,11 +74,11 @@ def editEvent():
 			desc = request.form.get('description')
 			startDate = request.form.get('startDate')
 			endDate = request.form.get('endDate')
-			newCalendar = request.form.get('calendar'))
+			newCalendar = request.form.get('calendar')
 			if (current_user.updateEvent(event, name, desc, startDate, endDate, newCalendar) == True):
 				return jsonify({"success":"True"})
 		
-		return return jsonify({"success":"False"})
+		return jsonify({"success":"False"})
 
 @index_blueprint.route('/deleteEvent', methods=['POST'])
 def deleteEvent():

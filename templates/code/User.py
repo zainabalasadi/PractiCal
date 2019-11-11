@@ -149,10 +149,10 @@ class User(UserMixin):
         if (event.editEvent(name, desc, startDateTime, endDateTime, category) == False):
             return False
 
-        for (i in self._calendars):
-            if (i.getName() == calendar):
+        for i in self._calendars:
+            if i.getName() == calendar:
                 if (event not in calendar.getEvents()):
-                    for (j in self._calendars):
+                    for j in self._calendars:
                         j.moveDelete(i)
                     i.addEvent(event)
                     calChanged = True
