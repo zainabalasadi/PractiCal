@@ -6,7 +6,7 @@ Calendar application with Natural Language Processing for event creation.
 ```
 source venv/bin/activate
 ```
-2. add google creds
+2. Add Google credentials
 ```
 GOOGLE_APPLICATION_CREDENTIALS=./googlekey.json
 ```
