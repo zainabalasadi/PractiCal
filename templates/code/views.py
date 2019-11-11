@@ -145,3 +145,13 @@ def register():
 @login_required
 def calendar():
 	return render_template('/calendar.html', name=current_user.getFirstName())
+
+
+@index_blueprint.route('/sendInvite', methods=['GET', 'POST'])
+def sendInvite():
+    if request.method == 'POST':
+        eventID = request.form('eventID')
+        sender = current_user.getID()
+        invitees = request.form('invitees')
+        PCM.sendInvite(eventID, sender, invitees)
+
