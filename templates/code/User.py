@@ -227,6 +227,9 @@ class User(UserMixin):
                 if event.getID == ident:
                     return event
         return None
+    
+    def getEventsByQuery(self, queryString):
+        return self.searchEventsByHost(queryString) + self.searchEventsByHost(queryString)
 
     # search through events by host
     def searchEventsByHost(self, host):
