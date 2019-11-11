@@ -28,7 +28,7 @@ class User(UserMixin):
     #
     def get_id(self):
         try:
-            return unicode(self._id)
+            return str(self._id)
         except AttributeError:
             raise NotImplementedError('No `id` attribute - override `get_id`')
 
@@ -81,7 +81,7 @@ class User(UserMixin):
     #
     # Adders
     #
-    def addCalendars(self, newCalendar):
+    def addCalendar(self, newCalendar):
         if newCalendar not in self._calendars:
             for calendar in self._calendars:
                 if calendar.getName() == newCalendar.getName():

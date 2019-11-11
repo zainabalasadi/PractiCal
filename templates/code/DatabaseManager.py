@@ -126,18 +126,25 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def getUser(self, email, password):
+    def getUser(self, email, password, use_bcrypt=False):
         cursor = self._db.cursor()
-        sql = ("SELECT uid, first_name, last_name FROM users "
-               "WHERE email = %s AND password = %s")
-        val = (email, password)
+        sql = ("SELECT uid, first_name, last_name, password FROM users "
+               "WHERE email = %s")
+        val = (email, )
         try:
             cursor.execute(sql, val)
             user = cursor.fetchone()
             cursor.close()
+            # Check password
+            if use_bcrypt:
+                if bcrypt.hashpw(password.encode('utf-8'), user[3]) != user[3]:
+                    raise Exception("Credentials provided dont match")
+            else:
+                if password != user[3]:
+                    raise Exception("Credentials provided dont match")
             if not user:
                 raise Exception("Credentials provided dont match")
-            return user
+            return tuple(user[:3])
         except Exception as e:
             print(("Error encountered while trying to locate user record.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -661,7 +668,7 @@ if __name__ == "__main__":
                     "first_name VARCHAR(70) NOT NULL, "
                     "last_name VARCHAR(70) NOT NULL, "
                     "email VARCHAR(255) NOT NULL UNIQUE, "
-                    "password VARCHAR(128) NOT NULL, "
+                    "password VARBINARY(128) NOT NULL, "
                     "contacts TEXT, "
                     "preferences TEXT, "
                     "PRIMARY KEY (uid))"))
@@ -705,8 +712,8 @@ if __name__ == "__main__":
                         "('morgan', 'green', 'morgan.g@email.com', '{password}'), "
                         "('derrick', 'foo', 'derrick.f@email.com', '{password}'), "
                         "('michael', 'ho', 'michael.h@email.com', '{password}')"
-                        "".format(password=bcrypt.hashpw('password'.encode('utf-8'),
-                            bcrypt.gensalt()))))
+                        "".format(password=str(bcrypt.hashpw('password'.encode('utf-8'),
+                            bcrypt.gensalt()).decode("utf-8")))))
         cursor.execute(("INSERT INTO events "
                         "(uid, title, descr, startdt, enddt, calendar) "
                         "VALUES "

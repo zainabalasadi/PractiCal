@@ -47,8 +47,15 @@ class PractiCalManager():
         def getUpdateType():
             return self._updateType
 
+    # Returns user object if logged in
+    def getUserByID(self, userID):
+        uid = int(userID)
+        if uid in self._users.keys():
+            return self._users[uid]
+        return None
+
     # Returns true if new user is successfully created
-    def addUser(self, firstName, lastName, email, password):
+    def createUser(self, firstName, lastName, email, password):
         userID = self._db.addUser(firstName, lastName, email, password)
         if userID != -1:
             newUser = User(userID, firstName, lastName, email, password)
@@ -79,7 +86,7 @@ class PractiCalManager():
     def loginUser(self, email, password):
         # Get user from database and load into manager
         # Return None is user doesnt exist
-        u = self._db.getUser(email, password)
+        u = self._db.getUser(email, password, use_bcrypt=True)
         if u == -1:
             return None
         userID = u[0]

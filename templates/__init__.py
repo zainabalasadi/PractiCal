@@ -16,4 +16,4 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-	return PCM.searchUserID(user_id)
+    return PCM.getUserByID(user_id)
