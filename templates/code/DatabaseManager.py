@@ -56,9 +56,9 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def checkUserPwd(self, email, password):
+    def checkUserCred(self, email, password, use_bcrypt=False):
         cursor = self._db.cursor()
-        sql = "SELECT email, password FROM users WHERE email = %s"
+        sql = "SELECT uid, password FROM users WHERE email = %s"
         val = (email.lower(),)
         try:
             cursor.execute(sql, val)
@@ -66,31 +66,23 @@ class DatabaseManager():
             cursor.close()
             if not user:
                 raise ValueError("User not found")
-            if user[1] == password:
-                return 1
+            # Check password
+            if use_bcrypt:
+                try:
+                    bytePW = bytes(user[1], 'utf-8')
+                except:
+                    bytePW = user[1]
+                if bcrypt.hashpw(bytes(password, 'utf-8'), bytePW) != bytePW:
+                    return 0
             else:
-                return 0
-        except Exception as e:
-            print(("Error encountered while accessing database.\n"
-                   "The following error was raised:\n\n{}".format(e)))
-            return -1
-
-    def checkEmailExists(self, email):
-        cursor = self._db.cursor()
-        sql = "SELECT uid FROM users WHERE email = %s"
-        val = (email.lower(), )
-        try:
-            cursor.execute(sql, val)
-            user = cursor.fetchone()
-            cursor.close()
-            if not user:
-                return 0
+                if password != user[1]:
+                    return 0
             return user[0]
         except Exception as e:
             print(("Error encountered while accessing database.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
-            
+ 
     def deleteUser(self, userID):
         cursor = self._db.cursor()
         sql = "DELETE FROM users WHERE uid = %s"
@@ -126,25 +118,22 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def getUser(self, email, password, use_bcrypt=False):
-        cursor = self._db.cursor()
-        sql = ("SELECT uid, first_name, last_name, password FROM users "
-               "WHERE email = %s")
-        val = (email, )
+    def getUser(self, userID=None, email=None):
         try:
+            cursor = self._db.cursor()
+            if not userID and not email:
+                raise Exception("Neither userID or email provided")
+
+            condition = "uid = %s" if userID else "email = %s"
+            sql = ("SELECT uid, first_name, last_name, email FROM users "
+                   "WHERE {}".format(condition))
+            val = (userID, )
             cursor.execute(sql, val)
             user = cursor.fetchone()
             cursor.close()
-            # Check password
-            if use_bcrypt:
-                if bcrypt.hashpw(password.encode('utf-8'), user[3]) != user[3]:
-                    raise Exception("Credentials provided dont match")
-            else:
-                if password != user[3]:
-                    raise Exception("Credentials provided dont match")
             if not user:
-                raise Exception("Credentials provided dont match")
-            return tuple(user[:3])
+                raise ValueError("User not found")
+            return user
         except Exception as e:
             print(("Error encountered while trying to locate user record.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -239,7 +228,7 @@ class DatabaseManager():
             return -1
 
     def addEvent(self, userID, title, descr, calendar, category, startDT,
-                 endDT=None, location=None):
+                 endDT=None, location=None, invitees=None):
         cursor = self._db.cursor()
 
         try:
@@ -250,10 +239,10 @@ class DatabaseManager():
                 raise ValueError("User does not exist")
 
             sql = ("INSERT INTO events (uid, title, descr, startdt, "
-                   "enddt, calendar, category, location) "
-                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+                   "enddt, calendar, category, location, invitees) "
+                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
             val = (userID, title, descr, startDT, endDT, calendar, category,
-                location)
+                location, invitees)
             cursor.execute(sql, val)
             self._db.commit()
             newID = cursor.lastrowid
@@ -441,7 +430,7 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def addInvite(self, eventID, receiverID, status, calendar=None):
+    def addInvite(self, eventID, receiverID, status, calendar='default'):
         if self.getInvite(eventID, receiverID):
             return 0
         cursor = self._db.cursor()
@@ -493,7 +482,7 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1 
 
-    def getInvites(self, receiverID):
+    def getInvitesByUser(self, receiverID):
         cursor = self._db.cursor()
         sql = ("SELECT eid, receiver_id, status, calendar "
                "FROM invites WHERE receiver_id = %s")
@@ -507,6 +496,22 @@ class DatabaseManager():
             print(("Error encountered while getting invites.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1 
+
+    def getInvitesByEvent(self, eventID):
+        cursor = self._db.cursor()
+        sql = ("SELECT eid, receiver_id, status "
+               "FROM invites WHERE eid = %s")
+        val = (eventID, )
+        try:
+            cursor.execute(sql, val)
+            invites = cursor.fetchall()
+            cursor.close()
+            return invites
+        except Exception as e:
+            print(("Error encountered while getting invites.\n"
+                   "The following error was raised:\n\n{}".format(e)))
+            return -1 
+        
 
     def setInvite(self, eventID, receiverID, newStatus=None, newCalendar=None):
         val = []
@@ -644,7 +649,12 @@ if __name__ == "__main__":
     cursor = db.cursor()
     print("Checking databases...")
     cursor.execute("SHOW DATABASES")
-    if database in [x[0].decode("utf-8") for x in cursor.fetchall()]:
+    tables = [x[0] for x in cursor.fetchall()]
+    try:
+        tables = [t.decode('utf-8') for t in tables]
+    except:
+        pass
+    if database in tables:
         print(("Database already exists. Do you wish to reinitialise the "
                "{} database? (y/n)".format(database)))
         resp = input()
@@ -682,6 +692,7 @@ if __name__ == "__main__":
                     "calendar VARCHAR(25), "
                     "category VARCHAR(25), "
                     "location TEXT, "
+                    "invitees TEXT, "
                     "PRIMARY KEY (eid), "
                     "FOREIGN KEY (uid) REFERENCES users(uid))"))
     cursor.execute(("CREATE TABLE invites ("

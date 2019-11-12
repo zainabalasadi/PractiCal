@@ -54,13 +54,19 @@ class PractiCalManager():
             return self._users[uid]
         return None
 
+    # Returns tuple containing user information in the form
+    # (first name, last name, email)
+    def getUserInfo(self, userID=None, email=None):
+        if userID and email: return None
+        user = self._db.getUser(userID=userID) if userID else \
+            self.db.getUser(email=email)
+        return tuple(user[1:]) if user else None
+
     # Returns true if new user is successfully created
     def createUser(self, firstName, lastName, email, password):
         userID = self._db.addUser(firstName, lastName, email, password)
         if userID != -1:
             newUser = User(userID, firstName, lastName, email, password)
-            defaultCalendar = Calendar('My Calendar', 'Red', 1)
-            newUser.addCalendar(defaultCalendar)
             return True
         else:
             return False
@@ -70,88 +76,102 @@ class PractiCalManager():
     def searchUser(self, query):
         return self._db.searchUser(query)
 
-    # Returns True if user with matching email exists
-    def searchUserByEmail(self, email):
-        for user in self._users.values():
-            if user.get_email() == email:
-                return True
-        if self._db.checkEmailExists(email) == 1:
-                return True
-        return False
-
     # Logs user into system
     #TODO: get user groups
     #TODO: get user contacts
     #TODO: read calendar colour from settings
+    #TODO: use new invite functions
     def loginUser(self, email, password):
         # Get user from database and load into manager
         # Return None is user doesnt exist
-        u = self._db.getUser(email, password, use_bcrypt=True)
-        if u == -1:
+        userID = self._db.checkUserCred(email, password, use_bcrypt=True)
+        if not userID > 0:
             return None
-        userID = u[0]
-        userFName = u[1]
-        userLName = u[2]
-        user = User(userID, userFName, userLName, email, password)
+        try:
+            _, userFN, userLN, email = self._db.getUser(userID=userID)
+        except:
+            return None
+        
+        user = User(userID, userFN, userLN, email, password)
         self._users[userID] = user
 
         # Get events from database
         events = self._db.getUserEvents(userID)
         if events == -1 or not events: events = []
 
-        calendars = dict()
+        calendars = {'default': user.getCalendars()[0]}
         for e in events:
+            eventID, _, title, descr, startDT, endDT, cal, cat, loc = e
             # Load calendar if not already loaded
-            if e[6] not in calendars.keys():
-                calendars[e[6]] = Calendar(e[6], 'BLUE', user)
+            if cal not in calendars.keys():
+                calendars[cal] = Calendar(cal, 'blue')
 
             # Load event if not already loaded
-            if e[0] not in self._events.keys():
-                self._events[e[0]] = Event(eventID=e[0], userID=userID,
-                    title=e[2], description=e[3], startDateTime=e[4],
-                    endDateTime=e[5], category=e[7], location=e[8])
-            if self._events[e[0]] not in calendars[e[6]].getEvents():
-                calendars[e[6]].addEvent(self._events[e[0]])
+            if eventID not in self._events.keys():
+                # Get event invitees
+                invites = self._db.getInvitesByEvent(eventID)
+                if invites == -1 or not invites: invites = []
+                invitees = dict()
+                for i in invites:
+                    _, inviteeID, status = i
+                    _, _, _, inviteeEmail = self._getUser(userID=inviteeID)
+                    invitees[inviteeEmail] = status
+                
+                self._events[eventID] = Event(
+                    eventID=eventID,
+                    userID=userID,
+                    title=title,
+                    description=descr,
+                    startDateTime=startDT,
+                    endDateTime=endDT,
+                    category=cat,
+                    location=loc,
+                    invitees=invitees)
+            calendars[cal].addEvent(self._events[eventID])
 
         # Load invites
-        invites = self._db.getInvites(userID)
-        if invites == -1 or not invites: invites = []
+#        invites = self._db.getInvitesByUser(userID)
+#        if invites == -1 or not invites: invites = []
 
-        for i in invites:
-            if i[0] not in self._events.keys():
-                e = self._db.getEvent(i[0])
-                self._events[e[0]] = Event(eventID=e[0], userID=userID,
-                    title=e[2], description=e[3], startDateTime=e[4],
-                    endDateTime=e[5], category=e[7], location=e[8])
+#        for i in invites:
+#            eventID, _, status, cal = i
+#            if eventID not in self._events.keys():
+#                e = self._db.getEvent(eventID)
+#                if not e or e == -1: continue
+#                eventID, _, title, descr, startDT, endDT, cal, cat, loc = e
+                
+#                self._events[e[0]] = Event(eventID=e[0], userID=userID,
+#                    title=e[2], description=e[3], startDateTime=e[4],
+#                    endDateTime=e[5], category=e[7], location=e[8])
 
-            event = self._events[i[0]]
-            if i[2] == Event.INVITESTATUS_NONE:
-                user.addInvite(event)
-            elif i[2] == Event.INVITESTATUS_GOING:
-                if i[3] not in calendars.keys():
-                    calendar[i[3]] = Calendar(i[3], 'BLUE', user)
-                if self._events[e[0]] not in calendars[i[3]].getEvents():
-                    calendars[i[3]].addEvent(self._events[e[0]])
-            elif i[2] == Event.INVITESTATUS_MAYBE:
-                user.addMaybeEvent(event)
+#            event = self._events[i[0]]
+#            if i[2] == Event.INVITESTATUS_NONE:
+#                user.addInvite(event)
+#            elif i[2] == Event.INVITESTATUS_GOING:
+#                if i[3] not in calendars.keys():
+#                    calendar[i[3]] = Calendar(i[3], 'BLUE', user)
+#                if self._events[e[0]] not in calendars[i[3]].getEvents():
+#                    calendars[i[3]].addEvent(self._events[e[0]])
+#            elif i[2] == Event.INVITESTATUS_MAYBE:
+#                user.addMaybeEvent(event)
 
         # Get notifications from database
-        notifs = self._db.getNotifications(userID)
-        if notifs == -1 or not notifs: notifs = []
+#        notifs = self._db.getNotifications(userID)
+#        if notifs == -1 or not notifs: notifs = []
 
-        for n in notifs:
+#        for n in notifs:
             # Load event if not already loaded
-            if n[0] not in self._events.keys():
-                e = self._db.getEvent(n[0])
-                self._events[e[0]] = Event(eventId=e[0], user=userID,
-                    name=e[2], description=e[3], startDateTime=e[4],
-                    endDateTime=e[5], category=e[7], location=e[8])
+#            if n[0] not in self._events.keys():
+#                e = self._db.getEvent(n[0])
+#                self._events[e[0]] = Event(eventId=e[0], user=userID,
+#                    name=e[2], description=e[3], startDateTime=e[4],
+#                    endDateTime=e[5], category=e[7], location=e[8])
 
-            user.addNotification(Notification(event=self._events[n[0]],
-                notifType=n[3], senderID=n[1]))
+#            user.addNotification(Notification(event=self._events[n[0]],
+#                notifType=n[3], senderID=n[1]))
 
-            # Delete notification from database
-            self._db.deleteNotification(n[0], n[1], n[2], n[3])
+#            # Delete notification from database
+#            self._db.deleteNotification(n[0], n[1], n[2], n[3])
                  
         for c in calendars.values():
             user.addCalendar(c)
@@ -182,18 +202,52 @@ class PractiCalManager():
 
     # Add a new event to manager and database. Returns new event object
     def addEvent(self, userID, title, description, calendar,
-            startDateTime, endDateTime=None, category=None, location=None):
+            startDateTime, endDateTime=None, category=None, location=None,
+            invitees=None):
+
+        existingUsers = []
+        if invitees:
+            for invitee in invitees:
+                if self._db.checkEmailExists(invitee) > 0:
+                    existingUsers.append(invitee)
+        jInvitees = json.dumps(existingUsers) if existingUsers else None
+            
         eventID = self._db.addEvent(userID, title, description, calendar,
-            category, startDateTime, endDateTime, location)
+            category, startDateTime, endDateTime, location, jInvitees)
         if eventID == -1: return None
 
         event = Event(eventID, userID, title, description, startDateTime,
-            endDateTime, category, location)
+            endDateTime, category, location, existingUsers)
         self._events[eventID] = event
-        return event    
+        self.sendInvites(eventID, userID, existingUsers)
+        return event
+
+    # Delete event from system and remove it from invited users accounts
+    def deleteEvent(self, eventID, userID):
+        # Check event is in system
+        if eventID not in self._events.keys(): return False
+
+        # Check user is the owner of the event
+        event = self._events[eventID]
+        if userID != event.getUserID(): return False
+
+        # Remove invite from invitees calendars if theyre logged in, else
+        # remove invite from database
+        inviteeIDs = [self._db.getUser(email=invitee)[0] for invitee in \
+                event.getInvitees()]
+        for invitee in inviteeIDs:
+            if invitee in self._users.keys():
+                self._users[invitee].removeInvite(event)
+            else:
+                self._db.deleteInvite(eventID, invitee)
+
+        self.sendNotification(eventID, userID, event.getInvitees(),
+            Notification.NOTIF_EVENTDELETE)
+        del self._events[eventID]
+        return True
 
     # Sends event invites to list of users if event exists in manager
-    def sendInvite(self, eventID, senderID, receiverEmails):
+    def sendInvite(self, eventID, senderID, receiverEmails, checkExisting=True):
         # Check event is loaded
         if eventID not in self._events.keys(): return
         event = self._events[eventID]
@@ -204,10 +258,15 @@ class PractiCalManager():
             return
 
         emailsToNotify = receiverEmails
+        existingInvitees = self._events[eventID].getInvitees()
         for email in receiverEmails:
             # Check user exists
-            receiverID = self._db.checkEmailExists(email)
+            user = self._db.getUser(email=email)
+            receiverID = user[0] if user and user != -1 else -1
             if not receiverID > 0:
+                emailsToNotify.remove(email)
+                continue
+            if checkExisting and email in existingInvitees:
                 emailsToNotify.remove(email)
                 continue
 
@@ -216,6 +275,7 @@ class PractiCalManager():
                 self._users[receiverID].addInvite(self._events[eventID])
             else:
                 self._db.addInvite(eventID, receiverID, Event.INVITESTATUS_NONE)
+            self._events[eventID].addInvitee(email)
 
         self.sendNotification(eventID, senderID, emailsToNotify, 
             Notification.NOTIF_EVENTINVITE)
@@ -225,8 +285,11 @@ class PractiCalManager():
     def respondToInvite(self, eventID, userID, response):
         # Check event loaded
         if eventID not in self._events.keys(): return
+        # Check user is logged in
+        if userID not in self._users.keys(): return
         # Check user was invited to event
-        if userID not in self._events[eventID].getInvitees(): return
+        userEmail = self._users[userID].getEmail()
+        if userEmail not in self._events[eventID].getInvitees(): return
         # Check response is valid
         if response != Notification.NOTIF_INVITERESP_GOING and \
                 response != Notification.NOTIF_INVITERESP_MAYBE and \
@@ -234,8 +297,10 @@ class PractiCalManager():
             return
 
         eventOwnerID = self._events[eventID].getUserID()
+        eventOwnerEmail = ""
         if eventOwnerID in self._users.keys():
             eventOwner = self._users[eventOwnerID]
+            eventOwnerEmail = eventOwner.getEmail()
             event = self._events[eventID]
             # Remove old response notification if there is one
             for notif in eventOwner.getNotifications():
@@ -244,6 +309,8 @@ class PractiCalManager():
                     break
         else:
             # Remove any old responses
+            eventOwner = self._db.getUser(userID=eventOwnerID)
+            if eventOwner and eventOwner != -1: eventOwnerEmail = eventOwner[3]
             self._db.deleteNotification(eventID, userID, eventOwnerID,
                 Notification.NOTIF_INVITERESP_GOING)
             self._db.deleteNotification(eventID, userID, eventOwnerID,
@@ -252,7 +319,8 @@ class PractiCalManager():
                 Notification.NOTIF_INVITERESP_DECLINE)
  
         # Send notification to event owner
-        self.sendNotification(eventID, userID, eventOwnerID, response)
+        if eventOwnerEmail:
+            self.sendNotification(eventID, userID, [eventOwnerEmail], response)
 
     # Sends notification to list of users
     def sendNotification(self, eventID, senderID, receiverEmails, notifType):
@@ -267,7 +335,8 @@ class PractiCalManager():
 
         event = self._events[eventID]
         for email in receiverEmails:
-            receiverID = self._db.checkEmailExists(email)
+            receiver = self._db.getUser(email=email)
+            receiverID = receiver[0] if receiver and receiver != -1 else 0
             if not receiverID > 0: continue
             
             # Send notification to user if logged in else save to database
@@ -276,7 +345,7 @@ class PractiCalManager():
                     Notification(event, notifType, senderID))
             else:
                 self._db.addNotification(eventID, senderID, receiverID,
-                    Notification.NOTIF_EVENTINVITE)
+                    notifType)
             
 
     # Adds object to queue of database updates to be done once user has
