@@ -137,7 +137,8 @@ class DatabaseManager():
             cursor.close()
             # Check password
             if use_bcrypt:
-                if bcrypt.hashpw(password.encode('utf-8'), user[3]) != user[3]:
+                hashedpw = bytes(user[3], 'utf-8')
+                if bcrypt.hashpw(bytes(password, 'utf-8'), hashedpw) != hashedpw:
                     raise Exception("Credentials provided dont match")
             else:
                 if password != user[3]:
@@ -644,7 +645,7 @@ if __name__ == "__main__":
     cursor = db.cursor()
     print("Checking databases...")
     cursor.execute("SHOW DATABASES")
-    if database in [x[0].decode("utf-8") for x in cursor.fetchall()]:
+    if database in [x[0].encode().decode("utf-8") for x in cursor.fetchall()]:
         print(("Database already exists. Do you wish to reinitialise the "
                "{} database? (y/n)".format(database)))
         resp = input()
