@@ -29,7 +29,6 @@ notifications when users  accept, decline and maybe event invitations.
 - Completed "Notifications of event updates" user story with Derrick. This
 included refactoring the notifications class to be able to hold different
 types of notifications (not just invites).
-
 ---------------------------------------------------------------------------
 
 Sprint 4: 30/10 - 5/11
@@ -41,3 +40,15 @@ using material-ui components. The navbar includes the 'PractiCal' name,
 a search bar, notifications icon and an account/profile icon. As this is
 my first time using react I struggled a bit with this task and some loose
 ends still need to be fixed.
+--------------------------------------------------------------------------
+
+Sprint 5: 6/11 - 12/11
+- Completed the "Search for events in calendar" user story. Finished up
+the front-end component for it. Added functionality for fetch request from
+backend. 
+
+- Added NLP creation for front end component. This involved using
+material-ui components and then adding fetch request functionality to
+connect with backend.
+
+- Completed the "Weekly overview of events" user story.
