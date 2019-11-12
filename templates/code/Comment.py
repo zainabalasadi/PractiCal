@@ -1,4 +1,4 @@
-class Comment():
+class Comment:
 
     def __init__(self, user, parent):
         self._user = user
@@ -18,10 +18,10 @@ class Comment():
         self._children.append(comment)
 
     def deleteComment(self, comment):
-        #if the comment matches poster and content, remove it
+        # if the comment matches poster and content, remove it
         if comment.getComment() == self.getComment() and comment.getUser() == self.getUser():
             return True
-        #otherwise look at children
+        # otherwise look at children
         for comments in self._children:
             if comments.deleteComment(comment):
                 self._children.remove(comments)

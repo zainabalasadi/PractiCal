@@ -9,28 +9,45 @@
 {% endif %}
 {% endwith %}
 
-<div class="container">
-    <div class="row h-100 d-flex justify-content-center">
-       <!--  <div class="col-md-4 col-md-offset-4"> -->
-        <div class="column is-4">
-            <h1>Log in to PractiCal</h1>
-                <form autocomplete="off" method=POST action="{{ url_for('index.index') }}">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="email" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" name="password" placeholder="Password">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
-                </form>
-            <br>
-            <div>
-                Don't have an account? <a href="{{ url_for('index.register') }}">Sign up here</a>.
+<div class="col-sm-12 my-auto">
+    <div class="card card-block w-25 mx-auto">        
+        <h1 class="pb-4">Log in to PractiCal</h1>
+        <form autocomplete="off" method=POST action="{{ url_for('index.index') }}">
+            <div class="form-group">
+                <input type="text" class="form-control" name="email" placeholder="Email">
             </div>
-            <div>
-                Forgot your password? <a href="{{ url_for('index.forgot') }}">Click here</a>.
+            <div class="form-group">
+                <input id="myInput" type="password" class="form-control" name="password" placeholder="Password">
             </div>
-        </div>
+            <button type="submit" class="mt-4 btn btn-primary btn-block">Log In</button>
+            <input class="mt-4" type="checkbox" onclick="myFunction()">&nbsp;&nbsp;Show Password
+        </form>
     </div>
 </div>
+
+<footer class="fixed-bottom text-center">
+    <a href="{{ url_for('index.register') }}">Create an Account</a>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;
+    <a href="{{ url_for('index.forgot') }}">Forgot Password</a>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;
+    <a href="#">What is PractiCal?</a>
+</footer>
+
+<script>
+function myFunction() {
+    var x = document.getElementById("myInput");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+}
+</script>
 {% endblock %}
+
+
+
+
+
+
+    
+
+    

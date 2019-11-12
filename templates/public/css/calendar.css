@@ -1,6 +1,16 @@
+/**** Global styling ****/
+html, body {
+    height: 100%;
+}
+
 body {
 	font-family: 'Roboto', sans-serif;
 	color: #222328;
+}
+
+a {
+    color: #222328 !important;
+    text-decoration: none !important;
 }
 
 h1 {
@@ -8,49 +18,12 @@ h1 {
     font-size: 30px;
     text-align: center;
 }
-/* 
-h2 {
 
-}
-
-h3 {
-
-}
-
-h4 {
-
-}
-
-h5 {
-
-}
-
-h6 {
-
-}
-
-p {
-
-} */
-
-.form-control {
-	border: none;
-	border-bottom: 1px #222328 solid;
-	border-radius: 0;
-	padding: .375rem .4rem;
-}
-
-*:focus {
-	outline: none !important;
-	box-shadow: none !important;
-}
-
-/**** CALENDAR OVERRIDES ****/
+/**** Calendar styling overrides ****/
 
 .App {
     text-align: center;
     width: 80.1%;
-    /* display: flex !important; */
 }
 
 .draw {
@@ -163,4 +136,70 @@ p {
 /** Remove 30min lines **/
 .rbc-timeslot-group {
     flex-flow: nowrap !important;
+}
+
+/**** Bootstrap screen styling ****/
+.form-control {
+	border: none;
+	border-bottom: 1px #222328 solid;
+	border-radius: 0;
+	padding: .375rem .4rem;
+}
+
+*:focus {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.container {
+    height: 100%;
+}
+
+.note {
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    top: 0;
+    padding: 5px;
+    background: #eee;
+    max-width: 360px;
+}
+
+.card {
+    border: 0px !important;
+    box-shadow: none !important;
+}
+
+.navbar-brand {
+    padding-top: 25px !important;
+    padding-left: 25px !important;
+}
+
+footer {
+    position: fixed;
+    height: 80px;
+    bottom: 0;
+    width: 100%;
+    opacity: 0.8;
+}
+
+footer a:hover {
+    opacity: 0.4;
+}
+
+.btn-block {
+    padding: 10px 0; 
+    background-color: #566EE9;
+    font-weight: bold;
+}
+
+.btn-block:hover {
+    background-color: #566EE9;
+}
+
+.form-control:focus {
+    background-color: #F7F7F7;
+    border-bottom: 0px !important;
+    color: #222328;
+    border-radius: 6px;
 }
