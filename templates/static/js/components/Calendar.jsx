@@ -313,10 +313,9 @@ class Cal extends Component {
 				>
 					<Typography>
 						Sidebar here
-            <div>
+            <div style = {{ padding: "100px" }}>
               <TextField
                 id="standard-basic"
-                className={classes.textField}
                 label="Standard"
                 margin="normal"
               />
