@@ -110,6 +110,17 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
   };
 
+  const search = () => {
+    const response = fetch('/searchEvent', {
+      method: 'POST',
+      body: JSON.stringify({"queryString": searchText}),
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      }
+    }).then(response => response.json()).then(data => console.log(data))
+    // TODO Insert code to change state of front end given response from the back end
+  }
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -182,6 +193,11 @@ export default function PrimarySearchAppBar() {
               onChange={e => {
                 setSearchText(e.target.value)
                 console.log(searchText)
+              }}
+              onKeyPress={e => {
+                if (e.key === "Enter") {
+                  search()
+                }
               }}
             />
           </div>
