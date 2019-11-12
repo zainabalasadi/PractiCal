@@ -5,8 +5,10 @@
 # Last modified 06/11/19
 
 from flask_login import UserMixin
+from templates.code.Group import Group
 from templates.code.Notification import Notification
 from templates.code.Calendar import Calendar
+
 
 class User(UserMixin):
     def __init__(self, userID, firstName, lastName, email, password):
@@ -40,7 +42,7 @@ class User(UserMixin):
 
     def is_active(self):
         return self._isActive
-    
+
     # Validate if provided password matches user password
     def validate(self, password):
         return self._password == password
@@ -62,6 +64,12 @@ class User(UserMixin):
 
     def getCalendars(self):
         return [self._defaultCalendar] + list(self._calendars.values())
+
+    def getCalendarByName(self, name):
+        for cal in self._calendars:
+            if cal.getName == name:
+                return cal
+        return None
 
     def getContacts(self):
         return self._contacts
@@ -90,14 +98,14 @@ class User(UserMixin):
             self._contacts.append(contact)
 
     def addContactByNameEmail(self, contactInfo):
-        #for contact in db
-            #if contactInfo in email.db
-                #addContact(contact)
-                #return True
-            #if contactInfo in name.db
-                #addContact(contact)
-                #return True
-        return False
+        # for contact in db
+        # if contactInfo in email.db
+        # addContact(contact)
+        # return True
+        # if contactInfo in name.db
+        # addContact(contact)
+        # return True
+        return
 
     def addGroup(self, group):
         if group not in self._groups:
@@ -157,9 +165,11 @@ class User(UserMixin):
     #
     def acceptInvite(self, event, calendar):
         # Check user invited to event
-        if not self._email in event.getInvitee(): return
+        if self._email not in event.getInvitee():
+            return
         # Check calendar belongs to user
-        if not calendar in self._calendars: return
+        if calendar not in self._calendars:
+            return
 
         # If event in invites or maybe events, remove it, else exit
         if event in self._invites:
@@ -174,18 +184,20 @@ class User(UserMixin):
 
     def declineInvite(self, event):
         # Check user invited to event
-        if not self._email in event.getInvitee(): return
-        
+        if self._email not in event.getInvitee():
+            return
+
         # If event in invites or maybe events, remove it, else exit
         if event in self._invites:
             self._invites.remove(event)
         elif event in self._maybeEvents:
             self._maybeEvents.remove(event)
-        
+
     def maybeInvite(self, event):
         # Check user invited to event
-        if not self._email in event.getInvitee(): return
- 
+        if self._email not in event.getInvitee():
+            return
+
         # If event in invites, remove it
         if event in self._invites:
             self._invites.remove(event)
@@ -204,6 +216,16 @@ class User(UserMixin):
                 if event.getName().lower() in title.lower():
                     listOfEvents.append(event)
         return listOfEvents
+
+    def getEventById(self, ident):
+        for calendar in self._calendars:
+            for event in calendar.getEvents():
+                if event.getID == ident:
+                    return event
+        return None
+
+    def getEventsByQuery(self, queryString):
+        return self.searchEventsByHost(queryString) + self.searchEventsByHost(queryString)
 
     # search through events by host
     def searchEventsByHost(self, host):
@@ -225,3 +247,17 @@ class User(UserMixin):
         for calendar in self._calendars:
             time += calendar.calculateHoursCategory(category, week)
         return time
+
+    def createGroup(self, name, members):
+        group = Group(name)
+        for user in members:
+            group.addMember(user)
+        self._groups.append(group)
+
+    def addUserToGroup(self, user, group):
+        if group in self._groups:
+            group.addMember(user)
+
+    def removeUserFromGroup(self, user, group):
+        if group in self._groups:
+            group.removeMember(user)

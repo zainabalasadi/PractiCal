@@ -1,18 +1,48 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
-import { Dialog, DialogActions, Typography, DialogContent, Button, TextField } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
 import moment from "moment";
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Navbar from './Navbar'
+import Sidebar from './Sidebar'
+import CssBaseline from '@material-ui/core/CssBaseline';
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
+import { withStyles } from "@material-ui/core/styles";
 
 // Initialise time localiser
 const localizer = momentLocalizer(moment)
 
+const drawerWidth = 300;
+
+const styles = theme => ({
+    calendar: {
+        height: "85vh", 
+        position: "fixed", 
+        width: "1120px",
+        marginLeft: "15px"
+    },
+    root: {
+        display: 'flex',
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+        padding: theme.spacing(3),
+    },
+    content: {
+        flexGrow: 1,
+    },
+    toolbar: theme.mixins.toolbar,
+});
+
+
 // Load events
-class Cal extends Component {
+class Cal extends Component {  
     constructor() {
         super();
         this.state = {
@@ -21,57 +51,58 @@ class Cal extends Component {
               {
                 id: 0,
                 title: 'All Day Event very long title',
-                start: new Date(2019, 9, 27,5,0),
-                end: new Date(2019,9,27, 6,0),
+                allDay: true,
+                start: new Date(2019, 10, 27, 2, 0, 0),
+                end: new Date(2019, 10, 27, 4, 0, 0),
               },
               {
                 id: 1,
                 title: 'Long Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 23),
+                start: new Date(2019, 10, 5, 8, 0, 0),
+                end: new Date(2019, 10, 8, 9, 0, 0),
               },
               {
                 id: 2,
                 title: 'Hawaii',
-                start: new Date(2019, 9, 18, 0, 0, 0),
-                end: new Date(2019, 9, 18, 0, 0, 0),
+                start: new Date(2019, 10, 18, 12, 0, 0),
+                end: new Date(2019, 10, 18, 2, 0, 0),
               },
               {
                 id: 3,
                 title: 'Party',
-                start: new Date(2019, 9, 27,5,0),
-                end: new Date(2019,9,27, 6,0),
+                start: new Date(2019, 10, 5, 5, 0, 0),
+                end: new Date(2019, 10, 5, 12, 0, 0),
               },  
               {
                 id: 4,
                 title: 'Conference',
-                start: new Date(2019, 9, 5),
-                end: new Date(2019, 9, 5),
+                start: new Date(2019, 10, 8, 4, 0, 0),
+                end: new Date(2019, 10, 8, 12, 0, 0),
                 desc: 'Big conference for important people',
               },
               {
                 id: 5,
                 title: 'Double Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 12, 0, 0),
+                end: new Date(2019, 10, 8, 1, 0, 0),
               },
               {
                 id: 6,
                 title: 'Triple Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 1, 0, 0),
+                end: new Date(2019, 10, 8, 3, 0, 0),
               },
               {
                 id: 7,
                 title: '4 Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 2, 0, 0),
+                end: new Date(2019, 10, 8, 5, 0, 0),
               },
               {
                 id: 8,
                 title: '5 Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 3, 0, 0),
+                end: new Date(2019, 10, 8, 8, 0, 0),
               },
             ],
             title: "",
@@ -87,20 +118,68 @@ class Cal extends Component {
         this.handleSearch = this.handleSearch.bind(this);
     };
 
+    create_event(event) {
+        console.log(event.state)
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "cal": event.cal}))
+        let response = fetch('/createEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": event.title, "desc": event.desc, 
+                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "groups": event.groups, "cal": event.cal})
+        }).then((data) => data.json()).then(event => createEvent(event));
+    }
+
+    edit_event(event) {
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "cal": event.cal}))
+        let response = fetch('/createEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": event.title, "desc": event.desc, 
+                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "groups": event.groups, "cal": event.cal})
+        }).then((data) => data.json()).then(event => editEvent(event));
+    }
+
+    get_calendars() {
+        let response = fetch('/getEvents', {
+            method: 'POST'
+
+        }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
+    }
+
+    // DO LATER
+    get_events_by_calendar() {
+        let response = fetch('/getEvents', {
+            method: 'POST'
+
+        }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
+    }
+
+
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
     }
         
-    //  Allows user to click on calendar slot and handles if appointment exists
-    handleSlotSelected(slotInfo) {
-        console.log("Real slotInfo", slotInfo);
+    //  Allows user to click on calendar slot and handles if event exists
+    handleSlotSelected(eventToEdit) {
+        console.log("Edit calendar info", eventToEdit);
         this.setState ({
             openSlot: true,
-            title: "",
-            desc: "",
-            start: slotInfo.start,
-            end: slotInfo.end
-            
+            title: eventToEdit.title,
+            desc: eventToEdit.desc,
+            start: eventToEdit.start,
+            end: eventToEdit.end,
+            invitees: eventToEdit.invitees,
+            groups: eventToEdit.groups,
         });
     }
         
@@ -112,16 +191,37 @@ class Cal extends Component {
             start: event.start,
             end: event.end,
             title: event.title,
-            desc: event.desc
+            desc: event.desc,
+            invitees: event.invitees,
+            groups: event.groups,
         });
     }
         
     setTitle(e) {
+        console.log(e);
         this.setState({ title: e });
     }
         
     setDescription(e) {
         this.setState({ desc: e });
+        console.log(e);
+    }
+
+    setInvitees(e) {
+        this.setState({ invitees: e });
+    }
+
+    setGroup(e) {
+        this.setState({ group: e });
+    }
+
+    setStart(e) {
+        this.setState({ start: e });
+        console.log(e);
+    }
+
+    setEnd(e) {
+        this.setState({ end: e });
     }
         
     handleStartTime = (event, date) => {
@@ -132,29 +232,31 @@ class Cal extends Component {
         this.setState({ end: date });
     };
         
-    // Onclick callback function that pushes new appointment into events array.
-    setNewAppointment() {
-        const { start, end, title, desc } = this.state;
-        let appointment = { title, start, end, desc };
+    // Onclick callback function that pushes new event into events array.
+    setNewEvent() {
+        const { start, end, title, desc, invitees, groups } = this.state;
+        let event = { title, start, end, desc, invitees, groups };
         let events = this.state.events.slice();
-        events.push(appointment);
-        // localStorage.setItem("cachedEvents", JSON.stringify(events));
+        events.push(event);
         this.setState({ events });
+        this.create_event(event)
     }
         
-    //  Updates Existing Appointments Title and/or Description
+    //  Updates Existing Event Title and/or Description
     updateEvent() {
-        const { title, desc, start, end, events, clickedEvent } = this.state;
+        const { title, desc, start, end, events, invitees, groups, clickedEvent } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
         updatedEvent[index].start = start;
         updatedEvent[index].end = end;
-        // localStorage.setItem("cachedEvents", JSON.stringify(updatedEvent));
+        updatedEvent[index].invitees = invitees;
+        updatedEvent[index].groups = groups;
         this.setState({
             events: updatedEvent
         });
+        this.edit_event(updatedEvent)
     }
         
     //  filters out specific event that is to be deleted and set that variable to state
@@ -174,24 +276,35 @@ class Cal extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         return (
-          <div className="">
-            <Navbar />
-            <main className="cal-content">
-              <div className="App" style = {{ position: "relative" }}>
-                <Calendar
+            <div className={classes.root}>
+            <CssBaseline />
+            <Navbar className={classes.appBar}/>
+
+            <main className={classes.content}>
+                <div className={classes.toolbar} />
+                <Calendar className={classes.calendar}
                   selectable
                   popup
                   localizer = {localizer}
                   defaultDate = {new Date()}
                   defaultView = "month"
                   events = {this.state.events}
+                  showMultiDayTimes={true}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
-                  style = {{ height: "85vh" }}
+
+                  // UNCOMMENT LATER TO COLOUR DIFF EVENTS
+                  //eventPropGetter={(this.eventStyleGetter)}
+                //   eventPropGetter={event => ({
+                //     style: {
+                //       backgroundColor: event.color,
+                //     },
+                //   })}
                 />
 
-                {/* Modal for booking new appointment */}
+                {/* Modal for booking new event */}
                 <Dialog open={this.state.openSlot} onClose={this.handleClose}>
                   <DialogContent>
                     <TextField
@@ -210,13 +323,29 @@ class Cal extends Component {
                     <TextField
                     type="datetime-local"
                     value={this.state.start}
-                    onChange={this.handleStartTime}
+                    onChange={e => {
+                        this.setStart(e.target.value), this.handleStartTime;
+                    }}
                     />
                     <TextField
                     type="datetime-local"
                     value={this.state.end}
-                    onChange={this.handleEndTime}
+                    onChange={e => {
+                        this.setEnd(e.target.value), this.handleEndTime;
+                    }}
                     />
+                    <TextField
+                    label="Invitees"
+                    onChange={e => {
+                        this.setInvitees(e.target.value);
+                    }}
+                    />
+                    <TextField
+                    label="Groups"
+                    onChange={e => {
+                        this.setGroup(e.target.value);
+                    }}
+                    />                    
                   </DialogContent>
                   <DialogActions>
                     <Button 
@@ -231,7 +360,7 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.setNewAppointment(), this.handleClose();
+                      this.setNewEvent(), this.handleClose();
                     }}
                     >
                     Submit
@@ -261,13 +390,31 @@ class Cal extends Component {
                     <TextField
                     type="datetime-local"
                     defaultValue={this.state.start}
-                    onChange={this.handleStartTime}
+                    onChange={e => {
+                        this.setStart(e.target.value), this.handleStartTime;
+                    }}
                     />
                     <TextField
                     type="datetime-local"
                     defaultValue={this.state.end}
-                    onChange={this.handleEndTime}
+                    onChange={e => {
+                        this.setEnd(e.target.value), this.handleEndTime;
+                    }}
                     />
+                    <TextField
+                    defaultValue={this.state.invitees}
+                    label="Invitees"
+                    onChange={e => {
+                        this.setInvitees(e.target.value);
+                    }}
+                    />
+                    <TextField
+                    defaultValue={this.state.group}
+                    label="Groups"
+                    onChange={e => {
+                        this.setGroup(e.target.value);
+                    }}
+                    />  
                   </DialogContent>
                   <DialogActions>
                     <Button 
@@ -299,25 +446,47 @@ class Cal extends Component {
                     </Button>
                   </DialogActions>
                 </Dialog>
-              </div>
             </main>
-
-				<Drawer
-				className="draw"
-				variant="permanent"
-				anchor="right"
-				classes={{
-				  paper: 'draw-paper',
-				}}
-				>
-					<Typography>
-						Sidebar here
-					</Typography>
-				</Drawer>
-			</div>
-            
+<Sidebar />
+            </div>
         );
     }
 }
 
-export default Cal;
+export default withStyles(styles)(Cal);
+
+// eventStyleGetter: function(event, start, end, isSelected) {
+//     console.log(event);
+//     var backgroundColor = '#' + event.hexColor;
+//     var style = {
+//         backgroundColor: backgroundColor,
+//         borderRadius: '0px',
+//         opacity: 0.8,
+//         color: 'black',
+//         border: '0px',
+//         display: 'block'
+//     };
+//     return {
+//         style: style
+//     };
+// },
+
+// getEventStyle(event, start, end, isSelected) {
+//     const style = {}
+//     const todayDate = new Date().getDate()
+
+//     if (start.getDate() === todayDate) {
+//       style.backgroundColor = 'green'
+//     } else if (start.getDate() < todayDate) {
+//       style.backgroundColor = 'red'
+//     } else if (start.getDate() > todayDate) {
+//       style.backgroundColor = 'blue'
+//     }
+//     if (event.bgcolor) {
+//       style.backgroundColor = event.bgcolor
+//     }
+
+//     return { style }
+//   }
+
+

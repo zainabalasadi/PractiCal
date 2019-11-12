@@ -5,7 +5,7 @@
 # Last Modified 04/11/19
 
 
-class Notification():
+class Notification:
     NOTIF_EVENTCHANGE = 0
     NOTIF_EVENTINVITE = 1
     NOTIF_EVENTDELETE = 2

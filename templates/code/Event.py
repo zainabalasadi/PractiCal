@@ -19,7 +19,7 @@ class Event():
     def getUserID(self):
         return self._userID
 
-    def getTitle(self):
+    def getName(self):
         return self._title
 
     def getID(self):
@@ -47,19 +47,19 @@ class Event():
         return self._invitees
 
     def setUser(self, user):
-        self._user = user
+        self._userID = user
 
-    def setName(self, name):
-        self._name = name
+    def setName(self, title):
+        self._title = title
 
     def setEventID(self, ID):
-        self._eventId = ID
+        self._eventID = ID
 
     def setDescription(self, description):
         self._description = description
 
     def setStartDateTime(self, startDateTime):
-        if startDateTime < self._endDataeTime:
+        if startDateTime < self._endDateTime:
             self._startDateTime = startDateTime
 
     def setEndDateTime(self, endDateTime):
@@ -71,9 +71,6 @@ class Event():
 
     def setLocation(self, location):
         self._location = location
-
-    def setCategory(self, category):
-        self._category = category
 
     def addComment(self, comment):
         self._comments.append(comment)
@@ -87,23 +84,16 @@ class Event():
 
     # Edits an event
     # Returns true if editing is successful, false if not
-    def editEvent(self, name, desc, startDateTime, endDateTime, calendar, category):
+    def editEvent(self, name, desc, startDateTime, endDateTime, category):
         # Update event details
 
         if startDateTime > endDateTime:
             return False
-
+        self.setCategory(category)
         self.setName(name)
         self.setDescription(desc)
         self.setStartDateTime(startDateTime)
         self.setEndDateTime(endDateTime)
-        self.setCategory(category)
-
-        if self.getCalendar() != calendar:
-            self.getCalendar().deleteEvent(self)
-            calendar.addEvent(self)
-        self.setCalendar(calendar)
-
         return True
 
     def removeComment(self, comment):
@@ -111,7 +101,7 @@ class Event():
             # if the comment matches, and its the same poster, remove it
             if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
                 self._comments.remove(comments)
-            #recursion
+            # recursion
             comments.deleteComment(comment)
 
     def calculateHoursCategory(self):

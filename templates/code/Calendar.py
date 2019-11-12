@@ -75,6 +75,9 @@ class Calendar():
             return invites
         return None
 
+    def moveDelete(self, event):
+        self._events.remove(event)
+
     # Removes a given event from a user's calendar
     def deleteEvent(self, event):
         if event in self._events:
