@@ -54,7 +54,6 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* margin-left: 10% */
 }
 
 /** Day text **/
@@ -126,11 +125,9 @@ h1 {
     flex-flow: nowrap !important;
 }
 
-/* .MuiAppBar-colorPrimary {
-    color: #222328;
-    border-bottom: 1px solid;
-    background-color: #ffffff;
-} */
+.MuiAppBar-colorPrimary {
+	border-bottom: 1px #DADCE0 solid;
+}
 
 /**** Bootstrap screen styling ****/
 .form-control {

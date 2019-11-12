@@ -15,10 +15,10 @@ const drawerWidth = 300;
 
 const styles = theme => ({
     calendar: {
-        height: "90vh", 
+        height: "85vh", 
         position: "fixed", 
-        bottom: "0", 
-        width: "1120px"
+        width: "1120px",
+        marginLeft: "15px"
     },
     root: {
         display: 'flex',
