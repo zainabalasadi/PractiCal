@@ -20,6 +20,11 @@ h1 {
     text-align: center;
 }
 
+h3 {
+	font-weight: 500;
+    font-size: 17px;
+}
+
 /**** Calendar styling overrides ****/
 
 .App {
@@ -107,6 +112,10 @@ h1 {
 }
 .rbc-today {
     background-color: transparent !important;
+}
+
+.rbc-today span {
+    color: #566EE9 !important;
 }
 
 /** Current time indicator **/

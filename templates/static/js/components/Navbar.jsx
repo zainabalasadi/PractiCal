@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -28,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     },
 
     title: {
-        display: 'none',
+        width: '100px',
         [theme.breakpoints.up('sm')]: {
             display: 'block',
         },
@@ -38,9 +37,9 @@ const useStyles = makeStyles(theme => ({
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
         borderWidth: '10',
-        backgroundColor: fade(theme.palette.common.white, 0.15),
+        backgroundColor: '#F2F3F4',
         '&:hover': {
-            backgroundColor: fade(theme.palette.common.black, 0.1),
+            backgroundColor: fade('#F2F3F4', 0.8),
         },
         marginRight: theme.spacing(2),
         marginLeft: 0,
@@ -172,7 +171,7 @@ export default function PrimarySearchAppBar() {
             </div>
             <InputBase
               fullWidth='true'
-              placeholder="Search…"
+              placeholder="Search"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,

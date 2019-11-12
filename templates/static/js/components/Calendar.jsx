@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
-import { Dialog, DialogActions, Typography, DialogContent, Button, TextField } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
 import moment from "moment";
-import Drawer from '@material-ui/core/Drawer';
 import Navbar from './Navbar'
+import Sidebar from './Sidebar'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
 import { withStyles } from "@material-ui/core/styles";
@@ -447,19 +447,7 @@ class Cal extends Component {
                   </DialogActions>
                 </Dialog>
             </main>
-            <Drawer
-              className={classes.drawer}
-              variant="permanent"
-              anchor="right"
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-            <div className={classes.toolbar} />
-                <Typography paragraph>
-                    Lorem ipsum dolor
-                </Typography>
-            </Drawer>
+<Sidebar />
             </div>
         );
     }
