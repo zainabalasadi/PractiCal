@@ -5,13 +5,21 @@ import datetime
 
 from templates.code.Notification import Notification
 
+class Calendar():
+    INVITESTATUS_NONE = 0
+    INVITESTATUS_GOING = 1
+    INVITESTATUS_MAYBE = 2
+    INVITESTATUS_DECLINE = 3
 
-class Calendar:
-    def __init__(self, name, colour, user):
+    def __init__(self, name, colour, events=[]):
         self._name = name
         self._colour = colour
-        self._events = []
-        self._user = user
+        self._events = events
+        self._invites = {
+            self.INVITESTATUS_NONE: [],
+            self.INVITESTATUS_GOING: [],
+            self.INVITESTATUS_MAYBE: [],
+            self.INVITESTATUS_DECLINE: []}
 
     def getName(self):
         return self._name
@@ -31,38 +39,49 @@ class Calendar:
     # Adds an event to a user's calendar
     # Returns true if addition is successful, false if not
     def addEvent(self, event):
-        if event not in self.getEvents():
+        if event not in self._events:
             self._events.append(event)
             return True
         return False
+    
+    # Add invite to calendar. If invite already in calendar,
+    # changes existing status to one provided
+    def addInvite(self, event, status=None):
+        if not status: status = self.IVITESTATUS_NONE
+        if not (status >= self.INVITESTATUS_NONE and \
+                status <= self.INVITESTATUS_DECLINE):
+            return
+        self.removeInvite(event)
+        self._invites[status].append(event)
+
+    # Remove invite from calendar
+    def removeInvite(self, event):
+        for events in self._invites.keys():
+            if event in events:
+                self._invites[events].remove(event)
+                return 
+
+    # Return list of tuples of the form (event, status). If status
+    # not provided, list will contain all invites. Returns None if invalid
+    # status given
+    def getInvites(self, status=None):
+        if status and status >= self.INVITESTATUS_NONE and \
+                status <= self.INVITESTATUS_DECLINE:
+            return [(e, status) for e in self._invites[status]]
+        elif not status:
+            invites = []
+            for status in self._invites.keys():
+                invites += [(e, status) for e in self._invites[status]]
+            return invites
+        return None
 
     def moveDelete(self, event):
         self._events.remove(event)
 
     # Removes a given event from a user's calendar
-    # Returns true if removal is successful, false if not
     def deleteEvent(self, event):
-        # If the event is shared, remove from everyone's calendar
-        if event.getUser() == self._user:
-            for invitee in event.getInvitees():
-                for calendar in invitee.getCalendars():
-                    # if they haven't accepted the invite notif, remove it
-                    for notif in invitee.getNotifications():
-                        if notif.getEvent() == event and notif.getNotifType() == 'invite':
-                            invitee.removeNotification(notif)
-
-                    # if they have, delete the event from their calendar and notify them
-                    if event in calendar.getEvents():
-                        newNotif = Notification(event, 'deleted_event', event.getUser())
-                        invitee.addNotification(newNotif)
-                        calendar.deleteEvent(event)
-
-        # if the event is in their list, remove it
-        if event in self.getEvents():
+        if event in self._events:
             self._events.remove(event)
-            return True
-
-        return False
 
     def calculateHoursCategory(self, category, week):
         time = 0

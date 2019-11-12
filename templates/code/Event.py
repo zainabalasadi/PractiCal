@@ -1,11 +1,10 @@
-class Event:
-    INVITESTATUS_NONE = 0
-    INVITESTATUS_GOING = 1
-    INVITESTATUS_MAYBE = 2
-    INVITESTATUS_DECLINED = 3
+import datetime
+from templates.code.Comment import Comment
+from templates.code.Notification import Notification
 
-    def __init__(self, eventID, userID, title, description, startDateTime,
-                 endDateTime, category, location):
+class Event():
+    def __init__(self, eventID, userID, title, description, startDateTime, 
+            endDateTime, category, location=None, invitees=dict()):
         self._eventID = eventID
         self._userID = userID
         self._title = title
@@ -15,8 +14,7 @@ class Event:
         self._category = category
         self._location = location
         self._comments = []
-        self._invitees = []
-        self._groups = []
+        self._invitees = invitees
 
     def getUserID(self):
         return self._userID
@@ -48,9 +46,6 @@ class Event:
     def getInvitees(self):
         return self._invitees
 
-    def getGroups(self):
-        return self._groups
-
     def setUser(self, user):
         self._userID = user
 
@@ -81,18 +76,11 @@ class Event:
         self._comments.append(comment)
 
     def addInvitee(self, invitee):
-        self._invitees.append(invitee)
+        if not invitee in self._invitees:
+            self._invitees.append(invitee)
 
     def addGroup(self, group):
         self._groups.append(group)
-
-    # Returns true if group exists in event and is successfully removed
-    def removeGroup(self, group):
-        try:
-            self._groups.remove(group)
-            return True
-        except:
-            return False
 
     # Edits an event
     # Returns true if editing is successful, false if not
