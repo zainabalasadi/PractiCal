@@ -86,7 +86,6 @@ class Cal extends Component {
             nlpText: "",
         };
         this.handleClose = this.handleClose.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
     };
 
@@ -180,13 +179,6 @@ class Cal extends Component {
         );
         // localStorage.setItem("cachedEvents", JSON.stringify(updatedEvents));
         this.setState({ events: updatedEvents });
-    }
-
-    // handle search bar
-    handleSearch(event) {
-      const {name, value} = event.target
-      this.setState({ [name]: value})
-      console.log(this.state.search)
     }
 
     render() {
