@@ -104,6 +104,7 @@ export default function PrimarySearchAppBar() {
         'Content-Type': 'application/json;charset=utf-8'
       }
     }).then(response => response.json()).then(data => console.log(data))
+    // TODO Insert code to change state of front end given response from the back end
   }
 
   const menuId = 'primary-search-account-menu';

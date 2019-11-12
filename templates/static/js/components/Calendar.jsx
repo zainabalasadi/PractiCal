@@ -82,11 +82,26 @@ class Cal extends Component {
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
-            search: ""
+            search: "",
+            nlpText: "",
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.handleNlpCreation = this.handleNlpCreation.bind(this);
     };
+
+    handleNlpCreation(e) {
+      console.log(e.target.value)
+      const response = fetch('/nlpCreation', {
+        method: 'POST',
+        body: JSON.stringify({"creationString": e.target.value}),
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        }
+      }).then(response => response.json()).then(data => console.log(data))
+      // TODO Insert code to reflect changes in back end on the front end given the 
+      // response from the fetch request
+    }
 
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
@@ -316,7 +331,16 @@ class Cal extends Component {
             <div style = {{ padding: "100px" }}>
               <TextField
                 id="standard-basic"
-                label="Standard"
+                label="Create an event..."
+                value={ this.state.nlpText }
+                onChange={e => {
+                  this.setState({ nlpText: e.target.value})
+                }}
+                onKeyPress={ e => {
+                  if (e.key === "Enter") {
+                    this.handleNlpCreation(e)
+                  }
+                }}
                 margin="normal"
               />
             </div>
