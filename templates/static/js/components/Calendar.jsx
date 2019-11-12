@@ -1,13 +1,45 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
-import { Dialog, DialogActions, Typography, DialogContent, Button, TextField } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
 import moment from "moment";
-import Drawer from '@material-ui/core/Drawer';
 import Navbar from './Navbar'
+import Sidebar from './Sidebar'
+import CssBaseline from '@material-ui/core/CssBaseline';
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
+import { withStyles } from "@material-ui/core/styles";
 
 // Initialise time localiser
 const localizer = momentLocalizer(moment)
+
+const drawerWidth = 300;
+
+const styles = theme => ({
+    calendar: {
+        height: "85vh", 
+        position: "fixed", 
+        width: "1120px",
+        marginLeft: "15px"
+    },
+    root: {
+        display: 'flex',
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+        padding: theme.spacing(3),
+    },
+    content: {
+        flexGrow: 1,
+    },
+    toolbar: theme.mixins.toolbar,
+});
+
 
 // Load events
 class Cal extends Component {  
@@ -20,57 +52,57 @@ class Cal extends Component {
                 id: 0,
                 title: 'All Day Event very long title',
                 allDay: true,
-                start: new Date(2019, 9, 27),
-                end: new Date(2018, 9, 27),
+                start: new Date(2019, 10, 27, 2, 0, 0),
+                end: new Date(2019, 10, 27, 4, 0, 0),
               },
               {
                 id: 1,
                 title: 'Long Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 23),
+                start: new Date(2019, 10, 5, 8, 0, 0),
+                end: new Date(2019, 10, 8, 9, 0, 0),
               },
               {
                 id: 2,
                 title: 'Hawaii',
-                start: new Date(2019, 9, 18, 0, 0, 0),
-                end: new Date(2019, 9, 18, 0, 0, 0),
+                start: new Date(2019, 10, 18, 12, 0, 0),
+                end: new Date(2019, 10, 18, 2, 0, 0),
               },
               {
                 id: 3,
                 title: 'Party',
-                start: new Date(2019, 10, 5, 0, 0, 0),
-                end: new Date(2019, 10, 5, 0, 0, 0),
+                start: new Date(2019, 10, 5, 5, 0, 0),
+                end: new Date(2019, 10, 5, 12, 0, 0),
               },  
               {
                 id: 4,
                 title: 'Conference',
-                start: new Date(2019, 9, 5),
-                end: new Date(2019, 9, 5),
+                start: new Date(2019, 10, 8, 4, 0, 0),
+                end: new Date(2019, 10, 8, 12, 0, 0),
                 desc: 'Big conference for important people',
               },
               {
                 id: 5,
                 title: 'Double Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 12, 0, 0),
+                end: new Date(2019, 10, 8, 1, 0, 0),
               },
               {
                 id: 6,
                 title: 'Triple Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 1, 0, 0),
+                end: new Date(2019, 10, 8, 3, 0, 0),
               },
               {
                 id: 7,
                 title: '4 Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 2, 0, 0),
+                end: new Date(2019, 10, 8, 5, 0, 0),
               },
               {
                 id: 8,
                 title: '5 Event',
-                start: new Date(2019, 9, 20),
-                end: new Date(2019, 9, 20),
+                start: new Date(2019, 10, 8, 3, 0, 0),
+                end: new Date(2019, 10, 8, 8, 0, 0),
               },
             ],
             title: "",
@@ -137,7 +169,7 @@ class Cal extends Component {
         this.setState({ openEvent: false, openSlot: false });
     }
         
-    //  Allows user to click on calendar slot and handles if appointment exists
+    //  Allows user to click on calendar slot and handles if event exists
     handleSlotSelected(eventToEdit) {
         console.log("Edit calendar info", eventToEdit);
         this.setState ({
@@ -200,14 +232,14 @@ class Cal extends Component {
         this.setState({ end: date });
     };
         
-    // Onclick callback function that pushes new appointment into events array.
-    setNewAppointment() {
+    // Onclick callback function that pushes new event into events array.
+    setNewEvent() {
         const { start, end, title, desc, invitees, groups } = this.state;
-        let appointment = { title, start, end, desc, invitees, groups };
+        let event = { title, start, end, desc, invitees, groups };
         let events = this.state.events.slice();
-        events.push(appointment);
+        events.push(event);
         this.setState({ events });
-        this.create_event(appointment)
+        this.create_event(event)
     }
         
     //  Updates Existing Event Title and/or Description
@@ -244,21 +276,32 @@ class Cal extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         return (
-          <div className="">
-            <Navbar />
-            <main className="cal-content">
-              <div className="App" style = {{ position: "relative" }}>
-                <Calendar
+            <div className={classes.root}>
+            <CssBaseline />
+            <Navbar className={classes.appBar}/>
+
+            <main className={classes.content}>
+                <div className={classes.toolbar} />
+                <Calendar className={classes.calendar}
                   selectable
                   popup
                   localizer = {localizer}
                   defaultDate = {new Date()}
                   defaultView = "month"
                   events = {this.state.events}
+                  showMultiDayTimes={true}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
-                  style = {{ height: "85vh", padding: "50px" }}
+
+                  // UNCOMMENT LATER TO COLOUR DIFF EVENTS
+                  //eventPropGetter={(this.eventStyleGetter)}
+                //   eventPropGetter={event => ({
+                //     style: {
+                //       backgroundColor: event.color,
+                //     },
+                //   })}
                 />
 
                 {/* Modal for booking new event */}
@@ -317,7 +360,7 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.setNewAppointment(), this.handleClose();
+                      this.setNewEvent(), this.handleClose();
                     }}
                     >
                     Submit
@@ -403,25 +446,47 @@ class Cal extends Component {
                     </Button>
                   </DialogActions>
                 </Dialog>
-              </div>
             </main>
-
-				<Drawer
-				className="draw"
-				variant="permanent"
-				anchor="right"
-				classes={{
-				  paper: 'draw-paper',
-				}}
-				>
-					<Typography>
-						Sidebar here
-					</Typography>
-				</Drawer>
-			</div>
-            
+<Sidebar />
+            </div>
         );
     }
 }
 
-export default Cal;
+export default withStyles(styles)(Cal);
+
+// eventStyleGetter: function(event, start, end, isSelected) {
+//     console.log(event);
+//     var backgroundColor = '#' + event.hexColor;
+//     var style = {
+//         backgroundColor: backgroundColor,
+//         borderRadius: '0px',
+//         opacity: 0.8,
+//         color: 'black',
+//         border: '0px',
+//         display: 'block'
+//     };
+//     return {
+//         style: style
+//     };
+// },
+
+// getEventStyle(event, start, end, isSelected) {
+//     const style = {}
+//     const todayDate = new Date().getDate()
+
+//     if (start.getDate() === todayDate) {
+//       style.backgroundColor = 'green'
+//     } else if (start.getDate() < todayDate) {
+//       style.backgroundColor = 'red'
+//     } else if (start.getDate() > todayDate) {
+//       style.backgroundColor = 'blue'
+//     }
+//     if (event.bgcolor) {
+//       style.backgroundColor = event.bgcolor
+//     }
+
+//     return { style }
+//   }
+
+

@@ -5,7 +5,8 @@ import datetime
 
 from templates.code.Notification import Notification
 
-class Calendar():
+
+class Calendar:
     def __init__(self, name, colour, user):
         self._name = name
         self._colour = colour
@@ -35,17 +36,14 @@ class Calendar():
             return True
         return False
 
-    
-    def moveDelete(event):
+    def moveDelete(self, event):
         self._events.remove(event)
-    
+
     # Removes a given event from a user's calendar
     # Returns true if removal is successful, false if not
     def deleteEvent(self, event):
-        flag = False
         # If the event is shared, remove from everyone's calendar
         if event.getUser() == self._user:
-            flag = True
             for invitee in event.getInvitees():
                 for calendar in invitee.getCalendars():
                     # if they haven't accepted the invite notif, remove it
@@ -55,7 +53,7 @@ class Calendar():
 
                     # if they have, delete the event from their calendar and notify them
                     if event in calendar.getEvents():
-                        newNotif = Notification(event, 'deleted_event', event.getUser(), invitee, '')
+                        newNotif = Notification(event, 'deleted_event', event.getUser())
                         invitee.addNotification(newNotif)
                         calendar.deleteEvent(event)
 
@@ -64,14 +62,7 @@ class Calendar():
             self._events.remove(event)
             return True
 
-        #TODO
-        if flag:
-            for group in event.getGroups():
-                group.removeEvent(event)
-        #remove from groups that have this event
-
         return False
-
 
     def calculateHoursCategory(self, category, week):
         time = 0
