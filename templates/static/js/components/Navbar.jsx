@@ -11,7 +11,6 @@ import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { func } from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   grow: {
