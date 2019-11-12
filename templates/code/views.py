@@ -58,22 +58,22 @@ def forgot():
 
 @index_blueprint.route('/createEvent', methods=['POST'])
 def createEvent():
-    if request.method == 'POST':
-        userId = current_user.getID()
-        name = request.form.get('eventName')
-        desc = request.form.get('description')
-        startDate = request.form.get('startDate')
-        endDate = request.form.get('endDate')
-        cal = current_user.getCalendarByName(request.form.get('calendar'))
-        invitees = request.form.get('invitees')
-        groups = request.form.get('groups')
-        if cal is not None:
-            event = PCM.addEvent(userId, name, desc, cal, startDate, endDate)
-            cal.addEvent(event)
-            return jsonify({"success": "True"})
+	if request.method == 'POST':
+		userId = current_user.getID()
+		name = request.form.get('eventName')
+		desc = request.form.get('description')
+		startDate = request.form.get('startDate')
+		endDate = request.form.get('endDate')
+		cal = current_user.getCalendarByName(request.form.get('calendar'))
+		invitees = request.form.get('invitees')
+		groups = request.form.get('groups')
+		if (cal != None):
+			event = PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate)
+			cal.addEvent(event)
 
-        return jsonify({"success": "False"})
-
+			return jsonify({"success":"True"})
+		
+		return jsonify({"success":"False"})
 
 @index_blueprint.route('/editEvent', methods=['POST'])
 def editEvent():
@@ -132,9 +132,30 @@ def getEvents():
 
 @index_blueprint.route('/searchEvents', methods=['POST'])
 def searchEvents():
-    if request.method == 'POST':
-        return jsonify(current_user.getEventsByQuery(request.form.get('queryString')))
 
+	if request.method == 'POST':
+	eventList = []
+	for event in current_user.getEventsByQuery(request.form.get('queryString'):
+		eventDict = {}
+		eventDict['creator'] = event.getUser().firstName()
+		eventDict['name'] = event.getName()
+		eventDict['eventId'] = event.getID()
+		eventDict['description'] = event.getDescription()
+		eventDict['startDateTime'] = event.getStartDateTime()
+		eventDict['endDateTime'] = event.getEndDateTime()
+		eventDict['category'] = event.getCategory()
+		eventDict['comments'] = event.getComments()
+		eventDict['invitees'] = event.getInvitees()
+		eventDict['groups'] = event.getGroups()
+		eventList.append(eventDict)
+	return jsonify({"results": eventList}))
+	
+@index_blueprint.route('/inviteResponse', methods=['POST'])
+def respondToInvite():
+	if request.method == 'POST':
+		eID = request.form.get("eventID")
+		resp = request.form.get("response")
+		PCM.respondToInvite(eid, current_user.getID(), resp)
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
