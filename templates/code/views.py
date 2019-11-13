@@ -62,11 +62,11 @@ def createEvent():
 	if request.method == 'POST':
 		r = request.get_json()
 		userId = current_user.getID()
-		name = r['eventName']
-		desc = r['description']
+		name = r['name']
+		desc = r['desc']
 		startDate = r['startDate']
 		endDate = r['endDate']
-		cal = current_user.getCalendarByName(r['calendar'])
+		cal = current_user.getCalendarByName(r['cal'])
 		invitees = r['invitees']
 		groups = r['groups']
 		if (cal != None):
