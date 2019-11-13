@@ -228,7 +228,7 @@ class DatabaseManager():
             return -1
 
     def addEvent(self, userID, title, descr, calendar, category, startDT,
-                 endDT=None, location=None, invitees=None):
+                 endDT=None, location=None):
         cursor = self._db.cursor()
 
         try:
@@ -239,10 +239,10 @@ class DatabaseManager():
                 raise ValueError("User does not exist")
 
             sql = ("INSERT INTO events (uid, title, descr, startdt, "
-                   "enddt, calendar, category, location, invitees) "
-                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                   "enddt, calendar, category, location) "
+                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
             val = (userID, title, descr, startDT, endDT, calendar, category,
-                location, invitees)
+                location)
             cursor.execute(sql, val)
             self._db.commit()
             newID = cursor.lastrowid
@@ -604,7 +604,7 @@ class DatabaseManager():
 
     def getNotifications(self, receiverID):
         cursor = self._db.cursor()
-        sql = ("SELECT eid, sender_id, receiver_id, notif_type "
+        sql = ("SELECT eid, sender_id, notif_type "
                "FROM notifications WHERE receiver_id = %s")
         val = (receiverID, )
         try:
@@ -692,7 +692,6 @@ if __name__ == "__main__":
                     "calendar VARCHAR(25), "
                     "category VARCHAR(25), "
                     "location TEXT, "
-                    "invitees TEXT, "
                     "PRIMARY KEY (eid), "
                     "FOREIGN KEY (uid) REFERENCES users(uid))"))
     cursor.execute(("CREATE TABLE invites ("

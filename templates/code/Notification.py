@@ -14,10 +14,10 @@ class Notification:
     NOTIF_INVITERESP_DECLINE = 5
     NOTIF_INVITERESP_NONE = 6
 
-    def __init__(self, event, notifType, senderID):
+    def __init__(self, event, notifType, senderEmail):
         self._event = event
         self._notifType = notifType
-        self._senderID = senderID
+        self._senderEmail = senderEmail
 
     def getEvent(self):
         return self._event
@@ -25,5 +25,5 @@ class Notification:
     def getNotifType(self):
         return self._notifType
 
-    def getSenderID(self):
-        return self._senderID
+    def getSenderEmail(self):
+        return self._senderEmail
