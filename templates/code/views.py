@@ -57,16 +57,18 @@ def forgot():
 
 
 @index_blueprint.route('/createEvent', methods=['POST'])
+@login_required
 def createEvent():
 	if request.method == 'POST':
+		request = request.get_json()
 		userId = current_user.getID()
-		name = request.form.get('eventName')
-		desc = request.form.get('description')
-		startDate = request.form.get('startDate')
-		endDate = request.form.get('endDate')
-		cal = current_user.getCalendarByName(request.form.get('calendar'))
-		invitees = request.form.get('invitees')
-		groups = request.form.get('groups')
+		name = request['eventName']
+		desc = request['description']
+		startDate = request['startDate']
+		endDate = request['endDate']
+		cal = current_user.getCalendarByName(request['calendar'])
+		invitees = request['invitees']
+		groups = request['groups']
 		if (cal != None):
 			event = PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate)
 			cal.addEvent(event)
@@ -76,6 +78,7 @@ def createEvent():
 		return jsonify({"success":"False"})
 
 @index_blueprint.route('/editEvent', methods=['POST'])
+@login_required
 def editEvent():
     if request.method == 'POST':
         event = current_user.getEventById(request.form.get('id'))
@@ -93,6 +96,7 @@ def editEvent():
 
 
 @index_blueprint.route('/deleteEvent', methods=['POST'])
+@login_required
 def deleteEvent():
     if request.method == 'POST':
         event = current_user.getEventById(request.form.get('id'))
@@ -104,6 +108,7 @@ def deleteEvent():
 
 
 @index_blueprint.route('/getEvents', methods=['POST'])
+@login_required
 def getEvents():
     ret = []
     for cal in current_user.getCalendars():
@@ -131,6 +136,7 @@ def getEvents():
 
 
 @index_blueprint.route('/searchEvents', methods=['POST'])
+@login_required
 def searchEvents():
     if request.method == 'POST':
         eventList = []
@@ -148,15 +154,17 @@ def searchEvents():
         eventDict['groups'] = event.getGroups()
         eventList.append(eventDict)
     return jsonify({"results": eventList})
-	
+        
 @index_blueprint.route('/inviteResponse', methods=['POST'])
+@login_required
 def respondToInvite():
-	if request.method == 'POST':
-		eID = request.form.get("eventID")
-		resp = request.form.get("response")
-		PCM.respondToInvite(eid, current_user.getID(), resp)
+        if request.method == 'POST':
+                eID = request.form.get("eventID")
+                resp = request.form.get("response")
+                PCM.respondToInvite(eid, current_user.getID(), resp)
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
+
 def register():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -178,6 +186,7 @@ def register():
 
 @index_blueprint.route('/calendar', methods=['GET', 'POST'])
 @login_required
+@login_required
 def calendar():
     return render_template('/calendar.html', name=current_user.getFirstName())
 
@@ -186,6 +195,7 @@ post_blueprint = Blueprint('post', __name__)
 
 
 @post_blueprint.route("/getIntent", methods=['POST'])
+@login_required
 def getIntent():
     textMsg = request.form.get['message']
 
@@ -205,6 +215,7 @@ def getIntent():
 
 
 @index_blueprint.route('/sendInvite', methods=['GET', 'POST'])
+@login_required
 def sendInvite():
     if request.method == 'POST':
         eventID = request.form.get('eventID')
@@ -214,6 +225,7 @@ def sendInvite():
 
 
 @index_blueprint.route('/getNotifs', methods=['POST'])
+@login_required
 def getNotifs():
     notifList = []
     for notif in current_user.getNotifications():
@@ -228,6 +240,7 @@ def getNotifs():
 
 
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
+@login_required
 def getCategoryHours():
     if request.method == 'POST':
         category = request.form.get('category')

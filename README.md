@@ -8,7 +8,7 @@ source venv/bin/activate
 ```
 2. Add Google credentials
 ```
-GOOGLE_APPLICATION_CREDENTIALS=./googlekey.json
+export GOOGLE_APPLICATION_CREDENTIALS=./googlekey.json
 ```
 3. Install requirements
 ```

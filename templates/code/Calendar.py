@@ -47,7 +47,7 @@ class Calendar():
     # Add invite to calendar. If invite already in calendar,
     # changes existing status to one provided
     def addInvite(self, event, status=None):
-        if not status: status = self.IVITESTATUS_NONE
+        if not status: status = self.INVITESTATUS_NONE
         if not (status >= self.INVITESTATUS_NONE and \
                 status <= self.INVITESTATUS_DECLINE):
             return
