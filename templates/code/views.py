@@ -138,7 +138,7 @@ def getEvents():
 @index_blueprint.route('/searchEvents', methods=['POST'])
 @login_required
 def searchEvents():
-    if request.method == 'POST':
+	if request.method == 'POST':
 		eventList = []
 		for event in current_user.getEventsByQuery(request.form.get('queryString')):
 			eventDict = {}
