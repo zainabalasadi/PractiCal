@@ -60,15 +60,15 @@ def forgot():
 @login_required
 def createEvent():
 	if request.method == 'POST':
-		request = request.get_json()
+		r = request.get_json()
 		userId = current_user.getID()
-		name = request['eventName']
-		desc = request['description']
-		startDate = request['startDate']
-		endDate = request['endDate']
-		cal = current_user.getCalendarByName(request['calendar'])
-		invitees = request['invitees']
-		groups = request['groups']
+		name = r['eventName']
+		desc = r['description']
+		startDate = r['startDate']
+		endDate = r['endDate']
+		cal = current_user.getCalendarByName(r['calendar'])
+		invitees = r['invitees']
+		groups = r['groups']
 		if (cal != None):
 			event = PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate)
 			cal.addEvent(event)
@@ -140,20 +140,20 @@ def getEvents():
 def searchEvents():
     if request.method == 'POST':
         eventList = []
-    for event in current_user.getEventsByQuery(request.form.get('queryString')):
-        eventDict = {}
-        eventDict['creator'] = event.getUser().firstName()
-        eventDict['name'] = event.getName()
-        eventDict['eventId'] = event.getID()
-        eventDict['description'] = event.getDescription()
-        eventDict['startDateTime'] = event.getStartDateTime()
-        eventDict['endDateTime'] = event.getEndDateTime()
-        eventDict['category'] = event.getCategory()
-        eventDict['comments'] = event.getComments()
-        eventDict['invitees'] = event.getInvitees()
-        eventDict['groups'] = event.getGroups()
-        eventList.append(eventDict)
-    return jsonify({"results": eventList})
+		for event in current_user.getEventsByQuery(request.form.get('queryString')):
+			eventDict = {}
+			eventDict['creator'] = event.getUser().firstName()
+			eventDict['name'] = event.getName()
+			eventDict['eventId'] = event.getID()
+			eventDict['description'] = event.getDescription()
+			eventDict['startDateTime'] = event.getStartDateTime()
+			eventDict['endDateTime'] = event.getEndDateTime()
+			eventDict['category'] = event.getCategory()
+			eventDict['comments'] = event.getComments()
+			eventDict['invitees'] = event.getInvitees()
+			eventDict['groups'] = event.getGroups()
+			eventList.append(eventDict)
+		return jsonify({"results": eventList})
         
 @index_blueprint.route('/inviteResponse', methods=['POST'])
 @login_required
