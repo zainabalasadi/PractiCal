@@ -158,13 +158,16 @@ def searchEvents():
 @index_blueprint.route('/inviteResponse', methods=['POST'])
 @login_required
 def respondToInvite():
-        if request.method == 'POST':
-                eID = request.form.get("eventID")
-                resp = request.form.get("response")
-                PCM.respondToInvite(eid, current_user.getID(), resp)
+    if request.method == 'POST':
+        r = request.get_json()
+        eID = r['eventID']
+        resp = r["response"]
+        PCM.respondToInvite(eID, current_user.getID(), resp)
+        return jsonify({'success': 'true'})
+    return jsonify({'success': 'false'})
+
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
-
 def register():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -197,7 +200,8 @@ post_blueprint = Blueprint('post', __name__)
 @post_blueprint.route("/getIntent", methods=['POST'])
 @login_required
 def getIntent():
-    textMsg = request.form.get['message']
+    r = request.get_json()
+    textMsg = r['message']
 
     SESSION_ID = current_user.getId()  # needs to be replaced with the logged in users id
     session = sessionClient.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
@@ -218,10 +222,13 @@ def getIntent():
 @login_required
 def sendInvite():
     if request.method == 'POST':
-        eventID = request.form.get('eventID')
+        r = request.get_json()
+        eventID = r['eventID']
         sender = current_user.getID()
-        invitees = request.form.get('invitees')
+        invitees = r['invitees']
         PCM.sendInvite(eventID, sender, invitees)
+        return jsonify({'success': 'true'})
+    return jsonify({'success': 'false'})
 
 
 @index_blueprint.route('/getNotifs', methods=['POST'])
