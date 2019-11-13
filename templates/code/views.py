@@ -67,11 +67,15 @@ def createEvent():
 		desc = r['desc']
 		startDate = r['startDate']
 		endDate = r['endDate']
-		cal = current_user.getCalendarByName(r['cal'])
-		invitees = r['invitees']
-		groups = r['groups']
+		cal = current_user.getCalendarByName("default")
+		invitees = None
+		if 'invitees' in r:
+			invitees = r['invitees']
+		groups = None
+		if 'groups' in r:
+			groups = r['groups']
 		if (cal != None):
-			event = PCM.addEvent(eventId, currentUser, name, desc, startDate, endDate)
+			event = PCM.addEvent(current_user, name, desc, startDate, endDate)
 			cal.addEvent(event)
 
 			return jsonify({"success":"True"})
