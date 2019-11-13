@@ -112,10 +112,8 @@ class Cal extends Component {
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
-            search: ""
         };
         this.handleClose = this.handleClose.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
     };
 
     create_event(event) {
@@ -163,7 +161,6 @@ class Cal extends Component {
 
         }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
     }
-
 
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
@@ -266,13 +263,6 @@ class Cal extends Component {
         );
         // localStorage.setItem("cachedEvents", JSON.stringify(updatedEvents));
         this.setState({ events: updatedEvents });
-    }
-
-    // handle search bar
-    handleSearch(event) {
-      const {name, value} = event.target
-      this.setState({ [name]: value})
-      console.log(this.state.search)
     }
 
     render() {
@@ -447,7 +437,7 @@ class Cal extends Component {
                   </DialogActions>
                 </Dialog>
             </main>
-<Sidebar />
+            <Sidebar />
             </div>
         );
     }
