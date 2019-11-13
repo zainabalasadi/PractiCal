@@ -4,6 +4,7 @@ import { Dialog, DialogActions, DialogContent, Button, TextField } from "@materi
 import moment from "moment";
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
+import Select from '@material-ui/core/Select';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
 import { withStyles } from "@material-ui/core/styles";
@@ -119,7 +120,8 @@ class Cal extends Component {
     };
 
     create_event(event) {
-        console.log(event.state)
+        console.log(event)
+        // console.log(event.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                                     "groups": event.groups, "cal": event.cal}))
@@ -131,7 +133,16 @@ class Cal extends Component {
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "cal": event.cal})
-        }).then((data) => data.json()).then(event => createEvent(event));
+        }).then((data) => data.json()).then(event => {
+            console.log(event)
+            if (event.status === 200) {
+                // append to events list
+                console.log("Created event successfully", event.responseText)
+                events.push(event)
+            } else {
+                console.log("Failed event creation", event.responseText)
+            }
+        });
     }
 
     edit_event(event) {
@@ -149,6 +160,7 @@ class Cal extends Component {
         }).then((data) => data.json()).then(event => editEvent(event));
     }
 
+    // DO LATER
     get_calendars() {
         let response = fetch('/getEvents', {
             method: 'POST'
@@ -198,13 +210,11 @@ class Cal extends Component {
     }
         
     setTitle(e) {
-        console.log(e);
         this.setState({ title: e });
     }
         
     setDescription(e) {
         this.setState({ desc: e });
-        console.log(e);
     }
 
     setInvitees(e) {
@@ -217,7 +227,6 @@ class Cal extends Component {
 
     setStart(e) {
         this.setState({ start: e });
-        console.log(e);
     }
 
     setEnd(e) {
@@ -345,7 +354,24 @@ class Cal extends Component {
                     onChange={e => {
                         this.setGroup(e.target.value);
                     }}
-                    />                    
+                    /> 
+                    <Select
+                      native
+                    //   onChange={e => {
+                    //     this.setCalendar(e.)
+                    //   }}
+                    //   value={}
+                    //   onChange={handleChange('age')}
+                    //   inputProps={{
+                    //     name: 'age',
+                    //     id: 'age-native-simple',
+                    //   }}
+                    >
+                        <option value="" />
+                        <option value={10}>Default</option>
+                        <option value={20}>Work</option>
+                        <option value={30}>Social</option>
+                    </Select>                   
                   </DialogContent>
                   <DialogActions>
                     <Button 
