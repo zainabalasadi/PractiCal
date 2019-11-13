@@ -189,7 +189,7 @@ class PractiCalManager():
             inviteeEmails=None):
 
         eventID = self._db.addEvent(userID, title, description, calendar,
-            category, startDateTime, endDateTime, location, jInvitees)
+            category, startDateTime, endDateTime, location)
         if eventID == -1: return None
 
         event = Event(eventID, userID, title, description, startDateTime,
