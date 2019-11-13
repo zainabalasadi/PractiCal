@@ -82,7 +82,7 @@ def createEvent():
 @login_required
 def editEvent():
     if request.method == 'POST':
-		r = request.get_json()
+        r = request.get_json()
         event = current_user.getEventById(request.form.get('id'))
         if event is not None:
             name = r['eventName']
@@ -101,7 +101,7 @@ def editEvent():
 @login_required
 def deleteEvent():
     if request.method == 'POST':
-		r = request.get_json()
+        r = request.get_json()
         event = current_user.getEventById(r['id'])
         if event is not None:
             # TODO: Need PCM fn to update db entries
