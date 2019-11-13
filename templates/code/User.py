@@ -18,7 +18,7 @@ class User(UserMixin):
         self._email = email
         self._password = password
         self._defaultCalendar = Calendar('default', 'blue')
-        self._calendars = dict()
+        self._calendars = []
         self._contacts = []
         self._groups = []
         self._notifications = []
@@ -62,13 +62,13 @@ class User(UserMixin):
     def getEmail(self):
         return self._email
 
-    def getCalendars(self):
-        return [self._defaultCalendar] + list(self._calendars.values())
-
-    def getCalendarByName(self, name):
+    def getCalendars(self, calendar=None):
+        if not calendar:
+            return [self._defaultCalendar] + self._calendars
+        if calendar == 'default':
+            return self._defaultCalendar
         for cal in self._calendars:
-            if cal.getName == name:
-                return cal
+            if cal.getName() == calendar: return cal
         return None
 
     def getContacts(self):
@@ -88,10 +88,12 @@ class User(UserMixin):
         if newCalName == 'default':
             self._defaultCalendar = newCalendar
             return True
-        if newCalName not in self._calendars.keys():
-            self._calendars[newCalName] = newCalendar
-            return True
-        return False
+        for cal in self._calendars:
+            if cal.getName() == newCalName:
+                return False
+
+        self._calendars.append(newCalendar)
+        return True
 
     def addContact(self, contact):
         if contact not in self._contacts:

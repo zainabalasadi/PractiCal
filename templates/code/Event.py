@@ -75,12 +75,10 @@ class Event():
     def addComment(self, comment):
         self._comments.append(comment)
 
-    def addInvitee(self, invitee):
-        if not invitee in self._invitees:
-            self._invitees.append(invitee)
-
-    def addGroup(self, group):
-        self._groups.append(group)
+    def addInvitees(self, invitee):
+        for invitee in invitees:
+            if not invitee in self._invitees:
+                self._invitees.append(invitee)
 
     # Edits an event
     # Returns true if editing is successful, false if not
@@ -99,7 +97,8 @@ class Event():
     def removeComment(self, comment):
         for comments in self._comments:
             # if the comment matches, and its the same poster, remove it
-            if comment.getComment() == comments.getComment() and comment.getUser() == comments.getUser():
+            if comment.getComment() == comments.getComment() and \
+                    comment.getUser() == comments.getUser():
                 self._comments.remove(comments)
             # recursion
             comments.deleteComment(comment)
