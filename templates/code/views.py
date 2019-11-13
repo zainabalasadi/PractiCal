@@ -61,6 +61,7 @@ def forgot():
 def createEvent():
 	if request.method == 'POST':
 		r = request.get_json()
+		print(r)
 		userId = current_user.getID()
 		name = r['name']
 		desc = r['desc']
@@ -81,13 +82,14 @@ def createEvent():
 @login_required
 def editEvent():
     if request.method == 'POST':
+        r = request.get_json()
         event = current_user.getEventById(request.form.get('id'))
         if event is not None:
-            name = request.form.get('eventName')
-            desc = request.form.get('description')
-            startDate = request.form.get('startDate')
-            endDate = request.form.get('endDate')
-            newCalendar = request.form.get('calendar')
+            name = r['eventName']
+            desc = r['description']
+            startDate = r['startDate']
+            endDate = r['endDate']
+            newCalendar = r['calendar']
             # TODO: Need PCM fn to update db entries
             if current_user.updateEvent(event, name, desc, startDate, endDate, newCalendar):
                 return jsonify({"success": "True"})
@@ -99,7 +101,8 @@ def editEvent():
 @login_required
 def deleteEvent():
     if request.method == 'POST':
-        event = current_user.getEventById(request.form.get('id'))
+        r = request.get_json()
+        event = current_user.getEventById(r['id'])
         if event is not None:
             # TODO: Need PCM fn to update db entries
             userId = current_user.deleteEvent(event)
@@ -132,15 +135,16 @@ def getEvents():
 			eventList.append(eventDict)
 			calObj['events'] = eventList
 		ret.append(calObj)
-	return jsonify(ret)
+	return jsonify({"calendars": ret})
 
 
 @index_blueprint.route('/searchEvents', methods=['POST'])
 @login_required
 def searchEvents():
 	if request.method == 'POST':
+		r = request.get_json()
 		eventList = []
-		for event in current_user.getEventsByQuery(request.form.get('queryString')):
+		for event in current_user.getEventsByQuery(r['queryString']):
 			eventDict = {}
 			eventDict['creator'] = event.getUser().firstName()
 			eventDict['name'] = event.getName()

@@ -71,6 +71,12 @@ class User(UserMixin):
             if cal.getName() == calendar: return cal
         return None
 
+    def getCalendarByName(self, name):
+        for cal in self._calendars:
+            if cal.getName() == name:
+                return cal
+        return None
+
     def getContacts(self):
         return self._contacts
 
