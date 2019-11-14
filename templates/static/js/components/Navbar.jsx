@@ -11,6 +11,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import PeopleIcon from '@material-ui/icons/People';
 import logo from '../../../public/logo.svg';
 import { withStyles } from "@material-ui/core/styles";
+import TimeBreakdown from './TimeBreakdown'
 
 const styles = theme => ({
     nav: {
@@ -211,6 +212,7 @@ class Navbar extends Component {
                         }}
                         />
                     </div>
+                    <TimeBreakdown/>
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         <IconButton aria-label="show 5 new notifications" color="inherit">
@@ -223,7 +225,7 @@ class Navbar extends Component {
                         >
                             <PeopleIcon />
                         </IconButton>
-                        <IconButton>
+                        <IconButton  color="inherit">
                             <AccountCircle />
                         </IconButton>
                     </div>

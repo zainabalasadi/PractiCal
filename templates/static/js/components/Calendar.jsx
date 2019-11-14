@@ -6,6 +6,7 @@ import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
 import moment from "moment";
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
+
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -144,13 +145,13 @@ class Cal extends Component {
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "cal": event.calendar})
         }).then((data) => data.json()).then(event => {
-            console.log(event)
-            if (event.status === 200) {
+            console.log(event.success);
+            if (event.success) {
                 // append to events list
-                console.log("Created event successfully", event.responseText)
-                events.push(event)
+                console.log("Created event successfully")
+                this.state.events.push(event)
             } else {
-                console.log("Failed event creation", event.responseText)
+                console.log("Failed event creation")
             }
         });
     }
@@ -283,7 +284,7 @@ class Cal extends Component {
         return (
             <div className={classes.root}>
             <CssBaseline />
-            <Navbar className={classes.appBar}/>
+            <Navbar/>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 <Calendar className={classes.calendar}
