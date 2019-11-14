@@ -118,6 +118,9 @@ class Cal extends Component {
             start: "",
             end: "",
             desc: "",
+            invitees: "",
+            groups: "",
+            calendar: "",
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
@@ -290,7 +293,7 @@ class Cal extends Component {
                   defaultDate = {new Date()}
                   defaultView = "month"
                   events = {this.state.events}
-                  showMultiDayTimes={true}
+                  showMultiDayTimes = {true}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
                 //   components={{
@@ -452,7 +455,21 @@ class Cal extends Component {
                     onChange={e => {
                         this.setGroup(e.target.value);
                     }}
-                    />  
+                    /> 
+                    <InputLabel htmlFor="demo-dialog-native">Calendar</InputLabel>
+                    <Select
+                      native
+                      value={this.state.calendar}
+                      defaultValue='Default'
+                      onChange={e => {
+                        this.setCalendar(e.target.value);
+                      }}
+                    >
+                        <option value="" />
+                        <option value={"Default"}>Default</option>
+                        <option value={"Work"}>Work</option>
+                        <option value={"Social"}>Social</option>
+                    </Select> 
                   </DialogContent>
                   <DialogActions>
                     <Button 
