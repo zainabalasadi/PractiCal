@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { fade } from '@material-ui/core/styles';
 import { AppBar, Toolbar, InputBase } from '@material-ui/core';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, Button, TextField, Typography } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import SearchIcon from '@material-ui/icons/Search';
@@ -13,11 +13,14 @@ import logo from '../../../public/logo.svg';
 import { withStyles } from "@material-ui/core/styles";
 import TimeBreakdown from './TimeBreakdown'
 
+const navHeight = 64;
+
 const styles = theme => ({
     nav: {
         zIndex: '1400',
         backgroundColor: theme.palette.common.white,
         color: fade(theme.palette.common.black, 0.7),
+        height: navHeight,
     },
 
     grow: {

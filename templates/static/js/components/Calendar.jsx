@@ -15,12 +15,13 @@ import { withStyles } from "@material-ui/core/styles";
 const localizer = momentLocalizer(moment)
 
 const drawerWidth = 300;
+const navHeight = 64;
 
 const styles = theme => ({
     calendar: {
-        height: "85vh", 
+        height: `calc(100% - ${navHeight}px - 43px)`, 
         position: "fixed", 
-        width: "1120px",
+        width: `calc(100% - ${drawerWidth}px + 1px)`,
         marginLeft: "15px"
     },
     root: {
