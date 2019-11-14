@@ -86,6 +86,8 @@ class User(UserMixin):
 
     def getNotifications(self):
         return self._notifications
+    
+    def updateEvent(event, name, desc, startDate)
 
     #
     # Adders
@@ -138,6 +140,12 @@ class User(UserMixin):
     def changeCalendarColour(self, calendar, colour):
         if calendar in self.getCalendars():
             calendar.setColour(colour)
+
+    def moveEvent(self, event, calName):
+        cal = self.getCalendarByName(calName)
+        if (event not in cal.getEvents()):
+            self.deleteEvent(event)
+            cal.addEvent(event)
 
     #
     # Removers

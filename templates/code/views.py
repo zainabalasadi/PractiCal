@@ -89,14 +89,19 @@ def editEvent():
         r = request.get_json()
         event = current_user.getEventById(request.form.get('id'))
         if event is not None:
-            name = r['eventName']
-            desc = r['description']
-            startDate = r['startDate']
-            endDate = r['endDate']
-            newCalendar = r['calendar']
+            if (event.getName() != r['eventName']):
+                event.setName = r['eventName']
+            if (event.getDescription() != r['description']):
+                event.setDescription = r['description']
+            if (event.getStartDateTime() != r['startDate']):
+                event.setStartDateTime = r['startDate']
+            if (event.getEndDateTime() != r['endDate']):
+                event.setEndDateTime = r['endDate']
+            current_user.moveEvent(event, r['calendar'])
             # TODO: Need PCM fn to update db entries
-            if current_user.updateEvent(event, name, desc, startDate, endDate, newCalendar):
-                return jsonify({"success": "True"})
+            PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_UPDATE_EVENT, current_user.getCalendarByName(r['calendar']))
+            PCM.sendNotification(event.getID(), current_user.getID(), event.getInvitees(), Notification.NOTIF_EVENTCHANGE)
+            return jsonify({"success": "True"})
 
         return jsonify({"success": "False"})
 
