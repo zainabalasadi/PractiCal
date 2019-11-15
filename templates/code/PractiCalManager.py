@@ -386,7 +386,7 @@ class PractiCalManager():
                         inviteTypes):
                     self._updateQueue[userID].remove(exUpdate)
 
-        self._updateQueue[uid].append(DBUpdate(userID, obj, calendar,
+        self._updateQueue[userID].append(DBUpdate(userID, obj, calendar,
             updateType))
 
     # Applies changes to database corresponding to list of objects given

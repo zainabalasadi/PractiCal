@@ -235,7 +235,7 @@ class User(UserMixin):
     def getEventById(self, ident):
         for calendar in self._calendars:
             for event in calendar.getEvents():
-                if event.getID == ident:
+                if event.getID() == ident:
                     return event
         return None
 

@@ -59,62 +59,7 @@ class Cal extends Component {
         this.state = {
             // Loading sample events, remove later
             events: [  
-              {
-                id: 0,
-                title: 'All Day Event very long title',
-                allDay: true,
-                start: new Date(2019, 10, 27, 2, 0, 0),
-                end: new Date(2019, 10, 27, 4, 0, 0),
-              },
-              {
-                id: 1,
-                title: 'Long Event',
-                start: new Date(2019, 10, 5, 8, 0, 0),
-                end: new Date(2019, 10, 8, 9, 0, 0),
-              },
-              {
-                id: 2,
-                title: 'Hawaii',
-                start: new Date(2019, 10, 18, 12, 0, 0),
-                end: new Date(2019, 10, 18, 2, 0, 0),
-              },
-              {
-                id: 3,
-                title: 'Party',
-                start: new Date(2019, 10, 5, 5, 0, 0),
-                end: new Date(2019, 10, 5, 12, 0, 0),
-              },  
-              {
-                id: 4,
-                title: 'Conference',
-                start: new Date(2019, 10, 8, 4, 0, 0),
-                end: new Date(2019, 10, 8, 12, 0, 0),
-                desc: 'Big conference for important people',
-              },
-              {
-                id: 5,
-                title: 'Double Event',
-                start: new Date(2019, 10, 8, 18, 0, 0),
-                end: new Date(2019, 10, 8, 20, 0, 0),
-              },
-              {
-                id: 6,
-                title: 'Triple Event',
-                start: new Date(2019, 10, 8, 1, 0, 0),
-                end: new Date(2019, 10, 8, 3, 0, 0),
-              },
-              {
-                id: 7,
-                title: '4 Event',
-                start: new Date(2019, 10, 8, 2, 0, 0),
-                end: new Date(2019, 10, 8, 5, 0, 0),
-              },
-              {
-                id: 8,
-                title: '5 Event',
-                start: new Date(2019, 10, 8, 3, 0, 0),
-                end: new Date(2019, 10, 8, 8, 0, 0),
-              },
+
             ],
             title: "",
             start: "",
@@ -123,6 +68,7 @@ class Cal extends Component {
             invitees: "",
             groups: "",
             calendar: "",
+            eventId: "",
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
@@ -136,7 +82,7 @@ class Cal extends Component {
         // console.log(event.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "cal": event.calendar}))
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
         let response = fetch('/createEvent', {
             method: 'POST',
             headers: {
@@ -144,7 +90,7 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "cal": event.calendar})
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
         }).then((data) => data.json()).then(event => {
             console.log(event.success);
             if (event.success) {
@@ -161,24 +107,59 @@ class Cal extends Component {
     edit_event(event) {
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "cal": event.calendar}))
-        let response = fetch('/createEvent', {
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
+        let response = fetch('/editEvent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "cal": event.calendar})
-        }).then((data) => data.json()).then(event => editEvent(event));
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+        }).then((data) => data.json());
     }
+
+    delete_event(event) {
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc,
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
+        let response = fetch('/deleteEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": event.title, "desc": event.desc,
+                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+        }).then((data) => data.json());
+    }
+
 
     // DO LATER
     get_calendars() {
         let response = fetch('/getEvents', {
-            method: 'POST'
+            method: 'GET'
 
-        }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
+        }).then((data) => data.json()).then(data => this.renderComponentsFromList(data));
+    }
+
+    renderComponentsFromList(calendarList) {
+        console.log(calendarList)
+
+        var new_list = new Array()
+        console.log(calendarList.calendars)
+        for (var i = 0 ; i < calendarList.calendars.length ; i++) {
+                console.log(calendarList.calendars[i])
+                for (var j = 0 ; j <calendarList.calendars[i].events.length ; j++) {
+                    console.log(calendarList.calendars[i].events[j])
+                    new_list.push(calendarList.calendars[i].events[j])
+                }
+        }
+
+        this.setState((prevState) => {
+            events: Array.prototype.push.apply(prevState.events, new_list)
+        })
+
     }
 
     // DO LATER
@@ -196,7 +177,40 @@ class Cal extends Component {
         
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        console.log("Edit calendar info", eventToEdit);
+
+//         to correctly store date need it in this format
+        console.log(eventToEdit)
+        var year = eventToEdit.start.getFullYear()
+        var month = eventToEdit.start.getMonth()
+        var date = eventToEdit.start.getDate()
+
+
+        if (month < 10) {
+            month = "0" + month.toString()
+        }
+
+        if (date < 10) {
+        date = "0" + date.toString()
+        }
+
+        var fullStartDate = year + "-" + month + "-" + date + "T00:00"
+
+         var year1 = eventToEdit.start.getFullYear()
+        var month1 = eventToEdit.start.getMonth()
+        var date1 = eventToEdit.start.getDate()
+
+
+        if (month1 < 10) {
+            month1 = "0" + month1.toString()
+        }
+
+        if (date1 < 10) {
+        date1 = "0" + date1.toString()
+        }
+
+        var fullEndDate = year1 + "-" + month1 + "-" + date1 + "T00:00"
+
+//         console.log(fullEndDate);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
@@ -206,6 +220,7 @@ class Cal extends Component {
             invitees: eventToEdit.invitees,
             groups: eventToEdit.groups,
             calendar: eventToEdit.calendar,
+            eventId: eventToEdit.eventId,
         });
     }
         
@@ -222,6 +237,7 @@ class Cal extends Component {
             invitees: event.invitees,
             groups: event.groups,
             calendar: event.calendar,
+            eventId: event.eventId,
         });
     }
         
@@ -243,11 +259,17 @@ class Cal extends Component {
     handleEndTime = (event, date) => {
         this.setState({ end: date });
     };
+
+    componentDidMount() {
+        this.get_calendars()
+        this.render()
+        this.forceUpdate()
+    }
         
     // Onclick callback function that pushes new event into events array.
     setNewEvent() {
-        const { title, desc, start, end, invitees, groups, calendar } = this.state;
-        let event = { title, desc, start, end, invitees, groups, calendar };
+        const { title, desc, start, end, invitees, groups, calendar, eventId } = this.state;
+        let event = { title, desc, start, end, invitees, groups, calendar, eventId };
         let events = this.state.events.slice();
         events.push(event);
         this.setState({ events });
@@ -256,7 +278,7 @@ class Cal extends Component {
         
     // Updates Existing Event Title and/or Description
     updateEvent() {
-        const { title, desc, start, end, events, invitees, groups, calendar, clickedEvent } = this.state;
+        const { title, desc, start, end, events, invitees, groups, calendar, clickedEvent, eventId } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
         updatedEvent[index].title = title;
@@ -266,18 +288,26 @@ class Cal extends Component {
         updatedEvent[index].invitees = invitees;
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
+        updatedEvent[index].eventId = eventId;
         this.setState({
             events: updatedEvent
         });
-        this.edit_event(updatedEvent)
+        this.edit_event(updatedEvent[index])
     }
         
     // Filters out specific event that is to be deleted and set that variable to state
     deleteEvent() {
         let updatedEvents = this.state.events.filter (
-            event => event["start"] !== this.state.start
+            event => event["eventId"] !== this.state.eventId
         );
+
+        let deletedEvent = this.state.events.filter (
+            event => event["eventId"] === this.state.eventId
+        )
+        console.log(updatedEvents)
+        console.log(deletedEvent)
         this.setState({ events: updatedEvents });
+        this.delete_event(deletedEvent[0])
     }
 
     render() {
@@ -492,14 +522,14 @@ class Cal extends Component {
                     Delete
                     </Button>
                     <Button
-                    label="Submit"
+                    label="Edit"
                     variant="contained" 
                     color="primary"
                     onClick={() => {
                       this.updateEvent(), this.handleClose();
                     }}
                     >
-                    Submit
+                    Edit
                     </Button>
                   </DialogActions>
                 </Dialog>
