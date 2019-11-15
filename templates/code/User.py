@@ -86,8 +86,6 @@ class User(UserMixin):
 
     def getNotifications(self):
         return self._notifications
-    
-    def updateEvent(event, name, desc, startDate)
 
     #
     # Adders
