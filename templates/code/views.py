@@ -113,8 +113,7 @@ def deleteEvent():
         r = request.get_json()
         event = current_user.getEventById(r['id'])
         if event is not None:
-            # TODO: Need PCM fn to update db entries
-            userId = current_user.deleteEvent(event)
+            PCM.deleteEvent(event.getID(), current_user.getID())
 
         return jsonify({"success": "True"})
 
