@@ -86,6 +86,10 @@ h3 {
     background: transparent !important;
 }
 
+.rbc-off-range a {
+    color: #999999 !important;
+}
+
 /** Month view layout **/
 .rbc-month-view {
     color: #DADCE0 !important;
