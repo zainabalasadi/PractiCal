@@ -12,6 +12,7 @@ from templates.code.Notification import Notification
 from templates.code.User import User
 from templates.code.DatabaseManager import DatabaseManager
 
+# Date loads on frontend if we pipe in "YYYY-MM-DDTHH:MM"
 
 class PractiCalManager():
     def __init__(self, database, host, user, password):
