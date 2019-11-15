@@ -3,21 +3,20 @@ import { fade } from '@material-ui/core/styles';
 import { AppBar, Toolbar, InputBase } from '@material-ui/core';
 import { Dialog, DialogTitle, DialogContent, Button, TextField, Typography } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import PeopleIcon from '@material-ui/icons/People';
 import logo from '../../../public/logo.svg';
 import { withStyles } from "@material-ui/core/styles";
 import TimeBreakdown from './TimeBreakdown'
+import Notification from './Notification'
 
 const navHeight = 64;
 
 const styles = theme => ({
     nav: {
-        zIndex: '1400',
+        // zIndex: '1400',
         backgroundColor: theme.palette.common.white,
         color: fade(theme.palette.common.black, 0.7),
         height: navHeight,
@@ -217,18 +216,12 @@ class Navbar extends Component {
                     </div>
                     <TimeBreakdown/>
                     <div className={classes.grow} />
-                    <div className={classes.sectionDesktop}>
-                        <IconButton aria-label="show 5 new notifications" color="inherit">
-                            <Badge badgeContent={5} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton color="inherit"
-                            onClick={this.handleContactOpen}
-                        >
+                    <Notification/>
+                    <div>
+                        <IconButton color="inherit" onClick={this.handleContactOpen}>
                             <PeopleIcon />
                         </IconButton>
-                        <IconButton  color="inherit">
+                        <IconButton color="inherit">
                             <AccountCircle />
                         </IconButton>
                     </div>

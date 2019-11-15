@@ -4,17 +4,19 @@ import { withStyles } from "@material-ui/core/styles";
 import Input from '@material-ui/core/Input';
 
 const drawerWidth = 300;
+const navHeight = 64;
 
 const styles = theme => ({
     drawer: {
+        marginTop: navHeight,
         width: drawerWidth,
         flexShrink: 0,
     },
     drawerPaper: {
+        marginTop: navHeight,
         width: drawerWidth,
         padding: theme.spacing(3),
     },
-    toolbar: theme.mixins.toolbar,
     input: {
         marginBottom: theme.spacing(8),
     },
@@ -55,7 +57,6 @@ class Sidebar extends Component {
                 paper: classes.drawerPaper,
               }}
             >
-            <div className={classes.toolbar} />
                 <h3>Add a Quick Event</h3>
                 <Input
                   className={classes.input}

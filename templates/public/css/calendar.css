@@ -51,6 +51,10 @@ h3 {
     border-bottom: 1px #DADCE0 solid;
     background-color: #ffffff !important;
 }
+
+.MuiMenu-paper {
+    border: 1px solid #F2F3F4;
+}
   
 .calenderContainer {
     margin-top: 10vh;
