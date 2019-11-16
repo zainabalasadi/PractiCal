@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 import dialogflow_v2
 from google.api_core.exceptions import InvalidArgument
 import requests
+import datetime
 
 from templates.code.PractiCalManager import PractiCalManager
 from templates.code.User import User
@@ -65,8 +66,9 @@ def createEvent():
 		userId = current_user.getID()
 		name = r['name']
 		desc = r['desc']
-		startDate = r['startDate']
-		endDate = r['endDate']
+        
+		startDate = datetime.datetime.strptime(r['startDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
+		endDate = datetime.datetime.strptime(r['endDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
 		cal = current_user.getCalendarByName("default")
 		invitees = None
 		if 'invitees' in r:
@@ -93,10 +95,10 @@ def editEvent():
                 event.setName = r['eventName']
             if (event.getDescription() != r['description']):
                 event.setDescription = r['description']
-            if (event.getStartDateTime() != r['startDate']):
-                event.setStartDateTime = r['startDate']
-            if (event.getEndDateTime() != r['endDate']):
-                event.setEndDateTime = r['endDate']
+            if (event.getStartDateTime() != datetime.datetime.strptime(r['startDate'], '%Y-%m-%dT%H:%M:%S.%fZ')):
+                event.setStartDateTime = datetime.datetime.strptime(r['startDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            if (event.getEndDateTime() != datetime.datetime.strptime(r['endDate'], '%Y-%m-%dT%H:%M:%S.%fZ')):
+                event.setEndDateTime = datetime.datetime.strptime(r['endDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
             current_user.moveEvent(event, r['calendar'])
             # TODO: Need PCM fn to update db entries
             PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_UPDATE_EVENT, current_user.getCalendarByName(r['calendar']))
