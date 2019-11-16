@@ -54,6 +54,14 @@ class PractiCalManager():
             return self._users[uid]
         return None
 
+    def getEventByID(self, eventID):
+        eid = int(eventID)
+        if eid in self._events.keys():
+            print("true")
+            return self._events[eid]
+        print("false")
+        return None
+
     # Returns tuple containing user information in the form
     # (first name, last name, email)
     def getUserInfo(self, userID=None, email=None):
@@ -164,7 +172,6 @@ class PractiCalManager():
     # TODO: garbage cleanup
     def logoutUser(self, userID):
         if userID not in self._users.keys(): return False
-
         self._users[userID].setAuthenticated(False)
 
         # Save notifications to database
@@ -362,7 +369,9 @@ class PractiCalManager():
     # logged out. Add calendar object if object is an event
     def addToUpdateQueue(self, userID, obj, updateType, calendar=None):
         # Check user logged in
+        print(userID)
         if userID not in self._users.keys(): return
+        print("here")
         # If user object, check userID matches id in the object
         if type(obj) == User and userID != obj.getID(): return
         # If modifying or deleting event object, check user is the owner
@@ -391,11 +400,12 @@ class PractiCalManager():
                         inviteTypes):
                     self._updateQueue[userID].remove(exUpdate)
 
-        self._updateQueue[uid].append(self.DBUpdate(userID, obj, calendar,
+        self._updateQueue[userID].append(self.DBUpdate(userID, obj, calendar,
             updateType))
 
     # Applies changes to database corresponding to list of objects given
     def updateDatabase(self, updates):
+        print("bello")
         try:
             for update in updates:
                 updateType = update.getUpdateType()
