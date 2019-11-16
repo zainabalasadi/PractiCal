@@ -175,6 +175,11 @@ class User(UserMixin):
         for calendar in self._calendars:
             calendar.deleteEvent(event)
 
+    def removeInvite(self, event):
+        self._defaultCalendar.removeInvite(event)
+        for calendar in self._calendars:
+            calendar.removeInvite(event)
+
     #
     # Invite response methods
     #
