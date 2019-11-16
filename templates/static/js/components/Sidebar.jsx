@@ -108,6 +108,7 @@ class Sidebar extends Component {
                     }}>
                 CLICK ME
                 </Button>
+{/*                 TODO NEED TO FIX THIS UP*/}
                 <div>{this.state.calendars}</div>
             </Drawer>
         );

@@ -144,31 +144,15 @@ class Cal extends Component {
     }
 
     renderComponentsFromList(calendarList) {
-        //console.log(calendarList)
+        console.log(calendarList)
 
         var new_list = new Array()
-        //console.log(calendarList.calendars)
+        console.log(calendarList.calendars)
         for (var i = 0 ; i < calendarList.calendars.length ; i++) {
-                //console.log(calendarList.calendars[i])
-                for (var j = 0 ; j < calendarList.calendars[i].events.length ; j++) {
-                    this.setTitle(calendarList.calendars[i].events[j].title)
-                    this.setDescription(calendarList.calendars[i].events[j].desc)
-                    this.setInvitees(calendarList.calendars[i].events[j].invitees)
-                    //setGroups(calendarList.calendars[i].events[j].groups)
-                    this.setCalendar(calendarList.calendars[i].events[j].calendar)
-                    this.setStart(calendarList.calendars[i].events[j].start)
-                    this.setEnd(calendarList.calendars[i].events[j].end)
-                    //setId(calendarList.calendars[i].events[j].eventId)
-
-                    this.setNewEvent()
-
-                    // var obj = [{"id":"tag1","text":"tag1"},{"id":"tag2","text":"tag2"}] ;
-
-                    // for (var i =0; i< obj.length ;i++) {
-                    //     console.log(obj[i].id);
-                    // }
-                    //console.log(calendarList.calendars[i].events[j])
-                    //this.state.events.push(calendarList.calendars[i].events[j])
+                console.log(calendarList.calendars[i])
+                for (var j = 0 ; j <calendarList.calendars[i].events.length ; j++) {
+                    console.log(calendarList.calendars[i].events[j])
+                    new_list.push(calendarList.calendars[i].events[j])
                 }
         }
 
