@@ -62,7 +62,7 @@ def forgot():
 def createEvent():
 	if request.method == 'POST':
 		r = request.get_json()
-		print(r)
+		print(r['startDate'])
 		userId = current_user.getID()
 		name = r['name']
 		desc = r['desc']
@@ -139,8 +139,8 @@ def getEvents():
 			eventDict['title'] = event.getName()
 			eventDict['eventId'] = event.getID()
 			eventDict['desc'] = event.getDescription()
-			eventDict['start'] = event.getStartDateTime()
-			eventDict['end'] = event.getEndDateTime()
+			eventDict['start'] = str(event.getStartDateTime()).replace(' ', 'T')
+			eventDict['end'] = str(event.getEndDateTime()).replace(' ', 'T')
 			eventDict['category'] = event.getCategory()
 			eventDict['comments'] = event.getComments()
 			eventDict['invitees'] = event.getInvitees()
