@@ -12,7 +12,6 @@ from templates.code.Notification import Notification
 from templates.code.User import User
 from templates.code.DatabaseManager import DatabaseManager
 
-# Date loads on frontend if we pipe in "YYYY-MM-DDTHH:MM"
 
 class PractiCalManager():
     def __init__(self, database, host, user, password):
@@ -185,18 +184,19 @@ class PractiCalManager():
         return True
 
     # Add a new event to manager and database. Returns new event object
-    def addEvent(self, userID, title, description, calendar,
-            startDateTime, endDateTime=None, category=None, location=None,
+    def addEvent(self, userID, title, description, startDateTime,
+            endDateTime=None, calendarName=None , category=None, location=None,
             inviteeEmails=None):
 
-        eventID = self._db.addEvent(userID, title, description, calendar,
+        eventID = self._db.addEvent(userID, title, description, calendarName,
             category, startDateTime, endDateTime, location)
         if eventID == -1: return None
 
         event = Event(eventID, userID, title, description, startDateTime,
             endDateTime, category, location)
         self._events[eventID] = event
-        self.sendInvite(eventID, userID, inviteeEmails)
+        if inviteeEmails:
+            self.sendInvite(eventID, userID, inviteeEmails)
         return event
 
     # Load event into manager if not already loaded
@@ -249,11 +249,15 @@ class PractiCalManager():
 
         self.sendNotification(eventID, userID, event.getInvitees(),
             Notification.NOTIF_EVENTDELETE)
+        self._db.deleteEvent(eventID)
         del self._events[eventID]
         return True
 
     # Sends event invites to list of users if event exists in manager
     def sendInvite(self, eventID, senderID, receiverEmails, checkExisting=True):
+        # Check receiverEmails not empty
+        if not receiverEmails: return
+
         # Check event is loaded
         if eventID not in self._events.keys(): return
         event = self._events[eventID]
@@ -387,7 +391,7 @@ class PractiCalManager():
                         inviteTypes):
                     self._updateQueue[userID].remove(exUpdate)
 
-        self._updateQueue[userID].append(DBUpdate(userID, obj, calendar,
+        self._updateQueue[uid].append(self.DBUpdate(userID, obj, calendar,
             updateType))
 
     # Applies changes to database corresponding to list of objects given
