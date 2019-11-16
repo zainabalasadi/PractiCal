@@ -59,34 +59,35 @@ def forgot():
 @index_blueprint.route('/createEvent', methods=['POST'])
 @login_required
 def createEvent():
-	if request.method == 'POST':
-		r = request.get_json()
-		print(r)
-		userId = current_user.getID()
-		name = r['name']
-		desc = r['desc']
-		startDate = r['startDate']
-		endDate = r['endDate']
-		cal = current_user.getCalendarByName("default")
-		invitees = None
-		if 'invitees' in r:
-			invitees = r['invitees']
-		groups = None
-		if 'groups' in r:
-			groups = r['groups']
-		if (cal != None):
-			event = PCM.addEvent(current_user, name, desc, startDate, endDate)
-			cal.addEvent(event)
+    if request.method == 'POST':
+        r = request.get_json()
+        userId = current_user.getID()
+        name = r['name']
+        desc = r['desc']
+        startDate = r['startDate']
+        endDate = r['endDate']
+        cal = current_user.getCalendarByName("default")
+        invitees = None
+        if 'invitees' in r:
+            invitees = r['invitees']
+        groups = None
+        if 'groups' in r:
+            groups = r['groups']
+        if (cal != None):
+            event = PCM.addEvent(userId, name, desc, startDate, endDate,
+                calendarName=cal.getName())
+            cal.addEvent(event)
 
-			return jsonify({"success":"True"})
-		
-		return jsonify({"success":"False"})
+            return jsonify({"success":"True"})
+        
+        return jsonify({"success":"False"})
 
 @index_blueprint.route('/editEvent', methods=['POST'])
 @login_required
 def editEvent():
     if request.method == 'POST':
         r = request.get_json()
+        #print(r)
         event = current_user.getEventById(request.form.get('id'))
         if event is not None:
             if (event.getName() != r['eventName']):
@@ -99,8 +100,11 @@ def editEvent():
                 event.setEndDateTime = r['endDate']
             current_user.moveEvent(event, r['calendar'])
             # TODO: Need PCM fn to update db entries
-            PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_UPDATE_EVENT, current_user.getCalendarByName(r['calendar']))
-            PCM.sendNotification(event.getID(), current_user.getID(), event.getInvitees(), Notification.NOTIF_EVENTCHANGE)
+            PCM.addToUpdateQueue(current_user.getID(), event,
+                PCM.DBUpdate.DB_UPDATE_EVENT,
+                current_user.getCalendarByName(r['calendar']))
+            PCM.sendNotification(event.getID(), current_user.getID(),
+                event.getInvitees(), Notification.NOTIF_EVENTCHANGE)
             return jsonify({"success": "True"})
 
         return jsonify({"success": "False"})
@@ -112,7 +116,7 @@ def deleteEvent():
     if request.method == 'POST':
         r = request.get_json()
         event = current_user.getEventById(r['id'])
-        if event is not None:
+        if event:
             # TODO: Need PCM fn to update db entries
             userId = current_user.deleteEvent(event)
 
@@ -122,51 +126,51 @@ def deleteEvent():
 @index_blueprint.route('/getEvents', methods=['POST'])
 @login_required
 def getEvents():
-	ret = []
-	for cal in current_user.getCalendars():
-		calObj = {}
-		calObj['name'] = cal.getName()
-		calObj['colour'] = cal.getColour()
-		calObj['user'] = cal.getUser().firstName()
-		eventList = []
-		for event in cal.getEvents():
-			eventDict = {}
-			eventDict['creator'] = event.getUser().firstName()
-			eventDict['name'] = event.getName()
-			eventDict['eventId'] = event.getID()
-			eventDict['description'] = event.getDescription()
-			eventDict['startDateTime'] = event.getStartDateTime()
-			eventDict['endDateTime'] = event.getEndDateTime()
-			eventDict['category'] = event.getCategory()
-			eventDict['comments'] = event.getComments()
-			eventDict['invitees'] = event.getInvitees()
-			eventDict['groups'] = event.getGroups()
-			eventList.append(eventDict)
-			calObj['events'] = eventList
-		ret.append(calObj)
-	return jsonify({"calendars": ret})
+        ret = []
+        for cal in current_user.getCalendars():
+                calObj = {}
+                calObj['name'] = cal.getName()
+                calObj['colour'] = cal.getColour()
+                calObj['user'] = cal.getUser().firstName()
+                eventList = []
+                for event in cal.getEvents():
+                        eventDict = {}
+                        eventDict['creator'] = event.getUser().firstName()
+                        eventDict['name'] = event.getName()
+                        eventDict['eventId'] = event.getID()
+                        eventDict['description'] = event.getDescription()
+                        eventDict['startDateTime'] = event.getStartDateTime()
+                        eventDict['endDateTime'] = event.getEndDateTime()
+                        eventDict['category'] = event.getCategory()
+                        eventDict['comments'] = event.getComments()
+                        eventDict['invitees'] = event.getInvitees()
+                        eventDict['groups'] = event.getGroups()
+                        eventList.append(eventDict)
+                        calObj['events'] = eventList
+                ret.append(calObj)
+        return jsonify({"calendars": ret})
 
 
 @index_blueprint.route('/searchEvents', methods=['POST'])
 @login_required
 def searchEvents():
-	if request.method == 'POST':
-		r = request.get_json()
-		eventList = []
-		for event in current_user.getEventsByQuery(r['queryString']):
-			eventDict = {}
-			eventDict['creator'] = event.getUser().firstName()
-			eventDict['name'] = event.getName()
-			eventDict['eventId'] = event.getID()
-			eventDict['description'] = event.getDescription()
-			eventDict['startDateTime'] = event.getStartDateTime()
-			eventDict['endDateTime'] = event.getEndDateTime()
-			eventDict['category'] = event.getCategory()
-			eventDict['comments'] = event.getComments()
-			eventDict['invitees'] = event.getInvitees()
-			eventDict['groups'] = event.getGroups()
-			eventList.append(eventDict)
-		return jsonify({"results": eventList})
+        if request.method == 'POST':
+                r = request.get_json()
+                eventList = []
+                for event in current_user.getEventsByQuery(r['queryString']):
+                        eventDict = {}
+                        eventDict['creator'] = event.getUser().firstName()
+                        eventDict['name'] = event.getName()
+                        eventDict['eventId'] = event.getID()
+                        eventDict['description'] = event.getDescription()
+                        eventDict['startDateTime'] = event.getStartDateTime()
+                        eventDict['endDateTime'] = event.getEndDateTime()
+                        eventDict['category'] = event.getCategory()
+                        eventDict['comments'] = event.getComments()
+                        eventDict['invitees'] = event.getInvitees()
+                        eventDict['groups'] = event.getGroups()
+                        eventList.append(eventDict)
+                return jsonify({"results": eventList})
         
 @index_blueprint.route('/inviteResponse', methods=['POST'])
 @login_required
