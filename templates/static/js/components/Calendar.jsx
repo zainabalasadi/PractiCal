@@ -58,7 +58,7 @@ class Cal extends Component {
         super();
         this.state = {
             // Loading sample events, remove later
-            events: [  
+            events: [
 
             ],
             title: "",
