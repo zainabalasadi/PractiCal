@@ -35,9 +35,9 @@ class Sidebar extends Component {
 
     handleNlpCreation(e) {
         console.log(e.target.value)
-        const response = fetch('/nlpCreation', {
+        const response = fetch('/getIntent', {
           method: 'POST',
-          body: JSON.stringify({"creationString": e.target.value}),
+          body: JSON.stringify({"nlpText": e.target.value}),
           headers: {
             'Content-Type': 'application/json;charset=utf-8'
           }

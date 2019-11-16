@@ -181,7 +181,8 @@ class Cal extends Component {
 //         to correctly store date need it in this format
         console.log(eventToEdit)
         var year = eventToEdit.start.getFullYear()
-        var month = eventToEdit.start.getMonth()
+        var month = eventToEdit.start.getMonth() + 1
+        console.log(month)
         var date = eventToEdit.start.getDate()
 
 
@@ -195,8 +196,8 @@ class Cal extends Component {
 
         var fullStartDate = year + "-" + month + "-" + date + "T00:00"
 
-         var year1 = eventToEdit.start.getFullYear()
-        var month1 = eventToEdit.start.getMonth()
+        var year1 = eventToEdit.start.getFullYear()
+        var month1 = eventToEdit.start.getMonth() + 1
         var date1 = eventToEdit.start.getDate()
 
 
@@ -210,13 +211,13 @@ class Cal extends Component {
 
         var fullEndDate = year1 + "-" + month1 + "-" + date1 + "T00:00"
 
-//         console.log(fullEndDate);
+        console.log(eventToEdit.start);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
             desc: eventToEdit.desc,
-            start: eventToEdit.start,
-            end: eventToEdit.end,
+            start: fullStartDate,
+            end: fullEndDate,
             invitees: eventToEdit.invitees,
             groups: eventToEdit.groups,
             calendar: eventToEdit.calendar,

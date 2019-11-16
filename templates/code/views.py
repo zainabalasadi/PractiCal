@@ -66,8 +66,8 @@ def createEvent():
 		userId = current_user.getID()
 		name = r['name']
 		desc = r['desc']
-		startDate = r['startDate']
-		endDate = r['endDate']
+		startDate = r['startDate'].replace('T', ' ')
+		endDate = r['endDate'].replace('T', ' ')
 		cal = current_user.getCalendarByName("default")
 		invitees = None
 		if 'invitees' in r:
@@ -76,7 +76,7 @@ def createEvent():
 		if 'groups' in r:
 			groups = r['groups']
 		if (cal != None):
-			event = PCM.addEvent(current_user, name, desc, startDate, endDate)
+			event = PCM.addEvent(current_user, name, desc, cal, startDate, endDate)
 			cal.addEvent(event)
 
 			return jsonify({"success": "True"})
@@ -96,9 +96,9 @@ def editEvent():
 			if (event.getDescription() != r['desc']):
 				event.setDescription = r['desc']
 			if (event.getStartDateTime() != r['startDate']):
-				event.setStartDateTime = r['startDate']
+				event.setStartDateTime = r['startDate'].replace('T', ' ')
 			if (event.getEndDateTime() != r['endDate']):
-				event.setEndDateTime = r['endDate']
+				event.setEndDateTime = r['endDate'].replace('T', ' ')
 			current_user.moveEvent(event, r['calendar'])
 			# TODO: Need PCM fn to update db entries
 			PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_UPDATE_EVENT,
@@ -217,21 +217,23 @@ def calendar():
 post_blueprint = Blueprint('post', __name__)
 
 
-@post_blueprint.route("/getIntent", methods=['POST'])
+@index_blueprint.route("/getIntent", methods=['GET', 'POST'])
 @login_required
 def getIntent():
 	r = request.get_json()
-	textMsg = r['message']
+	textMsg = r['nlpText']
+	print(textMsg)
 
-	SESSION_ID = current_user.getId()  # needs to be replaced with the logged in users id
+	SESSION_ID = current_user.getID()  # needs to be replaced with the logged in users id
 	session = sessionClient.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
 
-	textInput = dialogflow_v2.types.TextInput(text="Make an event for today at 10pm",
+	textInput = dialogflow_v2.types.TextInput(text=textMsg,
 											  language_code=DIALOGFLOW_LANGUAGE_CODE)
 	queryInput = dialogflow_v2.types.QueryInput(text=textInput)
 
 	response = sessionClient.detect_intent(session=session, query_input=queryInput)
 	if response.query_result.intent.display_name == "Event scheduling":
+		print(response.query_result.parameters.fields["date"].string_value + "               " + response.query_result.parameters.fields["timeStart"].string_value + "               " + response.query_result.parameters.fields["timeEnd"].string_value)
 		return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
 						"timeStart": response.query_result.parameters.fields["timeStart"].string_value,
 						"timeEnd": response.query_result.parameters.fields["timeEnd"].string_value
