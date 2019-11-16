@@ -128,6 +128,7 @@ def deleteEvent():
 def getEvents():
 	ret = []
 	for cal in current_user.getCalendars():
+		print(cal)
 		calObj = {}
 		calObj['name'] = cal.getName()
 		calObj['colour'] = cal.getColour()
@@ -149,7 +150,7 @@ def getEvents():
 			eventList.append(eventDict)
 			calObj['events'] = eventList
 		ret.append(calObj)
-		break
+		#break
 	return jsonify({"calendars": ret})
 
 

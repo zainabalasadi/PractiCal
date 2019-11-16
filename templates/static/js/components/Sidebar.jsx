@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Drawer } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Input from '@material-ui/core/Input';
+import { Dialog, DialogTitle, DialogContent, Button, TextField, Typography } from "@material-ui/core";
 
 const drawerWidth = 300;
 const navHeight = 64;
@@ -28,7 +29,9 @@ class Sidebar extends Component {
     constructor() {
         super()
         this.state = {
-            nlpText: ""
+            nlpText: "",
+            calendars: [
+            ],
         }
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
     }
@@ -44,6 +47,30 @@ class Sidebar extends Component {
         }).then(response => response.json()).then(data => console.log(data))
         // TODO Insert code to reflect changes in back end on the front end given the 
         // response from the fetch request
+    }
+
+    getCalList() {
+        let response = fetch('/getEvents', {
+            method: 'GET'
+
+        }).then((data) => data.json()).then(data => this.renderCalList(data));
+    }
+
+    renderCalList(calList) {
+        console.log(calList)
+        var new_list = new Array()
+        console.log(calList.calendars)
+        for (var i = 0 ; i < calList.calendars.length ; i++) {
+                console.log(calList.calendars[i].name)
+                new_list.push(calList.calendars[i].name)
+        }
+
+        this.setState((prevState) => {
+            calendars: Array.prototype.push.apply(prevState.calendars, new_list)
+        })
+
+        this.render()
+        this.forceUpdate()
     }
 
     render() {
@@ -75,6 +102,13 @@ class Sidebar extends Component {
                   }}
                 />
                 <h3>My Calendars</h3>
+                <Button
+                onClick={() => {
+                      this.getCalList();
+                    }}>
+                CLICK ME
+                </Button>
+                <div>{this.state.calendars}</div>
             </Drawer>
         );
     }
