@@ -231,7 +231,7 @@ def getIntent():
 	queryInput = dialogflow_v2.types.QueryInput(text=textInput)
 
 	response = sessionClient.detect_intent(session=session, query_input=queryInput)
-	if response.query_result.intent.display_name == "Event scheduling":
+	if response.query_result.intent.display_name == "Event scheduling" or response.query_result.intent.display_name == "Event Scheduling Shorthand:
 		return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
 						"timeStart": response.query_result.parameters.fields["timeStart"].string_value,
 						"timeEnd": response.query_result.parameters.fields["timeEnd"].string_value
