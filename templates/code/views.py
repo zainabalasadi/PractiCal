@@ -135,7 +135,7 @@ def getEvents():
 		eventList = []
 		for event in cal.getEvents():
 			eventDict = {}
-			eventDict['creator'] = event.getUserID()
+			#eventDict['creator'] = event.getUserID()
 			eventDict['title'] = event.getName()
 			eventDict['eventId'] = event.getID()
 			eventDict['desc'] = event.getDescription()
