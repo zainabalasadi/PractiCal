@@ -5,7 +5,7 @@ import dialogflow_v2
 from google.api_core.exceptions import InvalidArgument
 import requests
 
-from templates.code import Notification
+from templates.code.Notification import Notification
 from templates.code.PractiCalManager import PractiCalManager
 from templates.code.User import User
 
@@ -38,7 +38,7 @@ def index():
         return render_template('/index.html')
 
 
-@index_blueprint.route('/logout')
+@index_blueprint.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
         PCM.logoutUser(current_user.getID())
