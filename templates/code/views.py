@@ -256,18 +256,18 @@ def sendInvite():
 	return jsonify({'success': 'false'})
 
 
-@index_blueprint.route('/getNotifs', methods=['POST'])
+@index_blueprint.route('/getNotifs', methods=['GET', 'POST'])
 @login_required
 def getNotifs():
 	notifList = []
-	for notif in current_user.getNotifications():
-		notifObj = {}
-		notifObj['title'] = notif.getEvent().getTitle()
-		notifObj['type'] = notif.getNotifType()
-		notifObj['sender'] = notif.getSenderID()
-		notifObj['start'] = notif.getEvent().getStartDateTime()
+	# for notif in current_user.getNotifications():
+	notifObj = {}
+	notifObj['title'] = "HIIIII11"#notif.getEvent().getTitle()
+	notifObj['type'] = "HIIIII22"#notif.getNotifType()
+	notifObj['sender'] = "HIIII33I"#notif.getSenderID()
+	notifObj['start'] = "HIIIII44"#notif.getEvent().getStartDateTime()
 
-		notifList.append(notifObj)
+	notifList.append(notifObj)
 	return jsonify(notifList)
 
 
