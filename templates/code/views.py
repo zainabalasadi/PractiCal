@@ -124,8 +124,10 @@ def deleteEvent():
         if request.method == 'POST':
                 r = request.get_json()
                 event = PCM.getEventByID(r['eventId'])
+                print(r['eventId'])
+                print(r['calendar'])
                 if event is not None:
-                        print("Trying to delete")
+                        # print("Trying to delete")
                         # TODO: Need PCM fn to update db entries
                         PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_DELETE_EVENT,
                                                                  current_user.getCalendarByName(r['calendar']))
