@@ -62,7 +62,6 @@ def forgot():
 def createEvent():
         if request.method == 'POST':
                 r = request.get_json()
-                print(r['startDate'])
                 userId = current_user.getID()
                 name = r['name']
                 desc = r['desc']
@@ -123,8 +122,7 @@ def deleteEvent():
                 event = PCM.getEventByID(r['eventId'])
                 if event is not None:
                         # TODO: Need PCM fn to update db entries
-                        PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_DELETE_EVENT,
-                                                                 current_user.getCalendarByName(r['calendar']))
+                        PCM.deleteEvent(event.getID(), current_user.getID())
                         print("event deleted")
                 return jsonify({"success": "True"})
 

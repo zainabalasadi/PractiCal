@@ -67,8 +67,10 @@ class User(UserMixin):
     def getCalendarByName(self, name):
         try:
             cal = self._calendars[name]
+            print ("got calendar" + name)
         except:
             cal = None
+            print ("didnt get cal")
         return cal
 
     def getContacts(self):
@@ -116,7 +118,7 @@ class User(UserMixin):
 
     # Adds new invite to default calendar
     def addInvite(self, event):
-        self.defaultCalendar.addInvite(event)
+        self._calendars['default'].addInvite(event)
 
     #
     # Setters
@@ -137,7 +139,7 @@ class User(UserMixin):
 
     def moveEvent(self, event, calName):
         cal = self.getCalendarByName(calName)
-        if (event not in cal.getEvents()):
+        if event not in cal.getEvents():
             self.deleteEvent(event)
             cal.addEvent(event)
 
@@ -177,46 +179,22 @@ class User(UserMixin):
     #
     # Invite response methods
     #
-    def acceptInvite(self, event, calendar):
+    def respondToInvite(self, event, status=Calendar.INVITESTATUS_GOING,
+            calendar=None):
         # Check user invited to event
-        if self._email not in event.getInvitee():
-            return
+        if self._email not in event.getInvitee(): return
         # Check calendar belongs to user
-        if calendar not in self._calendars:
-            return
+        if calendar and calendar not in self._calendars.values(): return
+        # Check status code is valid
+        if status < Calendar.INVITESTATUS_GOING or \
+                status > Calendar.INVITESTATUS_DECLINE: return
 
-        # If event in invites or maybe events, remove it, else exit
-        if event in self._invites:
-            self._invites.remove(event)
-        elif event in self._maybeEvents:
-            self._maybeEvents.remove(event)
-        else:
-            return
+        # Remove existing existing invite from all calendars
+        for cal in self._calendars.values():
+            cal.removeInvite(event)
 
-        # Add event to calendar
-        calendar.addEvent(event)
-
-    def declineInvite(self, event):
-        # Check user invited to event
-        if self._email not in event.getInvitee():
-            return
-
-        # If event in invites or maybe events, remove it, else exit
-        if event in self._invites:
-            self._invites.remove(event)
-        elif event in self._maybeEvents:
-            self._maybeEvents.remove(event)
-
-    def maybeInvite(self, event):
-        # Check user invited to event
-        if self._email not in event.getInvitee():
-            return
-
-        # If event in invites, remove it
-        if event in self._invites:
-            self._invites.remove(event)
-
-        self.addMaybeEvent(event)
+        # Add invite to calendar
+        calendar.addInvite(event, status)
 
     #
     # Search
