@@ -62,13 +62,13 @@ def forgot():
 def createEvent():
         if request.method == 'POST':
                 r = request.get_json()
-                print(r['startDate'])
+                # print(r['startDate'])
                 userId = current_user.getID()
                 name = r['name']
                 desc = r['desc']
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
-                print(r['calendar'])
+                # print(r['calendar'])
                 cal = current_user.getCalendarByName(r['calendar'])
                 invitees = None
                 if 'invitees' in r:
@@ -77,7 +77,7 @@ def createEvent():
                 if 'groups' in r:
                         groups = r['groups']
                 if (cal != None):
-                        print("Adding event")
+                        # print("Adding event")
                         event = PCM.addEvent(userId, name, desc, startDate,
                                 endDate, calendarName=cal.getName())
                         cal.addEvent(event)
@@ -95,13 +95,15 @@ def editEvent():
                 event = PCM.getEventByID(r['eventId'])
                 if event is not None:
                         if (event.getName() != r['name']):
-                                event.setName = r['name']
-                        if (event.getDescription() != r['desc']):
-                                event.setDescription = r['desc']
-                        if (event.getStartDateTime() != r['startDate']):
-                                event.setStartDateTime = r['startDate'].replace('T', ' ')
-                        if (event.getEndDateTime() != r['endDate']):
-                                event.setEndDateTime = r['endDate'].replace('T', ' ')
+                                # print("name edited from " + event.getName() + " to " + r['name'])
+                                event.setName(r['name'])
+                                # print(event.getName())
+                        if event.getDescription() != r['desc']:
+                                event.setDescription(r['desc'])
+                        if event.getStartDateTime() != r['startDate']:
+                                event.setStartDateTime(r['startDate'].replace('T', ' '))
+                        if event.getEndDateTime() != r['endDate']:
+                                event.setEndDateTime(r['endDate'].replace('T', ' '))
                         current_user.moveEvent(event, r['calendar'])
                         # TODO: Need PCM fn to update db entries
                         PCM.addToUpdateQueue(current_user.getID(), event,
@@ -123,6 +125,7 @@ def deleteEvent():
                 r = request.get_json()
                 event = PCM.getEventByID(r['eventId'])
                 if event is not None:
+                        print("Trying to delete")
                         # TODO: Need PCM fn to update db entries
                         PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_DELETE_EVENT,
                                                                  current_user.getCalendarByName(r['calendar']))

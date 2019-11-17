@@ -59,8 +59,8 @@ class Event():
         self._description = description
 
     def setStartDateTime(self, startDateTime):
-        if startDateTime < self._endDateTime:
-            self._startDateTime = startDateTime
+        # if startDateTime < self._endDateTime:
+        self._startDateTime = startDateTime
 
     def setEndDateTime(self, endDateTime):
         if endDateTime > self._startDateTime:
