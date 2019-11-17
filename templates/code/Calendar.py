@@ -11,10 +11,10 @@ class Calendar():
     INVITESTATUS_MAYBE = 2
     INVITESTATUS_DECLINE = 3
 
-    def __init__(self, name, colour, events=[]):
+    def __init__(self, name, colour):
         self._name = name
         self._colour = colour
-        self._events = events
+        self._events = []
         self._invites = {
             self.INVITESTATUS_NONE: [],
             self.INVITESTATUS_GOING: [],
@@ -43,7 +43,7 @@ class Calendar():
             self._events.append(event)
             return True
         return False
-    
+
     # Add invite to calendar. If invite already in calendar,
     # changes existing status to one provided
     def addInvite(self, event, status=None):
@@ -59,7 +59,7 @@ class Calendar():
         for events in self._invites.keys():
             if event in events:
                 self._invites[events].remove(event)
-                return 
+                return
 
     # Return list of tuples of the form (event, status). If status
     # not provided, list will contain all invites. Returns None if invalid

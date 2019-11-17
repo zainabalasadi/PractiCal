@@ -62,7 +62,6 @@ def forgot():
 def createEvent():
         if request.method == 'POST':
                 r = request.get_json()
-                # print(r['startDate'])
                 userId = current_user.getID()
                 name = r['name']
                 desc = r['desc']
@@ -129,8 +128,7 @@ def deleteEvent():
                 if event is not None:
                         # print("Trying to delete")
                         # TODO: Need PCM fn to update db entries
-                        PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_DELETE_EVENT,
-                                                                 current_user.getCalendarByName(r['calendar']))
+                        PCM.deleteEvent(event.getID(), current_user.getID())
                         print("event deleted")
                 return jsonify({"success": "True"})
 
@@ -292,3 +290,9 @@ def getCategoryHours():
                 week = request.form.get('week')
 
                 return current_user.calculateHoursCategory(category, week)
+
+@index_blueprint.route('/getName', methods=['GET', 'POST'])
+@login_required
+def getName():
+    print(current_user.getFirstName())
+    return jsonify(current_user.getFirstName())
