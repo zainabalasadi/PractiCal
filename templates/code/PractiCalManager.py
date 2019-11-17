@@ -44,7 +44,7 @@ class PractiCalManager():
         def getCalendar(self):
             return self._calendar
 
-        def getUpdateType():
+        def getUpdateType(self):
             return self._updateType
 
     # Returns user object if logged in
@@ -57,9 +57,7 @@ class PractiCalManager():
     def getEventByID(self, eventID):
         eid = int(eventID)
         if eid in self._events.keys():
-            print("true")
             return self._events[eid]
-        print("false")
         return None
 
     # Returns tuple containing user information in the form
@@ -171,7 +169,8 @@ class PractiCalManager():
     # TODO: remove user events from system that arent used by other users (invitees)
     # TODO: garbage cleanup
     def logoutUser(self, userID):
-        if userID not in self._users.keys(): return False
+        if userID not in self._users.keys():
+            return False
         self._users[userID].setAuthenticated(False)
 
         # Save notifications to database
@@ -185,7 +184,7 @@ class PractiCalManager():
         del self._users[userID]
 
         if userID in self._updateQueue.keys():
-            self._updateDatabase(self._updateQueue[userID])
+            self.updateDatabase(self._updateQueue[userID])
             del self._updateQueue[userID]
             
         return True
@@ -195,6 +194,7 @@ class PractiCalManager():
             endDateTime=None, calendarName=None , category=None, location=None,
             inviteeEmails=None):
 
+        print("called")
         eventID = self._db.addEvent(userID, title, description, calendarName,
             category, startDateTime, endDateTime, location)
         if eventID == -1: return None
@@ -225,7 +225,7 @@ class PractiCalManager():
             self._events[eventID] = Event(
                 eventID=eventID,
                 userID=userID,
-                title=title,
+                name=title,
                 description=descr,
                 startDateTime=startDT,
                 endDateTime=endDT,
@@ -369,9 +369,7 @@ class PractiCalManager():
     # logged out. Add calendar object if object is an event
     def addToUpdateQueue(self, userID, obj, updateType, calendar=None):
         # Check user logged in
-        print(userID)
         if userID not in self._users.keys(): return
-        print("here")
         # If user object, check userID matches id in the object
         if type(obj) == User and userID != obj.getID(): return
         # If modifying or deleting event object, check user is the owner
@@ -405,7 +403,6 @@ class PractiCalManager():
 
     # Applies changes to database corresponding to list of objects given
     def updateDatabase(self, updates):
-        print("bello")
         try:
             for update in updates:
                 updateType = update.getUpdateType()

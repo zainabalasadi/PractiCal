@@ -17,9 +17,7 @@ class User(UserMixin):
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._defaultCalendar = Calendar('default', 'blue')
-        self._calendars = []
-        self._calendars.append(self._defaultCalendar)
+        self._calendars = {'default': Calendar('default', 'blue')}
         self._contacts = []
         self._groups = []
         self._notifications = []
@@ -63,20 +61,15 @@ class User(UserMixin):
     def getEmail(self):
         return self._email
 
-    def getCalendars(self, calendar=None):
-        if not calendar:
-            return [self._defaultCalendar] + self._calendars
-        if calendar == 'default':
-            return self._defaultCalendar
-        for cal in self._calendars:
-            if cal.getName() == calendar: return cal
-        return None
+    def getCalendars(self):
+        return list(self._calendars.values())
 
     def getCalendarByName(self, name):
-        for cal in self._calendars:
-            if cal.getName() == name:
-                return cal
-        return None
+        try:
+            cal = self._calendars[name]
+        except:
+            cal = None
+        return cal
 
     def getContacts(self):
         return self._contacts
@@ -92,15 +85,12 @@ class User(UserMixin):
     #
     def addCalendar(self, newCalendar):
         newCalName = newCalendar.getName()
-        if newCalName == 'default':
-            self._defaultCalendar = newCalendar
+        try:
+            cal = self._calendars[newCalName]
+            return False
+        except:
+            self._calendars[newCalName] = newCalendar
             return True
-        for cal in self._calendars:
-            if cal.getName() == newCalName:
-                return False
-
-        self._calendars.append(newCalendar)
-        return True
 
     def addContact(self, contact):
         if contact not in self._contacts:
@@ -132,12 +122,18 @@ class User(UserMixin):
     # Setters
     #
     def changeCalendarName(self, calendar, name):
-        if calendar in self.getCalendars():
-            calendar.setName(name)
+        try:
+            self._calendars[calendar.getName()].setName(name)
+            return True
+        except:
+            return False
 
     def changeCalendarColour(self, calendar, colour):
-        if calendar in self.getCalendars():
-            calendar.setColour(colour)
+        try:
+            self._calendars[calendar.getName()].setColour(colour)
+            return True
+        except:
+            return False
 
     def moveEvent(self, event, calName):
         cal = self.getCalendarByName(calName)
@@ -149,17 +145,21 @@ class User(UserMixin):
     # Removers
     #
     def deleteCalendar(self, calendar):
-        if calendar in self._calendars:
-            self._calendars.remove(calendar)
+        try:
+            del self._calendars[calendar.getName()]
+            if calendar.getName() == 'default':
+                self._calendars['default'] = Calendar('default', 'blue')
+            return True
+        except:
+            return False
 
     def removeNotification(self, notif):
         if notif in self.getNotifications():
             self._notifications.remove(notif)
 
     # Removes invite from account and related notifications
-    def removeInvite(self, eventID):
-        self._defaultCalendar.removeInvite(event)
-        for calendar in self._calendars:
+    def removeInvite(self, event):
+        for calendar in self._calendars.values():
             calendar.removeInvite(event)
         for notif in self._notifications:
             if notif.getEvent() == event:
@@ -171,14 +171,8 @@ class User(UserMixin):
 
     # remove from all calendars
     def deleteEvent(self, event):
-        self._defaultCalendar.deleteEvent(event)
-        for calendar in self._calendars:
+        for calendar in self._calendars.values():
             calendar.deleteEvent(event)
-
-    def removeInvite(self, event):
-        self._defaultCalendar.removeInvite(event)
-        for calendar in self._calendars:
-            calendar.removeInvite(event)
 
     #
     # Invite response methods
@@ -237,12 +231,12 @@ class User(UserMixin):
                     listOfEvents.append(event)
         return listOfEvents
 
-    def getEventById(self, ident):
-        for calendar in self._calendars:
-            for event in calendar.getEvents():
-                if event.getID == ident:
-                    return event
-        return None
+    #def getEventById(self, ident):
+    #    for calendar in self._calendars:
+    #        for event in calendar.getEvents():
+    #            if event.getID == ident:
+    #                return event
+    #    return None
 
     def getEventsByQuery(self, queryString):
         return self.searchEventsByHost(queryString) + self.searchEventsByHost(queryString)
