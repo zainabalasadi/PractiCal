@@ -17,13 +17,7 @@ class User(UserMixin):
         self._lastName = lastName
         self._email = email
         self._password = password
-<<<<<<< HEAD
         self._calendars = {'default': Calendar('default', 'blue')}
-=======
-        self._defaultCalendar = Calendar('default', 'blue')
-        self._calendars = []
-        # self._calendars.append(self._defaultCalendar)
->>>>>>> d1b8052c9ca7419eea7d353320270ceed78e302a
         self._contacts = []
         self._groups = []
         self._notifications = []
