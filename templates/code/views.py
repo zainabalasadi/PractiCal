@@ -118,7 +118,7 @@ def editEvent():
 def deleteEvent():
         if request.method == 'POST':
                 r = request.get_json()
-                event = current_user.getEventById(int(request.get_json().get('eventId')))
+                event = PCM.getEventByID(r['eventId'])
                 if event is not None:
                         # TODO: Need PCM fn to update db entries
                         PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_DELETE_EVENT,

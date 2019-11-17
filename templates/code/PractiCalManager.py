@@ -44,7 +44,7 @@ class PractiCalManager():
         def getCalendar(self):
             return self._calendar
 
-        def getUpdateType():
+        def getUpdateType(self):
             return self._updateType
 
     # Returns user object if logged in
@@ -171,7 +171,8 @@ class PractiCalManager():
     # TODO: remove user events from system that arent used by other users (invitees)
     # TODO: garbage cleanup
     def logoutUser(self, userID):
-        if userID not in self._users.keys(): return False
+        if userID not in self._users.keys():
+            return False
         self._users[userID].setAuthenticated(False)
 
         # Save notifications to database
@@ -185,7 +186,7 @@ class PractiCalManager():
         del self._users[userID]
 
         if userID in self._updateQueue.keys():
-            self._updateDatabase(self._updateQueue[userID])
+            self.updateDatabase(self._updateQueue[userID])
             del self._updateQueue[userID]
             
         return True
@@ -225,7 +226,7 @@ class PractiCalManager():
             self._events[eventID] = Event(
                 eventID=eventID,
                 userID=userID,
-                title=title,
+                name=title,
                 description=descr,
                 startDateTime=startDT,
                 endDateTime=endDT,
