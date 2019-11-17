@@ -58,9 +58,8 @@ class Cal extends Component {
         super();
         this.state = {
             // Loading sample events, remove later
-            events: [
-
-            ],
+            events: [],
+            calendars: [],
             title: "",
             start: "",
             end: "",
@@ -75,6 +74,10 @@ class Cal extends Component {
         };
         this.handleClose = this.handleClose.bind(this);
     };
+
+    componentDidMount() {
+        this.get_calendars()
+    }
 
     // Function to create event and send to back-end
     create_event(event) {
@@ -134,8 +137,6 @@ class Cal extends Component {
         }).then((data) => data.json());
     }
 
-
-    // DO LATER
     get_calendars() {
         let response = fetch('/getEvents', {
             method: 'GET'
@@ -144,22 +145,12 @@ class Cal extends Component {
     }
 
     renderComponentsFromList(calendarList) {
-        console.log(calendarList)
-
-        var new_list = new Array()
-        console.log(calendarList.calendars)
         for (var i = 0 ; i < calendarList.calendars.length ; i++) {
-                console.log(calendarList.calendars[i])
-                for (var j = 0 ; j <calendarList.calendars[i].events.length ; j++) {
-                    console.log(calendarList.calendars[i].events[j])
-                    new_list.push(calendarList.calendars[i].events[j])
-                }
+            this.state.calendars.push(calendarList.calendars[i])
+            for (var j = 0 ; j <calendarList.calendars[i].events.length ; j++) {
+                this.state.events.push(calendarList.calendars[i].events[j])
+            }
         }
-
-        this.setState((prevState) => {
-            events: Array.prototype.push.apply(prevState.events, new_list)
-        })
-
     }
 
     // Closes modal
@@ -252,12 +243,6 @@ class Cal extends Component {
     handleEndTime = (event, date) => {
         this.setState({ end: date });
     };
-
-    componentDidMount() {
-        this.get_calendars()
-        this.render()
-        this.forceUpdate()
-    }
         
     // Onclick callback function that pushes new event into events array.
     setNewEvent() {
@@ -392,10 +377,11 @@ class Cal extends Component {
                         this.setCalendar(e.target.value);
                       }}
                     >
-                        <option value="" />
-                        <option value={"Default"}>Default</option>
-                        <option value={"Work"}>Work</option>
-                        <option value={"Social"}>Social</option>
+                    {this.state.calendars.map(item => {
+                        return (
+                            <option value={`${item.name}`}>{`${item.name}`}</option>
+                        );
+                    })}
                     </Select>                   
                   </DialogContent>
                   <DialogActions>
@@ -491,10 +477,11 @@ class Cal extends Component {
                         this.setCalendar(e.target.value);
                       }}
                     >
-                        <option value="" />
-                        <option value={"Default"}>Default</option>
-                        <option value={"Work"}>Work</option>
-                        <option value={"Social"}>Social</option>
+                    {this.state.calendars.map(item => {
+                        return (
+                            <option value={`${item.name}`}>{`${item.name}`}</option>
+                        );
+                    })}
                     </Select> 
                   </DialogContent>
                   <DialogActions>
