@@ -22,7 +22,7 @@ class DatabaseManager():
             print(("Error loading database {} using provided credentials.\n"
                    "The following error was raised:\n\n{}".format(database, e)))
             self._db = None
-        
+
 
     def loadDatabase(self, database, host, user, password):
 
@@ -82,7 +82,7 @@ class DatabaseManager():
             print(("Error encountered while accessing database.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
- 
+
     def deleteUser(self, userID):
         cursor = self._db.cursor()
         sql = "DELETE FROM users WHERE uid = %s"
@@ -140,7 +140,7 @@ class DatabaseManager():
             return -1
 
     def setUser(self, userID, newFName=None, newLName=None, newEmail=None,
-                newPassword=None): 
+                newPassword=None):
         val = []
         fields = []
         if newFName:
@@ -174,7 +174,7 @@ class DatabaseManager():
         except Exception as e:
             print(("Error encountered while trying to update record.\n"
                    "The following error was raised:\n\n{}".format(e)))
-            return -1 
+            return -1
 
     def setUserName(self, userID, newFName, newLName):
         cursor = self._db.cursor()
@@ -209,7 +209,7 @@ class DatabaseManager():
             print(("Error encountered while trying to update record.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
-        
+
     def setUserPassword(self, userID, newPass):
         cursor = self._db.cursor()
         sql = "UPDATE users SET password = %s WHERE uid = %s"
@@ -307,7 +307,7 @@ class DatabaseManager():
             if events == None:
                 events = []
             return events
-            
+
         except Exception as e:
             print(("Error encountered while trying to locate records.\n"
                    "The following error was raised:\n\n{}".format(e)))
@@ -315,7 +315,7 @@ class DatabaseManager():
 
     def setEvent(self, eventID, newTitle=None, newDescr=None, newStartDT=None,
                  newEndDT=None, newCalendar=None, newCategory=None,
-                 newLocation=None): 
+                 newLocation=None):
         val = []
         fields = []
         if newTitle:
@@ -480,7 +480,7 @@ class DatabaseManager():
         except Exception as e:
             print(("Error encountered while getting invite.\n"
                    "The following error was raised:\n\n{}".format(e)))
-            return -1 
+            return -1
 
     def getInvitesByUser(self, receiverID):
         cursor = self._db.cursor()
@@ -495,7 +495,7 @@ class DatabaseManager():
         except Exception as e:
             print(("Error encountered while getting invites.\n"
                    "The following error was raised:\n\n{}".format(e)))
-            return -1 
+            return -1
 
     def getInvitesByEvent(self, eventID):
         cursor = self._db.cursor()
@@ -510,8 +510,8 @@ class DatabaseManager():
         except Exception as e:
             print(("Error encountered while getting invites.\n"
                    "The following error was raised:\n\n{}".format(e)))
-            return -1 
-        
+            return -1
+
 
     def setInvite(self, eventID, receiverID, newStatus=None, newCalendar=None):
         val = []
@@ -567,7 +567,7 @@ class DatabaseManager():
             print(("Error encountered while inserting notification.\n"
                    "The following error was raised:\n\n{}".format(e)))
             return -1
-            
+
     def deleteNotification(self, eventID, senderID, receiverID, notifType):
         cursor = self._db.cursor()
         sql = ("DELETE FROM notifications WHERE eid = %s AND sender_id = %s AND "
@@ -596,11 +596,11 @@ class DatabaseManager():
             cursor.execute(sql, val)
             invites = cursor.fetchall()
             cursor.close()
-            return invites            
+            return invites
         except Exception as e:
             print(("Error encountered while getting notifications.\n"
                    "The following error was raised:\n\n{}".format(e)))
-            return -1 
+            return -1
 
     def getNotifications(self, receiverID):
         cursor = self._db.cursor()
@@ -611,11 +611,11 @@ class DatabaseManager():
             cursor.execute(sql, val)
             invites = cursor.fetchall()
             cursor.close()
-            return invites            
+            return invites
         except Exception as e:
             print(("Error encountered while getting notifications.\n"
                    "The following error was raised:\n\n{}".format(e)))
-            return -1 
+            return -1
 
 def arg_parser():
     parser = argparse.ArgumentParser(
@@ -727,49 +727,49 @@ if __name__ == "__main__":
         cursor.execute(("INSERT INTO events "
                         "(uid, title, descr, startdt, enddt, calendar) "
                         "VALUES "
-                        "(1, 'Event 1 title', 'Event 1 description', '2019-11-06T"
-                        "12:00:00.000Z', '2019-11-06 13:00:00', 'default') ,"
-                        "(1, 'Event 2 title', 'Event 2 description', '2019-11-07T"
-                        "12:00:00.000Z', '2019-11-07 13:00:00', 'default') ,"
-                        "(1, 'Event 3 title', 'Event 3 description', '2019-11-08T"
-                        "12:00:00.000Z', '2019-11-08 13:00:00', 'default') ,"
-                        "(1, 'Event 4 title', 'Event 4 description', '2019-11-09T"
-                        "12:00:00.000Z', '2019-11-09 13:00:00', 'default') ,"
-                        "(1, 'Event 5 title', 'Event 5 description', '2019-11-10T"
-                        "12:00:00.000Z', '2019-11-10 13:00:00', 'default') ,"
+                        "(1, 'Event 1 title', 'Event 1 description', '2019-11-06 "
+                        "12:00:00.000Z', '2019-11-06 13:00:00.000Z', 'default') ,"
+                        "(1, 'Event 2 title', 'Event 2 description', '2019-11-07 "
+                        "12:00:00.000Z', '2019-11-07 13:00:00.000Z', 'default') ,"
+                        "(1, 'Event 3 title', 'Event 3 description', '2019-11-08 "
+                        "12:00:00.000Z', '2019-11-08 13:00:00.000Z', 'default') ,"
+                        "(1, 'Event 4 title', 'Event 4 description', '2019-11-09 "
+                        "12:00:00.000Z', '2019-11-09 13:00:00.000Z', 'default') ,"
+                        "(1, 'Event 5 title', 'Event 5 description', '2019-11-10 "
+                        "12:00:00.000Z', '2019-11-10 13:00:00.000Z', 'default') ,"
 
-                        "(2, 'Sprint Meeting', 'Sprint Meeting 5, discussing merging back-end and front-end', '2019-10-30T"
-                        "14:00:00', '2019-10-30 16:00:00', 'default') ,"
-                        "(2, 'Lunch with Sarah', 'Circular Quay', '2019-11-13T"
-                        "12:00:00', '2019-11-13 13:30:00', 'default') ,"
-                        "(2, 'Doctor Apoointment', 'Ask about hay fever', '2019-11-15T"
-                        "13:00:00', '2019-11-15 13:30:00', 'default') ,"
-                        "(2, 'AI Conference', 'Chat to Fred for job opportunities', '2019-11-18T"
-                        "09:00:00', '2019-11-20 18:00:00', 'default') ,"
-                        "(2, 'COMP4920 Diary Due', 'Submit project diaries by Give', '2019-11-24T"
-                        "18:30:00', '2019-11-24 19:45:00', 'default') ,"
-                        "(2, 'COMP4920 Peer Assessment', 'Submit peer assessments on Moodle', '2019-11-24T"
-                        "13:30:00', '2019-11-24 13:45:00', 'default') ,"
-                        "(2, 'COMP4920 Project Due', 'Event 9 description', '2019-11-24T"
-                        "21:00:00', '2019-11-24 23:55:00', 'default') ,"
-                        "(2, 'COMP4920 Presentation', 'Presenting the wonderful PractiCal to staff', '2019-11-25T"
-                        "15:00:00', '2019-11-25 17:00:00', 'default') ,"
-                        "(2, 'End of Term Drinks', 'Casual Dress Code', '2019-11-25T"
-                        "18:00:00', '2019-11-25 20:00:00', 'default') ,"
-                        "(2, 'COMP9444 Exam', 'Bring: Pens/pencils, Calculator - UNSW Approved', '2019-11-30T"
-                        "13:45:00', '2019-11-30 15:00:00', 'default') ,"
-                        "(2, 'COMP4418 Exam', 'No Calculator', '2019-12-05T"
-                        "08:45:00', '2019-12-05 11:00:00', 'default') ,"
-                        "(2, 'Meenas Graduation', 'Bring Flowers', '2019-12-13T"
-                        "08:45:00', '2019-12-13 11:00:00', 'default') ,"
-                        "(2, 'CHRISTMAS!!!', 'WOOHOO', '2019-12-25T"
-                        "00:00:00', '2019-12-25 24:00:00', 'default') ,"
+                        "(2, 'Sprint Meeting', 'Sprint Meeting 5, discussing merging back-end and front-end', '2019-10-30 "
+                        "14:00:00.000Z', '2019-10-30 16:00:00.000Z', 'default') ,"
+                        "(2, 'Lunch with Sarah', 'Circular Quay', '2019-11-13 "
+                        "12:00:00.000Z', '2019-11-13 13:30:00.000Z', 'default') ,"
+                        "(2, 'Doctor Apoointment', 'Ask about hay fever', '2019-11-15 "
+                        "13:00:00.000Z', '2019-11-15 13:30:00.000Z', 'default') ,"
+                        "(2, 'AI Conference', 'Chat to Fred for job opportunities', '2019-11-18 "
+                        "09:00:00.000Z', '2019-11-20 18:00:00.000Z', 'default') ,"
+                        "(2, 'COMP4920 Diary Due', 'Submit project diaries by Give', '2019-11-24 "
+                        "18:30:00.000Z', '2019-11-24 19:45:00.000Z', 'default') ,"
+                        "(2, 'COMP4920 Peer Assessment', 'Submit peer assessments on Moodle', '2019-11-24 "
+                        "13:30:00.000Z', '2019-11-24 13:45:00.000Z', 'default') ,"
+                        "(2, 'COMP4920 Project Due', 'Event 9 description', '2019-11-24 "
+                        "21:00:00.000Z', '2019-11-24 23:55:00.000Z', 'default') ,"
+                        "(2, 'COMP4920 Presentation', 'Presenting the wonderful PractiCal to staff', '2019-11-25 "
+                        "15:00:00.000Z', '2019-11-25 17:00:00.000Z', 'default') ,"
+                        "(2, 'End of Term Drinks', 'Casual Dress Code', '2019-11-25 "
+                        "18:00:00.000Z', '2019-11-25 20:00:00.000Z', 'default') ,"
+                        "(2, 'COMP9444 Exam', 'Bring: Pens/pencils, Calculator - UNSW Approved', '2019-11-30 "
+                        "13:45:00.000Z', '2019-11-30 15:00:00.000Z', 'default') ,"
+                        "(2, 'COMP4418 Exam', 'No Calculator', '2019-12-05 "
+                        "08:45:00.000Z', '2019-12-05 11:00:00.000Z', 'default') ,"
+                        "(2, 'Meenas Graduation', 'Bring Flowers', '2019-12-13 "
+                        "08:45:00.000Z', '2019-12-13 11:00:00.000Z', 'default') ,"
+                        "(2, 'CHRISTMAS!!!', 'WOOHOO', '2019-12-25 "
+                        "00:00:00.000Z', '2019-12-25 24:00:00.000Z', 'default') ,"
 
-                        "(3, 'Event 11 title', 'Event 11 description', '2019-11-06T"
-                        "09:30:00.000Z', '2019-11-06 17:00:00', 'default') ,"
-                        "(3, 'Event 12 title', 'Event 12 description', '2019-11-07T"
-                        "09:30:00.000Z', '2019-11-07 17:00:00', 'default') ,"
-                        "(3, 'Event 13 title', 'Event 13 description', '2019-11-08T"
-                        "09:30:00.000Z', '2019-11-08 17:00:00', 'default')"))
+                        "(3, 'Event 11 title', 'Event 11 description', '2019-11-06 "
+                        "09:30:00.000Z', '2019-11-06 17:00:00.000Z', 'default') ,"
+                        "(3, 'Event 12 title', 'Event 12 description', '2019-11-07 "
+                        "09:30:00.000Z', '2019-11-07 17:00:00.000Z', 'default') ,"
+                        "(3, 'Event 13 title', 'Event 13 description', '2019-11-08 "
+                        "09:30:00.000Z', '2019-11-08 17:00:00.000Z', 'default')"))
     db.commit()
     cursor.close()
