@@ -206,6 +206,10 @@ class Navbar extends Component {
         })
     }
 
+    logout() {
+//         TODO
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -245,9 +249,21 @@ class Navbar extends Component {
                         <IconButton color="inherit" onClick={this.handleContactOpen}>
                             <PeopleIcon />
                         </IconButton>
-                        <IconButton color="inherit">
-                            <AccountCircle />
-                        </IconButton>
+{/*                         <IconButton color="inherit"> */}
+{/*                             <AccountCircle/> */}
+
+                            <Button
+                                label="Logout"
+                                onClick={() => {
+                                    this.logout();
+                                }}
+                            >
+                                LOGOUT
+                            </Button>
+
+
+
+{/*                         </IconButton> */}
                     </div>
                 </Toolbar>
             </AppBar>
