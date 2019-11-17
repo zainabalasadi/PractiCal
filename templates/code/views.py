@@ -62,10 +62,6 @@ def forgot():
 def createEvent():
         if request.method == 'POST':
                 r = request.get_json()
-<<<<<<< HEAD
-=======
-                # print(r['startDate'])
->>>>>>> 7da1877d6015601eb3be8f2f08639e261c1f2350
                 userId = current_user.getID()
                 name = r['name']
                 desc = r['desc']
