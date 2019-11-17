@@ -286,3 +286,9 @@ def getCategoryHours():
                 week = request.form.get('week')
 
                 return current_user.calculateHoursCategory(category, week)
+
+@index_blueprint.route('/getName', methods=['GET', 'POST'])
+@login_required
+def getName():
+    print(current_user.getFirstName())
+    return jsonify(current_user.getFirstName())
