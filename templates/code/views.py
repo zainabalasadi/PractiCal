@@ -68,7 +68,7 @@ def createEvent():
                 desc = r['desc']
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
-                cal = current_user.getCalendarByName("default")
+                cal = current_user.getCalendarByName('default')#r['calendar'])
                 invitees = None
                 if 'invitees' in r:
                         invitees = r['invitees']
@@ -76,10 +76,11 @@ def createEvent():
                 if 'groups' in r:
                         groups = r['groups']
                 if (cal != None):
+                        print("Adding event")
                         event = PCM.addEvent(userId, name, desc, startDate,
                                 endDate, calendarName=cal.getName())
                         cal.addEvent(event)
-
+                        print("event added")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -108,6 +109,7 @@ def editEvent():
                         PCM.sendNotification(event.getID(),
                                 current_user.getID(), event.getInvitees(),
                                 Notification.NOTIF_EVENTCHANGE)
+                        print("event updated")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -118,11 +120,12 @@ def editEvent():
 def deleteEvent():
         if request.method == 'POST':
                 r = request.get_json()
-                event = current_user.getEventById(int(request.get_json().get('eventId')))
+                event = PCM.getEventByID(r['eventId'])
                 if event is not None:
                         # TODO: Need PCM fn to update db entries
                         PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_DELETE_EVENT,
                                                                  current_user.getCalendarByName(r['calendar']))
+                        print("event deleted")
                 return jsonify({"success": "True"})
 
 
@@ -149,7 +152,7 @@ def getEvents():
                         eventDict['comments'] = event.getComments()
                         eventDict['invitees'] = event.getInvitees()
                         eventDict['calendar'] = cal.getName()
-                        # eventDict['groups'] = event.getGroups()
+                        eventDict['groups'] = current_user.getGroups()
                         eventList.append(eventDict)
                         calObj['events'] = eventList
                 ret.append(calObj)
