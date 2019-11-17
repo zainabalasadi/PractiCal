@@ -68,7 +68,8 @@ def createEvent():
                 desc = r['desc']
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
-                cal = current_user.getCalendarByName('default')#r['calendar'])
+                print(r['calendar'])
+                cal = current_user.getCalendarByName(r['calendar'])
                 invitees = None
                 if 'invitees' in r:
                         invitees = r['invitees']
@@ -134,7 +135,7 @@ def deleteEvent():
 def getEvents():
         ret = []
         for cal in current_user.getCalendars():
-                print(cal)
+                # print(cal)
                 calObj = {}
                 calObj['name'] = cal.getName()
                 calObj['colour'] = cal.getColour()
@@ -156,7 +157,7 @@ def getEvents():
                         eventList.append(eventDict)
                         calObj['events'] = eventList
                 ret.append(calObj)
-                #break
+                # break
         return jsonify({"calendars": ret})
 
 

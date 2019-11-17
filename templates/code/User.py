@@ -66,9 +66,14 @@ class User(UserMixin):
 
     def getCalendarByName(self, name):
         try:
+            # print(name)
+            # for cal in self._calendars:
+                # print(cal)
             cal = self._calendars[name]
+            print ("got calendar" + name)
         except:
             cal = None
+            print ("didnt get cal")
         return cal
 
     def getContacts(self):
