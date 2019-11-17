@@ -45,3 +45,28 @@ did some tests on the updated database.
 Added category and location fields to events table. Added addEvent method.
 Refactoring and several bug fixes (mainly syntax errors). Tested code and
 merged DatabaseIntegrationBranch with master.
+
+11/11/2019:
+Worked on getting login working in views with PractiCalManager.
+
+12/11/2019:
+Moved invites from User to Calendar class. Changed user credential checking
+method in database manager to check hashed passwords. Get user method in db
+manager now returns user data using and id or email rather than an email and
+password. Moved event loading to a sepeate function in PractiCalManager to
+remove duplicate code in login method. Worked on fixing bugs in
+views and PractiCalManager.
+
+16/11/2019:
+Changed start and end datetime field type in database to string and changed date
+values in events test data. Code refactoring while trying to find the bug thats
+causing events to be duplicated in all calendars.
+
+17/11/2019:
+Fixed bug that was causing events to appear duplicated in all calendars; was
+caused by the the use of a mutable object ([] empty list) being used as the
+default value for the events paramater in the Calendar class __init__ method,
+creating a single object shared between all instances of Calendar. Create, edit,
+and delete event functionality working between front and backend and is
+persistent in the database. Fixed some inconsistencies in test data being loaded
+into database during initialisation.
