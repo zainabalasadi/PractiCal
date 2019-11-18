@@ -204,9 +204,14 @@ class User(UserMixin):
     def searchEventsByTitle(self, title):
         listOfEvents = []
         for calendar in self._calendars:
-            for event in calendar.getEvents():
-                if event.getName().lower() in title.lower():
+            for event in self._calendars[calendar].getEvents():
+                print("NEW COMPARISON")
+                print(event.getName().lower())
+                print(title.lower())
+                if title.lower() in event.getName().lower():
+                    print("added")
                     listOfEvents.append(event)
+        print(listOfEvents)
         return listOfEvents
 
     #def getEventById(self, ident):
@@ -217,13 +222,15 @@ class User(UserMixin):
     #    return None
 
     def getEventsByQuery(self, queryString):
-        return self.searchEventsByHost(queryString) + self.searchEventsByHost(queryString)
+        return self.searchEventsByTitle(queryString)
+        # + self.searchEventsByHost(queryString)
 
     # search through events by host
     def searchEventsByHost(self, host):
         listOfEvents = []
         for calendar in self._calendars:
-            for event in calendar.getEvents():
+            # self._calendar[calendar]
+            for event in self._calendars[calendar].getEvents():
                 user = event.getUser()
                 userName = user.getFirstName() + user.getLastName()
                 if userName.lower() in host.lower():

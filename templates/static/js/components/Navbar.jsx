@@ -114,20 +114,38 @@ class Navbar extends Component {
             contactEmail: "",
             openContacts: false,
             openNotification: false,
+            searchText: "",
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleContactOpen = this.handleContactOpen.bind(this);
     };
 
+    setSearchText(e) {
+        this.setState({ searchText: e.target.value })
+        console.log(this.state.searchText)
+    }
+
     search() {
-        let response = fetch('/searchEvent', {
+        console.log(this.state.searchText)
+        let response = fetch('/searchEvents', {
             method: 'POST',
-            body: JSON.stringify({"queryString": searchText}),
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
-            }
-        }).then(response => response.json()).then(data => console.log(data))
+            },
+        body: JSON.stringify({"queryString": this.state.searchText})
+        }).then(response => response.json()).then(data => this.showSearchResults(data))
+        // }).then(response => response.json()).then(data => console.log(data))
         // TODO Insert code to change state of front end given response from the back end
+    }
+
+    showSearchResults(events) {
+        let result = ""
+        console.log(events)
+        for(var i = 0; i < events.length; i++) {
+            console.log(events[i].desc)
+        }
+        // console.log(result)
+        alert()
     }
 
     // Function to create contact and send to back-end
@@ -230,14 +248,14 @@ class Navbar extends Component {
                         }}
                         inputProps={{ 'aria-label': 'search' }}
                         name="search"
-                        // value={searchText}
+                        value={this.state.searchText}
                         onChange={e => {
-                            // setSearchText(e.target.value)
-                            // console.log(searchText)
+                            console.log(e.target.value)
+                            this.setSearchText(e)
                         }}
                         onKeyPress={e => {
                             if (e.key === "Enter") {
-                            search()
+                                this.search()
                             }
                         }}
                         />

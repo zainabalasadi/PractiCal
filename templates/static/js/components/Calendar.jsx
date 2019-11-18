@@ -190,6 +190,7 @@ class Cal extends Component {
                 this.state.events.push(calendarList.calendars[i].events[j])
             }
         }
+        this.forceUpdate()
     }
 
     // Closes modal
