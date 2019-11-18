@@ -3,11 +3,11 @@ from templates.code.Comment import Comment
 from templates.code.Notification import Notification
 
 class Event():
-    def __init__(self, eventID, userID, title, description, startDateTime, 
+    def __init__(self, eventID, userID, name, description, startDateTime,
             endDateTime, category, location=None, invitees=dict()):
         self._eventID = eventID
         self._userID = userID
-        self._title = title
+        self._name = name
         self._description = description
         self._startDateTime = startDateTime
         self._endDateTime = endDateTime
@@ -20,7 +20,7 @@ class Event():
         return self._userID
 
     def getName(self):
-        return self._title
+        return self._name
 
     def getID(self):
         return self._eventID
@@ -49,8 +49,8 @@ class Event():
     def setUser(self, user):
         self._userID = user
 
-    def setName(self, title):
-        self._title = title
+    def setName(self, name):
+        self._name = name
 
     def setEventID(self, ID):
         self._eventID = ID
@@ -59,8 +59,8 @@ class Event():
         self._description = description
 
     def setStartDateTime(self, startDateTime):
-        if startDateTime < self._endDateTime:
-            self._startDateTime = startDateTime
+        # if startDateTime < self._endDateTime:
+        self._startDateTime = startDateTime
 
     def setEndDateTime(self, endDateTime):
         if endDateTime > self._startDateTime:

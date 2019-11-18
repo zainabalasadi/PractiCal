@@ -2,18 +2,29 @@ class Group:
 
     def __init__(self, name):
         self._name = name
-        self._members = []
+        self._members = dict()
 
     def getMembers(self):
-        return self._members
+        ret = []
+        for email in self._members.keys():
+            ret.append((email, self._members[email]['firstName'],
+                self._members[email]['lastName']))
+        return ret
 
-    def addMember(self, member):
-        if member not in self.getMembers():
-            self._members.append(member)
+    def addMember(self, email, firstName, lastName):
+        try:
+            mem = self._members[email]
+            return
+        except:
+            self._members[email] = {
+                'firstName': firstName,
+                'lastName': lastName}
 
-    def removeMember(self, member):
-        if member in self.getMembers():
-            self._members.remove(member)
+    def removeMember(self, email):
+        try:
+            del self._members[email]
+        except:
+            pass
 
     def getName(self):
         return self._name

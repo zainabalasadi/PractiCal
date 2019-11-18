@@ -105,6 +105,9 @@ class Navbar extends Component {
                   groupEmail: 'jeff@email.com;sarah@email.com;alice@email.com',
                 },
             ],
+            notifs: [
+
+            ],
             groupName: "",
             groupEmail: "",
             contactName: "",
@@ -181,6 +184,31 @@ class Navbar extends Component {
         this.setState({ openContacts: false, openNotification: false });
     };
 
+    get_notifs() {
+        let response = fetch('/getNotifs', {
+            method: 'GET'
+
+        }).then((data) => data.json()).then(data => this.renderComponentsFromList(data));
+    }
+
+//     NOW THAT ITS IN STATE HOW DO I PASS THIS ONTO <NOTIFICATION/>
+    renderComponentsFromList(notifList) {
+        console.log(notifList)
+
+        var new_list = new Array()
+        for (var i = 0 ; i < notifList.length ; i++) {
+            console.log(notifList[i])
+            new_list.push(notifList[i])
+        }
+
+        this.setState((prevState) => {
+            events: Array.prototype.push.apply(prevState.notifs, new_list)
+        })
+    }
+
+    logout() {
+//         TODO
+    }
 
     render() {
         const { classes } = this.props;
@@ -216,14 +244,26 @@ class Navbar extends Component {
                     </div>
                     <TimeBreakdown/>
                     <div className={classes.grow} />
-                    <Notification/>
+                    <Notification data={this.get_notifs()}/>
                     <div>
                         <IconButton color="inherit" onClick={this.handleContactOpen}>
                             <PeopleIcon />
                         </IconButton>
-                        <IconButton color="inherit">
-                            <AccountCircle />
-                        </IconButton>
+{/*                         <IconButton color="inherit"> */}
+{/*                             <AccountCircle/> */}
+
+                            <Button
+                                label="Logout"
+                                onClick={() => {
+                                    this.logout();
+                                }}
+                            >
+                                LOGOUT
+                            </Button>
+
+
+
+{/*                         </IconButton> */}
                     </div>
                 </Toolbar>
             </AppBar>
