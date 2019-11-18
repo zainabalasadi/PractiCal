@@ -462,6 +462,9 @@ class Cal extends Component {
 
                 {/* Material-ui Modal for Existing Event */}
                 <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openEvent} onClose={this.handleClose}>
+                <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
+                    <CloseIcon />
+                </IconButton>
                   <DialogContent>
                     <TextField 
                     className={classes.title}
