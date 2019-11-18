@@ -64,7 +64,7 @@ def createEvent():
                 r = request.get_json()
                 userId = current_user.getID()
                 name = r['name']
-                desc = r['desc']
+                desc = r['desc'] if 'desc' in r.keys() else ''
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
                 # print(r['calendar'])
@@ -77,8 +77,9 @@ def createEvent():
                         groups = r['groups']
                 if (cal != None):
                         # print("Adding event")
-                        event = PCM.addEvent(userId, name, desc, startDate,
-                                endDate, calendarName=cal.getName())
+                        event = PCM.addEvent(userID=userId, title=name,
+                            description=desc, startDateTime=startDate,
+                            endDateTime=endDate, calendarName=cal.getName())
                         cal.addEvent(event)
                         print("event added")
                         return jsonify({"success": "True"})

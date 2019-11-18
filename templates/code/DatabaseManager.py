@@ -125,8 +125,9 @@ class DatabaseManager():
                 raise Exception("Neither userID or email provided")
 
             condition = "uid = %s" if userID else "email = %s"
-            sql = ("SELECT uid, first_name, last_name, email FROM users "
-                   "WHERE {}".format(condition))
+            otherFields = ", contacts, preferences" if userID else ""
+            sql = ("SELECT uid, first_name, last_name, email {} FROM users "
+                   "WHERE {}".format(otherFields, condition))
             val = (userID, )
             cursor.execute(sql, val)
             user = cursor.fetchone()
@@ -140,7 +141,7 @@ class DatabaseManager():
             return -1
 
     def setUser(self, userID, newFName=None, newLName=None, newEmail=None,
-                newPassword=None):
+                newPassword=None, newContacts=None, newPreferences=None):
         val = []
         fields = []
         if newFName:
@@ -155,6 +156,12 @@ class DatabaseManager():
         if newPassword:
             fields.append("password = %s")
             val.append(newPassword)
+        if newContacts:
+            fields.append("contacts = %s")
+            val.append(newContacts)
+        if newPreferences:
+            fields.append("preferences = %s")
+            val.append(newPreferences)
         sql = "UPDATE users SET {} WHERE uid = %s".format(", ".join(fields))
         val.append(userID)
         val = tuple(val)
@@ -430,7 +437,7 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def addInvite(self, eventID, receiverID, status, calendar='default'):
+    def addInvite(self, eventID, receiverID, status, calendar='Default'):
         if self.getInvite(eventID, receiverID):
             return 0
         cursor = self._db.cursor()
@@ -728,9 +735,9 @@ if __name__ == "__main__":
                         "(uid, title, descr, startdt, enddt, calendar) "
                         "VALUES "
                         "(1, 'Event 1 title', 'Event 1 description', '2019-11-06 "
-                        "12:00:00.000Z', '2019-11-06 13:00:00.000Z', 'default') ,"
+                        "12:00:00.000Z', '2019-11-06 13:00:00.000Z', 'Default') ,"
                         "(1, 'Event 2 title', 'Event 2 description', '2019-11-07 "
-                        "12:00:00.000Z', '2019-11-07 13:00:00.000Z', 'default') ,"
+                        "12:00:00.000Z', '2019-11-07 13:00:00.000Z', 'Default') ,"
                         "(1, 'Event 3 title', 'Event 3 description', '2019-11-08 "
                         "12:00:00.000Z', '2019-11-08 13:00:00.000Z', 'cal2') ,"
                         "(1, 'Event 4 title', 'Event 4 description', '2019-11-09 "
@@ -739,37 +746,37 @@ if __name__ == "__main__":
                         "12:00:00.000Z', '2019-11-10 13:00:00.000Z', 'cal2') ,"
 
                         "(2, 'Sprint Meeting', 'Sprint Meeting 5, discussing merging back-end and front-end', '2019-10-30T"
-                        "14:00:00', '2019-10-30 16:00:00', 'Uni') ,"
+                        "14:00:00', '2019-10-30T16:00:00', 'Uni') ,"
                         "(2, 'Lunch with Sarah', 'Circular Quay', '2019-11-13T"
-                        "12:00:00', '2019-11-13 13:30:00', 'Social') ,"
-                        "(2, 'Doctor Apoointment', 'Ask about hay fever', '2019-11-15T"
-                        "13:00:00', '2019-11-15 13:30:00', 'Default') ,"
+                        "12:00:00', '2019-11-13T13:30:00', 'Social') ,"
+                        "(2, 'Doctor Appointment', 'Ask about hay fever', '2019-11-15T"
+                        "13:00:00', '2019-11-15T13:30:00', 'Social') ,"
                         "(2, 'AI Conference', 'Chat to Fred for job opportunities', '2019-11-18T"
-                        "09:00:00', '2019-11-20 18:00:00', 'Default') ,"
+                        "09:00:00', '2019-11-20T18:00:00', 'Default') ,"
                         "(2, 'COMP4920 Diary Due', 'Submit project diaries by Give', '2019-11-24T"
-                        "18:30:00', '2019-11-24 19:45:00', 'Default') ,"
+                        "18:30:00', '2019-11-24T19:45:00', 'Default') ,"
                         "(2, 'COMP4920 Peer Assessment', 'Submit peer assessments on Moodle', '2019-11-24T"
-                        "13:30:00', '2019-11-24 13:45:00', 'Default') ,"
+                        "13:30:00', '2019-11-24T13:45:00', 'Default') ,"
                         "(2, 'COMP4920 Project Due', 'Event 9 description', '2019-11-24T"
-                        "21:00:00', '2019-11-24 23:55:00', 'Default') ,"
+                        "21:00:00', '2019-11-24T23:55:00', 'Default') ,"
                         "(2, 'COMP4920 Presentation', 'Presenting the wonderful PractiCal to staff', '2019-11-25T"
-                        "15:00:00', '2019-11-25 17:00:00', 'Default') ,"
+                        "15:00:00', '2019-11-25T17:00:00', 'Default') ,"
                         "(2, 'End of Term Drinks', 'Casual Dress Code', '2019-11-25T"
-                        "18:00:00', '2019-11-25 20:00:00', 'Default') ,"
+                        "18:00:00', '2019-11-25T20:00:00', 'Default') ,"
                         "(2, 'COMP9444 Exam', 'Bring: Pens/pencils, Calculator - UNSW Approved', '2019-11-30T"
-                        "13:45:00', '2019-11-30 15:00:00', 'Default') ,"
+                        "13:45:00', '2019-11-30T15:00:00', 'Default') ,"
                         "(2, 'COMP4418 Exam', 'No Calculator', '2019-12-05T"
-                        "08:45:00', '2019-12-05 11:00:00', 'default') ,"
+                        "08:45:00', '2019-12-05T11:00:00', 'Default') ,"
                         "(2, 'Meenas Graduation', 'Bring Flowers', '2019-12-13T"
-                        "08:45:00', '2019-12-13 11:00:00', 'Social') ,"
+                        "08:45:00', '2019-12-13T11:00:00', 'Social') ,"
                         "(2, 'CHRISTMAS!!!', 'WOOHOO', '2019-12-25T"
-                        "00:00:00', '2019-12-25 24:00:00', 'Family') ,"
+                        "00:00:00', '2019-12-25T24:00:00', 'Family') ,"
 
                         "(3, 'Event 11 title', 'Event 11 description', '2019-11-06 "
-                        "09:30:00.000Z', '2019-11-06 17:00:00.000Z', 'default') ,"
+                        "09:30:00.000Z', '2019-11-06 17:00:00.000Z', 'Default') ,"
                         "(3, 'Event 12 title', 'Event 12 description', '2019-11-07 "
-                        "09:30:00.000Z', '2019-11-07 17:00:00.000Z', 'default') ,"
+                        "09:30:00.000Z', '2019-11-07 17:00:00.000Z', 'Default') ,"
                         "(3, 'Event 13 title', 'Event 13 description', '2019-11-08 "
-                        "09:30:00.000Z', '2019-11-08 17:00:00.000Z', 'default')"))
+                        "09:30:00.000Z', '2019-11-08 17:00:00.000Z', 'Default')"))
     db.commit()
     cursor.close()
