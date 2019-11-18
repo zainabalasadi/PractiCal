@@ -7,11 +7,11 @@
 from templates.code.Calendar import Calendar
 from templates.code.Comment import Comment
 from templates.code.Event import Event
-#from templates.code.Group import Group
+from templates.code.Group import Group
 from templates.code.Notification import Notification
 from templates.code.User import User
 from templates.code.DatabaseManager import DatabaseManager
-
+import json
 
 class PractiCalManager():
     def __init__(self, database, host, user, password):
@@ -60,6 +60,11 @@ class PractiCalManager():
             return self._events[eid]
         return None
 
+    def getUserDetails(self, userID=None, userEmail=None):
+        if not userID and not userEmail: return None
+        _, fn, ln, email, _ = self.getUser(userID, userEmail)
+        return (fn, ln, email)
+
     # Returns tuple containing user information in the form
     # (first name, last name, email)
     def getUserInfo(self, userID=None, email=None):
@@ -83,8 +88,6 @@ class PractiCalManager():
         return self._db.searchUser(query)
 
     # Logs user into system
-    #TODO: get user groups
-    #TODO: get user contacts
     #TODO: read calendar colour from settings
     def loginUser(self, email, password):
         # Get user from database and load into manager
@@ -93,12 +96,26 @@ class PractiCalManager():
         if not userID > 0:
             return None
         try:
-            _, userFN, userLN, email = self._db.getUser(userID=userID)
+            _, userFN, userLN, email, contacts, prefs = \
+                self._db.getUser(userID=userID)
         except:
             return None
-        
+
         user = User(userID, userFN, userLN, email, password)
         self._users[userID] = user
+
+        # Add contacts to users
+        try:
+            contacts = json.loads(contacts)
+            for email in contacts.keys():
+                _, contactFN, contactLN, _ = self._db.getUser(email=email)
+                for group in contacts[email]:
+                    user.addContact(email, contactFN, contactLN, group)
+        except:
+            pass
+
+        # Add preferences to users
+        # TODO
 
         # Get events from database
         events = self._db.getUserEvents(userID)
@@ -134,7 +151,7 @@ class PractiCalManager():
                 if eventID not in self._events.keys():
                     if not self.loadEvent(eventID): continue
                 calendars[cal].addInvite(self._events[eventID], status)
- 
+
         # Get notifications from database
         notifs = self._db.getNotifications(userID)
         if notifs == -1 or not notifs: notifs = []
@@ -158,7 +175,7 @@ class PractiCalManager():
 
             # Delete notification from database
             self._db.deleteNotification(eventID, senderID, userID, notifType)
-                 
+
         for c in calendars.values():
             user.addCalendar(c)
 
@@ -186,15 +203,14 @@ class PractiCalManager():
         if userID in self._updateQueue.keys():
             self.updateDatabase(self._updateQueue[userID])
             del self._updateQueue[userID]
-            
+
         return True
 
     # Add a new event to manager and database. Returns new event object
-    def addEvent(self, userID, title, description, startDateTime,
+    def addEvent(self, userID, title, startDateTime, description=None,
             endDateTime=None, calendarName=None , category=None, location=None,
             inviteeEmails=None):
 
-        print("called")
         eventID = self._db.addEvent(userID, title, description, calendarName,
             category, startDateTime, endDateTime, location)
         if eventID == -1: return None
@@ -212,7 +228,7 @@ class PractiCalManager():
             event = self._db.getEvent(eventID)
             if not event or event == -1: return False
             eventID, userID, title, descr, startDT, endDT, _, cat, loc = event
-            
+
             # Get event invitees
             invites = self._db.getInvitesByEvent(eventID)
             if invites == -1 or not invites: invites = []
@@ -221,7 +237,7 @@ class PractiCalManager():
                 _, inviteeID, status = i
                 _, _, _, inviteeEmail = self._getUser(userID=inviteeID)
                 invitees[inviteeEmail] = status
-            
+
             self._events[eventID] = Event(
                 eventID=eventID,
                 userID=userID,
@@ -294,9 +310,9 @@ class PractiCalManager():
                 self._db.addInvite(eventID, receiverID, Event.INVITESTATUS_NONE)
             self._events[eventID].addInvitees([email])
 
-        self.sendNotification(eventID, senderID, emailsToNotify, 
+        self.sendNotification(eventID, senderID, emailsToNotify,
             Notification.NOTIF_EVENTINVITE)
-                
+
     # Updates invite status for user and sends response notification to
     # event owner
     def respondToInvite(self, eventID, userID, response):
@@ -334,7 +350,7 @@ class PractiCalManager():
                 Notification.NOTIF_INVITERESP_MAYBE)
             self._db.deleteNotification(eventID, userID, eventOwnerID,
                 Notification.NOTIF_INVITERESP_DECLINE)
- 
+
         # Send notification to event owner
         if eventOwnerEmail:
             self.sendNotification(eventID, userID, [eventOwnerEmail], response)
@@ -355,7 +371,7 @@ class PractiCalManager():
             receiver = self._db.getUser(email=email)
             receiverID = receiver[0] if receiver and receiver != -1 else 0
             if not receiverID > 0: continue
-            
+
             # Send notification to user if logged in else save to database
             if receiverID in self._users.keys():
                 self._users[receiverID].addNotification(
@@ -363,7 +379,7 @@ class PractiCalManager():
             else:
                 self._db.addNotification(eventID, senderID, receiverID,
                     notifType)
-            
+
 
     # Adds object to queue of database updates to be done once user has
     # logged out. Add calendar object if object is an event
@@ -382,7 +398,7 @@ class PractiCalManager():
 
         if userID not in self._updateQueue.keys():
             self._updateQueue[userID] = []
-        
+
         inviteTypes = [self.DBUpdate.DB_UPDATE_INVITE_GOING,
             self.DBUpdate.DB_UPDATE_INVITE_MAYBE,
             self.DBUpdate.DB_UPDATE_INVITE_DECLINE]
@@ -419,12 +435,15 @@ class PractiCalManager():
                         updateObject.getCategory(),
                         updateObject.getLocation())
                 elif updateType == self.DBUpdate.DB_UPDATE_USER:
+                    contacts = {email: groups for email, _, _, groups \
+                            in updateObject.getContacts()}
                     self._db.setUser(
                         updateObject.getID(),
                         updateObject.getFirstName(),
                         updateObject.getLastName(),
                         updateObject.getEmail(),
-                        updateObject.getPassword())
+                        updateObject.getPassword(),
+                        contacts)
                 elif updateType == self.DBUpdate.DB_UPDATE_INVITE_GOING:
                     self._db.setInvite(
                         updatedObject.getID(),

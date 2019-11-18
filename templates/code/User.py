@@ -77,7 +77,8 @@ class User(UserMixin):
         contacts = []
         for email in self._contacts.keys():
             contacts.append((email, self._contacts[email][firstName],
-                self._contacts[email][lastName]))
+                self._contacts[email][lastName],
+                [grp.getName() for grp in self._contacts[email]['groups']]))
         return contacts
 
     def getGroups(self):
@@ -98,20 +99,23 @@ class User(UserMixin):
             self._calendars[newCalName] = newCalendar
             return True
 
-    def addContact(self, email, firstName, lastName, groupName):
+    def addContact(self, email, firstName="", lastName="", groupName=None):
         try:
             mem = self._contacts[email]
-            return
         except:
-            self._contacts[email] = {
+            mem = self._contacts[email] = {
                 'firstName': firstName,
-                'lastName': lastName}
+                'lastName': lastName,
+                'groups': []}
+
+        if not groupName: return
         try:
             grp = self._groups[groupName]
         except:
-            grp = Group(groupName)
-            self._groups[groupName] = grp
-        grp.addMember(email, firstName, lastName)
+            grp = self._groups[groupName] = Group(groupName)
+        grp.addMember(email, mem['firstName'], mem['lastName'])
+        if grp not in mem['groups']:
+            self._contacts[email]['groups'].append(grp)
 
     def addGroup(self, group):
         try:
@@ -251,17 +255,3 @@ class User(UserMixin):
         for calendar in self._calendars:
             time += calendar.calculateHoursCategory(category, week)
         return time
-
-    def createGroup(self, name, members):
-        group = Group(name)
-        for user in members:
-            group.addMember(user)
-        self._groups.append(group)
-
-    def addUserToGroup(self, user, group):
-        if group in self._groups:
-            group.addMember(user)
-
-    def removeUserFromGroup(self, user, group):
-        if group in self._groups:
-            group.removeMember(user)
