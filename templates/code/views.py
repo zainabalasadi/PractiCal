@@ -143,6 +143,7 @@ def getEvents():
                 calObj['user'] = current_user.getFirstName()
                 eventList = []
                 for event in cal.getEvents():
+                        print(cal.getName(), ":", event.getName())
                         eventDict = {}
                         eventDict['creator'] = event.getUserID()
                         eventDict['title'] = event.getName()
@@ -156,7 +157,7 @@ def getEvents():
                         eventDict['calendar'] = cal.getName()
                         eventDict['groups'] = current_user.getGroups()
                         eventList.append(eventDict)
-                        calObj['events'] = eventList
+                calObj['events'] = eventList
                 ret.append(calObj)
                 # break
         return jsonify({"calendars": ret})
