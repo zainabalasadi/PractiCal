@@ -174,18 +174,19 @@ def searchEvents():
                 eventList = []
                 for event in current_user.getEventsByQuery(r['queryString']):
                         eventDict = {}
-                        eventDict['creator'] = event.getUser().firstName()
-                        eventDict['name'] = event.getName()
+                        eventDict['creator'] = event.getUserID()
+                        eventDict['title'] = event.getName()
                         eventDict['eventId'] = event.getID()
-                        eventDict['description'] = event.getDescription()
-                        eventDict['startDateTime'] = event.getStartDateTime()
-                        eventDict['endDateTime'] = event.getEndDateTime()
+                        eventDict['desc'] = event.getDescription()
+                        eventDict['start'] = event.getStartDateTime()
+                        eventDict['end'] = event.getEndDateTime()
                         eventDict['category'] = event.getCategory()
                         eventDict['comments'] = event.getComments()
                         eventDict['invitees'] = event.getInvitees()
-                        eventDict['groups'] = event.getGroups()
+                        # eventDict['groups'] = event.getGroups()
                         eventList.append(eventDict)
-                return jsonify({"results": eventList})
+                        print(eventList)
+                return jsonify(eventList)
 
 
 @index_blueprint.route('/inviteResponse', methods=['POST'])
