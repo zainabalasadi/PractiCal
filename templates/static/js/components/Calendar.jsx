@@ -120,7 +120,7 @@ class Cal extends Component {
 
     // Function to create event and send to back-end
     create_event(event) {
-        console.log(event)
+        //console.log(event)
         // console.log(event.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
@@ -207,14 +207,15 @@ class Cal extends Component {
     }
 
     formatDateStart(date) {
+        
         var today = new Date();
 
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = today.getHours(),
-            min = today.getMinutes();
+            hour = '' + today.getHours(),
+            min = '' + today.getMinutes();
         
         console.log(d)
     
@@ -231,14 +232,15 @@ class Cal extends Component {
     }
 
     formatDateEnd(date) {
+        console.log(date)
         var today = new Date();
 
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = today.getHours() + 1,
-            min = today.getMinutes();
+            hour = '' + (today.getHours() + 1),
+            min = '' + today.getMinutes();
         
         console.log(d)
     
@@ -366,8 +368,8 @@ class Cal extends Component {
         let deletedEvent = this.state.events.filter (
             event => event["eventId"] === this.state.eventId
         )
-        console.log(updatedEvents)
-        console.log(deletedEvent)
+        //console.log(updatedEvents)
+        //console.log(deletedEvent)
         this.setState({ events: updatedEvents });
         this.delete_event(deletedEvent[0])
     }
@@ -497,7 +499,15 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.setNewEvent(), this.handleClose();
+                        if (this.state.start >= this.state.end) {
+                            
+                            console.log("i am hereeee")
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            this.handleClose();
+                        } else {
+                            this.setNewEvent(), this.handleClose();
+                        }
                     }}
                     >
                     Submit
