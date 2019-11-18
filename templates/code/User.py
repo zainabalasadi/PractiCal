@@ -17,7 +17,7 @@ class User(UserMixin):
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._calendars = {'default': Calendar('default', 'blue')}
+        self._calendars = {'Default': Calendar('Default', 'blue')}
         self._contacts = []
         self._groups = []
         self._notifications = []
@@ -118,7 +118,7 @@ class User(UserMixin):
 
     # Adds new invite to default calendar
     def addInvite(self, event):
-        self._calendars['default'].addInvite(event)
+        self._calendars['Default'].addInvite(event)
 
     #
     # Setters
@@ -149,8 +149,8 @@ class User(UserMixin):
     def deleteCalendar(self, calendar):
         try:
             del self._calendars[calendar.getName()]
-            if calendar.getName() == 'default':
-                self._calendars['default'] = Calendar('default', 'blue')
+            if calendar.getName() == 'Default':
+                self._calendars['Default'] = Calendar('Default', 'blue')
             return True
         except:
             return False

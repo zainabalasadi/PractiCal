@@ -104,7 +104,7 @@ class PractiCalManager():
         events = self._db.getUserEvents(userID)
         if events == -1 or not events: events = []
 
-        calendars = {'default': user.getCalendars()[0]}
+        calendars = {'Default': user.getCalendars()[0]}
         for e in events:
             eventID = e[0]
             cal = e[6]
