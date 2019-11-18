@@ -213,10 +213,10 @@ def calendar():
 @index_blueprint.route("/getIntent", methods=['POST'])
 @login_required
 def getIntent():
-    #r = request.get_json()
-    textMsg = "Make an event for tomorrow at 9am" #r['message']
+    r = request.get_json()
+    textMsg = r['message']
 
-    SESSION_ID = 1010 # current_user.getId()  # needs to be replaced with the logged in users id
+    SESSION_ID = current_user.getId() 
     session = sessionClient.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
 
     textInput = dialogflow_v2.types.TextInput(text=textMsg,
@@ -225,7 +225,7 @@ def getIntent():
 
     response = sessionClient.detect_intent(session=session, query_input=queryInput)
 
-    print(response.query_result.parameters.fields["date"].string_value)
+    #print(response.query_result.parameters.fields["timeStart"].string_value)
     if response.query_result.intent.display_name == "Event scheduling":
         return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
                         "timeStart": response.query_result.parameters.fields["timeStart"].string_value,
