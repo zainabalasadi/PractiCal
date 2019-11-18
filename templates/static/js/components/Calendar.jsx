@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
 import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
 import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
-// import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
+import CloseIcon from '@material-ui/icons/Close';
+import GroupIcon from '@material-ui/icons/Group';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import NotesIcon from '@material-ui/icons/Notes';
+
+
+import IconButton from '@material-ui/core/IconButton';
 import moment from "moment";
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
@@ -44,11 +51,43 @@ const styles = theme => ({
     toolbar: theme.mixins.toolbar,
     title: {
         fontSize: 100,
-        margin: '20px 0 20px 0',
+        margin: '40px 0 20px 50px',
+        maxWidth: 500,
+        width: 500,
     },
     inputMargin: {
-        margin: '8px 0 8px 0',
+        margin: '4px 0 5px 0',
+        marginLeft: 50,
+        maxWidth: 500,
+        width: 500,
+        borderRadius: theme.shape.borderRadius,
+        borderWidth: '50',
+        '&:hover': {
+            backgroundColor: '#F2F3F4',
+        },
     },
+    selectMargin: {
+        margin: '4px 0 4px 0',
+        marginLeft: 50,
+        maxWidth: 150,
+        width: 150,
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+    },
+    iconDiv: {
+        position: 'relative', 
+        display: 'inline-block'
+    },
+    icon: {
+        position: 'absolute', 
+        left: 4, 
+        top: 10, 
+        width: 20, height: 20,
+        marginRight: 50,
+    }
 });
 
 
@@ -312,7 +351,10 @@ class Cal extends Component {
                 //   }}
                 />
                 {/* Modal for booking new event */}
-                <Dialog open={this.state.openSlot} onClose={this.handleClose}>
+                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose}>
+                <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
+                    <CloseIcon />
+                </IconButton>
                   <DialogContent>
                     <TextField className={classes.title}
                     inputProps={{
@@ -326,72 +368,85 @@ class Cal extends Component {
                       this.setTitle(e.target.value);
                     }}
                     />
-                    <br />
-                    <TextField 
-                    className={classes.inputMargin}
-                    fullWidth
-                    placeholder="Add description"
-                    margin="dense"
-                    onChange={e => {
-                      this.setDescription(e.target.value);
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    defaultValue={this.state.start}
-                    onChange={e => {
-                        this.setStart(e.target.value), this.handleStartTime;
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    value={this.state.end}
-                    onChange={e => {
-                        this.setEnd(e.target.value), this.handleEndTime;
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    placeholder="Add invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setInvitees(e.target.value);
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    placeholder="Add group invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setGroups(e.target.value);
-                    }}
-                    /> 
-                    <InputLabel htmlFor="demo-dialog-native">Calendar</InputLabel>
-                    <Select
-                      native
-                      value={this.state.calendar}
-                      defaultValue='Default'
-                      onChange={e => {
-                        this.setCalendar(e.target.value);
-                      }}
-                    >
-                    {this.state.calendars.map(item => {
-                        return (
-                            <option value={`${item.name}`}>{`${item.name}`}</option>
-                        );
-                    })}
-                    </Select>                   
+                    <div className={classes.iconDiv}>
+                        <ScheduleIcon className={classes.icon}/>
+                        <TextField 
+                          className={classes.inputMargin}
+                          InputProps={{disableUnderline: true}}
+                          type="datetime-local"
+                          defaultValue={this.state.start}
+                          onChange={e => {
+                            this.setStart(e.target.value), this.handleStartTime;
+                          }}
+                        />
+                        <TextField 
+                          className={classes.inputMargin}
+                          type="datetime-local"
+                          value={this.state.end}
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setEnd(e.target.value), this.handleEndTime;
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <NotesIcon className={classes.icon}/>
+                        <TextField 
+                          className={classes.inputMargin}
+                          fullWidth
+                          placeholder="Add description"
+                          margin="dense"
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setDescription(e.target.value);
+                          }}
+                        />
+                    </div>
+                    
+
+                    <div className={classes.iconDiv}>
+                        <GroupIcon className={classes.icon}/>
+                        <TextField 
+                          className={classes.inputMargin}
+                          placeholder="Add invitees"
+                          margin="dense"
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setInvitees(e.target.value);
+                          }}
+                        />
+
+                        <TextField 
+                          className={classes.inputMargin}
+                          placeholder="Add group invitees"
+                          margin="dense"
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setGroups(e.target.value);
+                          }}
+                        /> 
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <CalendarTodayIcon className={classes.icon}/>
+                        <Select
+                          native
+                          value={this.state.calendar}
+                          InputProps={{disableUnderline: true}}
+                          className={classes.selectMargin}
+                          defaultValue='Default'
+                          onChange={e => {
+                            this.setCalendar(e.target.value);
+                          }}
+                        >
+                        {this.state.calendars.map(item => {
+                            return (
+                                <option value={`${item.name}`}>{`${item.name}`}</option>
+                            );
+                        })}
+                        </Select> 
+                    </div>                  
                   </DialogContent>
                   <DialogActions>
-                    <Button 
-                    label="Cancel" 
-                    color="primary"
-                    onClick={this.handleClose} 
-                    >
-                    Cancel
-                    </Button>
                     <Button
                     label="Submit"
                     variant="contained" 
@@ -406,7 +461,7 @@ class Cal extends Component {
                 </Dialog>
 
                 {/* Material-ui Modal for Existing Event */}
-                <Dialog open={this.state.openEvent} onClose={this.handleClose}>
+                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openEvent} onClose={this.handleClose}>
                   <DialogContent>
                     <TextField 
                     className={classes.title}
@@ -422,76 +477,87 @@ class Cal extends Component {
                       this.setTitle(e.target.value);
                     }}
                     />
-                    <br />
-                    <TextField
-                    className={classes.inputMargin}
-                    fullWidth
-                    placeholder="Add description"
-                    margin="dense"
-                    multiline={true}
-                    defaultValue={this.state.desc}
-                    onChange={e => {
-                      this.setDescription(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    value={this.state.start}
-                    onChange={e => {
-                        this.setStart(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    defaultValue={this.state.end}
-                    onChange={e => {
-                        this.setEnd(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    defaultValue={this.state.invitees}
-                    placeholder="Add invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setInvitees(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    defaultValue={this.state.group}
-                    placeholder="Add group invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setGroup(e.target.value);
-                    }}
-                    /> 
-                    <InputLabel htmlFor="demo-dialog-native">Calendar</InputLabel>
-                    <Select
-                      native
-                      value={this.state.calendar}
-                      defaultValue='Default'
-                      onChange={e => {
-                        this.setCalendar(e.target.value);
-                      }}
-                    >
-                    {this.state.calendars.map(item => {
-                        return (
-                            <option value={`${item.name}`}>{`${item.name}`}</option>
-                        );
-                    })}
-                    </Select> 
+                    <div className={classes.iconDiv}>
+                        <ScheduleIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          InputProps={{disableUnderline: true}}
+                          type="datetime-local"
+                          value={this.state.start}
+                          onChange={e => {
+                            this.setStart(e.target.value);
+                          }}
+                        />
+                        <TextField
+                          className={classes.inputMargin}
+                          InputProps={{disableUnderline: true}}
+                          type="datetime-local"
+                          defaultValue={this.state.end}
+                          onChange={e => {
+                            this.setEnd(e.target.value);
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <NotesIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          fullWidth
+                          placeholder="Add description"
+                          InputProps={{disableUnderline: true}}
+                          margin="dense"
+                          multiline={true}
+                          defaultValue={this.state.desc}
+                          onChange={e => {
+                            this.setDescription(e.target.value);
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <GroupIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          defaultValue={this.state.invitees}
+                          InputProps={{disableUnderline: true}}
+                          placeholder="Add invitees"
+                          margin="dense"
+                          onChange={e => {
+                            this.setInvitees(e.target.value);
+                          }}
+                        />
+
+                        <TextField
+                          className={classes.inputMargin}
+                          defaultValue={this.state.group}
+                          InputProps={{disableUnderline: true}}
+                          placeholder="Add group invitees"
+                          margin="dense"
+                          onChange={e => {
+                            this.setGroup(e.target.value);
+                          }}
+                        /> 
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <CalendarTodayIcon className={classes.icon}/>
+                        <Select
+                        native
+                        value={this.state.calendar}
+                        InputProps={{disableUnderline: true}}
+                        className={classes.selectMargin}
+                        defaultValue='Default'
+                        onChange={e => {
+                            this.setCalendar(e.target.value);
+                        }}
+                        >
+                        {this.state.calendars.map(item => {
+                            return (
+                                <option value={`${item.name}`}>{`${item.name}`}</option>
+                            );
+                        })}
+                        </Select> 
+                    </div>
                   </DialogContent>
                   <DialogActions>
-                    <Button 
-                    label="Cancel" 
-                    color="primary"
-                    onClick={this.handleClose} 
-                    >
-                    Cancel
-                    </Button>
                     <Button
                     label="Delete"
                     variant="contained" 
