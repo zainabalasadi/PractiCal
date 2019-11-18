@@ -206,34 +206,31 @@ def register():
 
 @index_blueprint.route('/calendar', methods=['GET', 'POST'])
 @login_required
-@login_required
 def calendar():
     return render_template('/calendar.html', name=current_user.getFirstName())
 
 
-post_blueprint = Blueprint('post', __name__)
-
-
-@post_blueprint.route("/getIntent", methods=['POST'])
+@index_blueprint.route("/getIntent", methods=['POST'])
 @login_required
 def getIntent():
-    r = request.get_json()
-    textMsg = r['message']
+    #r = request.get_json()
+    textMsg = "Make an event for tomorrow at 9am" #r['message']
 
-    SESSION_ID = current_user.getId()  # needs to be replaced with the logged in users id
+    SESSION_ID = 1010 # current_user.getId()  # needs to be replaced with the logged in users id
     session = sessionClient.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
 
-    textInput = dialogflow_v2.types.TextInput(text="Make an event for today at 10pm",
+    textInput = dialogflow_v2.types.TextInput(text=textMsg,
                                               language_code=DIALOGFLOW_LANGUAGE_CODE)
     queryInput = dialogflow_v2.types.QueryInput(text=textInput)
 
     response = sessionClient.detect_intent(session=session, query_input=queryInput)
+
+    print(response.query_result.parameters.fields["date"].string_value)
     if response.query_result.intent.display_name == "Event scheduling":
         return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
                         "timeStart": response.query_result.parameters.fields["timeStart"].string_value,
                         "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value
                         })
-
 
 @index_blueprint.route('/sendInvite', methods=['GET', 'POST'])
 @login_required
