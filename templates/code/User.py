@@ -18,8 +18,8 @@ class User(UserMixin):
         self._email = email
         self._password = password
         self._calendars = {'Default': Calendar('Default', 'blue')}
-        self._contacts = []
-        self._groups = []
+        self._contacts = dict()
+        self._groups = dict()
         self._notifications = []
         self._isAuthenticated = False
         self._isActive = True
@@ -74,10 +74,15 @@ class User(UserMixin):
         return cal
 
     def getContacts(self):
-        return self._contacts
+        contacts = []
+        for email in self._contacts.keys():
+            contacts.append((email, self._contacts[email][firstName],
+                self._contacts[email][lastName],
+                [grp.getName() for grp in self._contacts[email]['groups']]))
+        return contacts
 
     def getGroups(self):
-        return self._groups
+        return list(self._groups.values())
 
     def getNotifications(self):
         return self._notifications
@@ -94,23 +99,30 @@ class User(UserMixin):
             self._calendars[newCalName] = newCalendar
             return True
 
-    def addContact(self, contact):
-        if contact not in self._contacts:
-            self._contacts.append(contact)
+    def addContact(self, email, firstName="", lastName="", groupName=None):
+        try:
+            mem = self._contacts[email]
+        except:
+            mem = self._contacts[email] = {
+                'firstName': firstName,
+                'lastName': lastName,
+                'groups': []}
 
-    def addContactByNameEmail(self, contactInfo):
-        # for contact in db
-        # if contactInfo in email.db
-        # addContact(contact)
-        # return True
-        # if contactInfo in name.db
-        # addContact(contact)
-        # return True
-        return
+        if not groupName: return
+        try:
+            grp = self._groups[groupName]
+        except:
+            grp = self._groups[groupName] = Group(groupName)
+        grp.addMember(email, mem['firstName'], mem['lastName'])
+        if grp not in mem['groups']:
+            self._contacts[email]['groups'].append(grp)
 
     def addGroup(self, group):
-        if group not in self._groups:
-            self._groups.append(group)
+        try:
+            grp = self._groups[group.getName()]
+            return
+        except:
+            self._groups[group.getName()] = group
 
     def addNotification(self, notif):
         if notif not in self._notifications:
@@ -167,9 +179,13 @@ class User(UserMixin):
             if notif.getEvent() == event:
                 self._notifications.remove(notif)
 
-    def removeContact(self, contact):
-        if contact in self._contacts:
-            self._contacts.remove(contact)
+    def removeContact(self, email):
+        try:
+            del self._contacts[email]
+            for group in self._groups:
+                group.removeMember(email)
+        except:
+            pass
 
     # remove from all calendars
     def deleteEvent(self, event):
@@ -239,17 +255,3 @@ class User(UserMixin):
         for calendar in self._calendars:
             time += calendar.calculateHoursCategory(category, week)
         return time
-
-    def createGroup(self, name, members):
-        group = Group(name)
-        for user in members:
-            group.addMember(user)
-        self._groups.append(group)
-
-    def addUserToGroup(self, user, group):
-        if group in self._groups:
-            group.addMember(user)
-
-    def removeUserFromGroup(self, user, group):
-        if group in self._groups:
-            group.removeMember(user)
