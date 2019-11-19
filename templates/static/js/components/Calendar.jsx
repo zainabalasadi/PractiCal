@@ -108,6 +108,7 @@ class Cal extends Component {
             groups: "",
             calendar: "",
             eventId: "",
+            colour: "",
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
@@ -200,7 +201,9 @@ class Cal extends Component {
                 var end = new Date(calendarList.calendars[i].events[j].end)
                 calendarList.calendars[i].events[j].end = end
                 console.log(calendarList.calendars[i].events[j].start)
-
+                
+                // Add colour as attribute
+                calendarList.calendars[i].events[j].colour = calendarList.calendars[i].colour;
                 this.state.events.push(calendarList.calendars[i].events[j])
             }
         }
@@ -322,7 +325,7 @@ class Cal extends Component {
     setDescription(e) { this.setState({ desc: e }); }
     setInvitees(e) { this.setState({ invitees: e }); }
     setGroups(e) { this.setState({ groups: e }); }
-    setCalendar(e) { this.setState({ calendar: e }); }
+    setCalendar(e) { this.setState({ calendar: e, colour: e.colour }); }
     setStart(e) { var date = new Date(e); this.setState({ start: date }); }
     setEnd(e) { var date = new Date(e); this.setState({ end: date }); }
         
@@ -397,6 +400,18 @@ class Cal extends Component {
         this.delete_event(deletedEvent[0])
     }
 
+    eventStyleGetter(event) {
+        console.log(event);
+        var backgroundColor = event.colour;
+        var style = {
+            backgroundColor: backgroundColor,
+
+        };
+        return {
+            style: style
+        };
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -415,15 +430,14 @@ class Cal extends Component {
                   defaultView = "month"
                   events = {this.state.events}
                   components={{
-                    // event: Event,
+                    //event: Event,
                     toolbar: CustomToolbar
                   }}
                   showMultiDayTimes = {true}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
-                //   components={{
-                //     event: Event
-                //   }}
+                  eventPropGetter={(this.eventStyleGetter)}
+                
                 />
                 {/* Modal for booking new event */}
                 <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose}>
@@ -512,7 +526,7 @@ class Cal extends Component {
                           className={classes.selectMargin}
                           defaultValue='Default'
                           onChange={e => {
-                            this.setCalendar(e.target.value);
+                            this.setCalendar(e.target.value), this.eventStyleGetter(this.state);
                           }}
                         >
                         {this.state.calendars.map(item => {
@@ -574,7 +588,6 @@ class Cal extends Component {
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
                           defaultValue={this.formatActualDate(this.state.start)}
-                          value={this.formatActualDate(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value);
                           }}
@@ -584,7 +597,6 @@ class Cal extends Component {
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
                           defaultValue={this.formatActualDate(this.state.start)}
-                          value={this.formatActualDate(this.state.end)}
                           onChange={e => {
                             this.setEnd(e.target.value);
                           }}
@@ -690,9 +702,7 @@ function Event({ event }) {
     // console.log(event);
     return (
       <div>
-        <div>{event.start.getHours().toString()}</div>
         <div>{event.title}</div>
-        
       </div>
     );
   }
