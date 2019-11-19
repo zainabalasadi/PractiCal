@@ -251,6 +251,7 @@ class Navbar extends Component {
                         onKeyPress={e => {
                             if (e.key === "Enter") {
                                 this.search()
+                                this.setState({ searchText: ""})
                             }
                         }}
                         />
