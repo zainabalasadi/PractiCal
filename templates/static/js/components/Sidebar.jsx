@@ -11,6 +11,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import AddIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
+import { CirclePicker } from 'react-color'
 
 const drawerWidth = 300;
 const navHeight = 64;
@@ -37,7 +40,17 @@ const styles = theme => ({
     },
     check: {
         minWidth: 10,
-    }
+    },
+    addButton: {
+        position: 'absolute',
+        right: theme.spacing(5),
+        top: theme.spacing(17),
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+    },
 });
 
 
@@ -52,28 +65,19 @@ class Sidebar extends Component {
             ],
             checked: 0,
             setChecked: 0,
+            createPopUp: false,
+            calName: "",
+            calColour: "",
         }
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
+        this.handleCreateOpen = this.handleCreateOpen.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         this.renderNotifList = this.renderNotifList.bind(this)
     }
-
         componentDidMount() {
         console.log('calling...')
         this.getCalList()
     }
-
-    handleToggle = value => () => {
-        // const currentIndex = this.state.checked.indexOf(value);
-        // const newChecked = [...this.state.checked];
-        // if (currentIndex === -1) {
-        //   newChecked.push(value);
-        // } else {
-        //   newChecked.splice(currentIndex, 1);
-        // }
-
-        // this.state.setChecked(newChecked);
-    };
-
 
     handleNlpCreation(e) {
         console.log(e.target.value)
@@ -86,6 +90,25 @@ class Sidebar extends Component {
         }).then(response => response.json()).then(data => console.log(data))
         // TODO Insert code to reflect changes in back end on the front end given the 
         // response from the fetch request
+    }
+
+    create_calendar(calendar) {
+        let response = fetch('/createCalendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
+        }).then((data) => data.json()).then(cal => {
+            console.log(cal.success);
+            if (cal.success) {
+                console.log("Created calendar successfully")
+                console.log(calendar)
+                this.state.calendars.push(calendar)
+            } else {
+                console.log("Failed calendar creation")
+            }
+        });
     }
 
     getCalList() {
@@ -101,7 +124,7 @@ class Sidebar extends Component {
         console.log(calList.calendars)
         for (var i = 0 ; i < calList.calendars.length ; i++) {
                 console.log(calList.calendars[i].name)
-                new_list.push(calList.calendars[i].name)
+                new_list.push(calList.calendars[i])
         }
 
         this.setState((prevState) => {
@@ -111,9 +134,6 @@ class Sidebar extends Component {
         this.render()
         this.forceUpdate()
     }
-
-
-
 
    getNotifList() {
         let response = fetch('/getNotifs', {
@@ -138,13 +158,12 @@ class Sidebar extends Component {
         this.forceUpdate()
     }
 
-
    renderObject(){
-    for (var i = 0 ; i < this.state.notifs.length ; i++) {
-       return (
-           this.renderNotifListsss(this.state.notifs[i])
-       )
-    }
+        for (var i = 0 ; i < this.state.notifs.length ; i++) {
+            return (
+                this.renderNotifListsss(this.state.notifs[i])
+            )
+        }
    }
 
    renderNotifListsss(e) {
@@ -161,6 +180,43 @@ class Sidebar extends Component {
             </h10>
         )
    }
+
+    handleCreateOpen() {
+        this.setState ({ createPopUp: true });
+    };
+
+    handleClose() {
+        this.setState({ createPopUp: false });
+    }
+
+    setCalName = e => { 
+        this.setState({ name: e }); 
+    };
+
+    setCalColour = e => { 
+        this.setState({ colour: e.hex }); 
+    };
+
+    setNewCalendar() {
+        const { name, colour } = this.state;
+        let newCal = { name, colour };
+        let calendars = this.state.calendars.slice();
+        calendars.push(newCal);
+        this.setState({ calendars });
+        this.create_calendar(newCal)
+    }
+
+    handleToggle = value => () => {
+        // const currentIndex = this.state.checked.indexOf(value);
+        // const newChecked = [...this.state.checked];
+        // if (currentIndex === -1) {
+        //   newChecked.push(value);
+        // } else {
+        //   newChecked.splice(currentIndex, 1);
+        // }
+
+        // this.state.setChecked(newChecked);
+    };
 
 
     render() {
@@ -191,13 +247,17 @@ class Sidebar extends Component {
                     }
                   }}
                 />
-                <h3>My Calendars</h3>
-
+                <div>
+                    <h3>My Calendars</h3>
+                    <IconButton className={classes.addButton} edge="end" onClick={this.handleCreateOpen}>
+                        <AddIcon />
+                    </IconButton>
+                </div>
                 <List>
                 {this.state.calendars.map(item => {
-                    const labelId = `checkbox-list-label-${item}`;
+                    const labelId = `checkbox-list-label-${item.name}`;
                     return (
-                    <ListItem className={classes.root} key={item} role={undefined} dense button onClick={this.handleToggle(item)}>
+                    <ListItem className={classes.root} key={item.name} role={undefined} dense button onClick={this.handleToggle(item)}>
                         <ListItemIcon className={classes.check}>
                             <Checkbox
                             className={classes.check}
@@ -208,9 +268,9 @@ class Sidebar extends Component {
                             inputProps={{ 'aria-labelledby': labelId }}
                             />
                         </ListItemIcon>
-                        <ListItemText id={labelId} primary={`${item}`} />
+                        <ListItemText id={labelId} primary={`${item.name}`} />
                             <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="comments">
+                                <IconButton edge="end" /*onClick={this.handleMenuOpen}*/>
                                     <MoreVertIcon />
                                 </IconButton>
                             </ListItemSecondaryAction>
@@ -227,6 +287,39 @@ class Sidebar extends Component {
                 NO CLICK ME
                 </Button>
                 {this.renderObject()}
+                
+                {/* Modal to create new calendar */}
+                <Dialog open={this.state.createPopUp} onClose={this.handleClose}>
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                    <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
+                        Create a new calendar
+                    </DialogTitle>
+                    <DialogContent>
+                        <TextField 
+                          placeholder="Calendar Name"
+                          margin="dense"
+                          onChange={e => {
+                            this.setCalName(e.target.value);
+                          }}
+                        />
+                        <CirclePicker 
+                          color={ this.state.colour }
+                          onChangeComplete={ this.setCalColour }
+                        />
+                        <Button
+                          label="Create Contact"
+                          variant="contained" 
+                          color="primary"
+                          onClick={() => {
+                            this.setNewCalendar(), this.handleClose();
+                          }}
+                        >
+                        Create Calendar
+                        </Button>
+                    </DialogContent>
+                </Dialog>
             </Drawer>
         );
     }
