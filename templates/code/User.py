@@ -9,7 +9,6 @@ from templates.code.Group import Group
 from templates.code.Notification import Notification
 from templates.code.Calendar import Calendar
 
-
 class User(UserMixin):
     def __init__(self, userID, firstName, lastName, email, password):
         self._id = userID
@@ -226,13 +225,8 @@ class User(UserMixin):
         listOfEvents = []
         for calendar in self._calendars:
             for event in self._calendars[calendar].getEvents():
-                print("NEW COMPARISON")
-                print(event.getName().lower())
-                print(title.lower())
                 if title.lower() in event.getName().lower():
-                    print("added")
                     listOfEvents.append(event)
-        print(listOfEvents)
         return listOfEvents
 
     #def getEventById(self, ident):
@@ -246,17 +240,20 @@ class User(UserMixin):
         return self.searchEventsByTitle(queryString)
         # + self.searchEventsByHost(queryString)
 
+    # MOVED TO views.py because PCM needed
     # search through events by host
-    def searchEventsByHost(self, host):
-        listOfEvents = []
-        for calendar in self._calendars:
-            # self._calendar[calendar]
-            for event in self._calendars[calendar].getEvents():
-                user = event.getUser()
-                userName = user.getFirstName() + user.getLastName()
-                if userName.lower() in host.lower():
-                    listOfEvents.append(event)
-        return listOfEvents
+    # def searchEventsByHost(self, host):
+    #     listOfEvents = []
+    #     for calendar in self._calendars:
+    #         # self._calendar[calendar]
+    #         for event in self._calendars[calendar].getEvents():
+    #             userID = event.getUserID()
+    #             firstName = PCM.getUserInfo(userID=userID)[0]
+    #             lastName = PCM.getUserInfo(userID=userID)[1]
+    #             userName = firstName + " " + lastName
+    #             if host.lower() in userName.lower():
+    #                 listOfEvents.append(event)
+    #     return listOfEvents
 
     #
     # Other

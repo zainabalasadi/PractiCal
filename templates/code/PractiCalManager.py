@@ -70,7 +70,7 @@ class PractiCalManager():
     def getUserInfo(self, userID=None, email=None):
         if userID and email: return None
         user = self._db.getUser(userID=userID) if userID else \
-            self.db.getUser(email=email)
+            self._db.getUser(email=email)
         return tuple(user[1:]) if user else None
 
     # Returns true if new user is successfully created

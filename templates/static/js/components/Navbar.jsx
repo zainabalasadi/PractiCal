@@ -122,11 +122,9 @@ class Navbar extends Component {
 
     setSearchText(e) {
         this.setState({ searchText: e.target.value })
-        console.log(this.state.searchText)
     }
 
     search() {
-        console.log(this.state.searchText)
         let response = fetch('/searchEvents', {
             method: 'POST',
             headers: {
@@ -139,13 +137,10 @@ class Navbar extends Component {
     }
 
     showSearchResults(events) {
-        let result = ""
         console.log(events)
         for(var i = 0; i < events.length; i++) {
             console.log(events[i].desc)
         }
-        // console.log(result)
-        alert()
     }
 
     // Function to create contact and send to back-end
@@ -250,7 +245,6 @@ class Navbar extends Component {
                         name="search"
                         value={this.state.searchText}
                         onChange={e => {
-                            console.log(e.target.value)
                             this.setSearchText(e)
                         }}
                         onKeyPress={e => {

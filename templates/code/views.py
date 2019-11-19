@@ -171,10 +171,25 @@ def getEvents():
 def searchEvents():
         if request.method == 'POST':
                 r = request.get_json()
-                eventList = []
-                for event in current_user.getEventsByQuery(r['queryString']):
+                eventsByTitle = current_user.getEventsByQuery(r['queryString'])
+                eventsByHost = []
+                for calendar in current_user.getCalendars():
+                        # self._calendar[calendar]
+                        for event in calendar.getEvents():
+                                userID = event.getUserID()
+                                firstName = PCM.getUserInfo(userID=userID)[0]
+                                lastName = PCM.getUserInfo(userID=userID)[1]
+                                userName = firstName + " " + lastName
+                                if r['queryString'].lower() in userName.lower():
+                                    eventsByHost.append(event)
+                listOfEvents = eventsByTitle + eventsByHost
+                resultList = []
+                for event in listOfEvents:
                         eventDict = {}
-                        eventDict['creator'] = event.getUserID()
+                        userID = event.getUserID()
+                        firstName = PCM.getUserInfo(userID=userID)[0]
+                        lastName = PCM.getUserInfo(userID=userID)[1]
+                        eventDict['creator'] = firstName + " " + lastName
                         eventDict['title'] = event.getName()
                         eventDict['eventId'] = event.getID()
                         eventDict['desc'] = event.getDescription()
@@ -184,9 +199,8 @@ def searchEvents():
                         eventDict['comments'] = event.getComments()
                         eventDict['invitees'] = event.getInvitees()
                         # eventDict['groups'] = event.getGroups()
-                        eventList.append(eventDict)
-                        print(eventList)
-                return jsonify(eventList)
+                        resultList.append(eventDict)
+                return jsonify(resultList)
 
 
 @index_blueprint.route('/inviteResponse', methods=['POST'])
