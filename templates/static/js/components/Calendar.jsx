@@ -120,7 +120,7 @@ class Cal extends Component {
 
     // Function to create event and send to back-end
     create_event(event) {
-        console.log(event)
+        //console.log(event)
         // console.log(event.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
@@ -186,60 +186,107 @@ class Cal extends Component {
     renderComponentsFromList(calendarList) {
         for (var i = 0 ; i < calendarList.calendars.length ; i++) {
             this.state.calendars.push(calendarList.calendars[i])
-            for (var j = 0 ; j <calendarList.calendars[i].events.length ; j++) {
+            for (var j = 0 ; j < calendarList.calendars[i].events.length; j++) {
+                //var startStr = JSON.parse(calendarList.calendars[i].events[j].start)
+                var start = new Date(calendarList.calendars[i].events[j].start)
+                calendarList.calendars[i].events[j].start = start
+
+                var end = new Date(calendarList.calendars[i].events[j].end)
+                calendarList.calendars[i].events[j].end = end
+                //console.log(calendarList.calendars[i].events[j].start)
+
                 this.state.events.push(calendarList.calendars[i].events[j])
             }
         }
+        this.forceUpdate()
     }
 
     // Closes modal
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
     }
+
+    formatDateStart(date) {
+        
+        var today = new Date();
+
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = '' + today.getHours(),
+            min = '' + today.getMinutes();
+        
+        console.log(d)
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hour.length < 2) 
+            hour = '0' + hour;
+        if (min.length < 2) 
+            min = '0' + min;
+    
+        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+    }
+
+    formatDateEnd(date) {
+        console.log(date)
+        var today = new Date();
+
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = '' + (today.getHours() + 1),
+            min = '' + today.getMinutes();
+        
+        console.log(d)
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hour.length < 2) 
+            hour = '0' + hour;
+        if (min.length < 2) 
+            min = '0' + min;
+    
+        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+    }
+
+    formatActualDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = '' + d.getHours(),
+            min = '' + d.getMinutes();
+        
+        console.log(d)
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hour.length < 2) 
+            hour = '0' + hour;
+        if (min.length < 2) 
+            min = '0' + min;
+    
+        return [year, month, day].join('-') + "T" + hour + ":" + min;
+    }
         
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-
-//         to correctly store date need it in this format
-        console.log(eventToEdit)
-        var year = eventToEdit.start.getFullYear()
-        var month = eventToEdit.start.getMonth() + 1
-        console.log(month)
-        var date = eventToEdit.start.getDate()
-
-
-        if (month < 10) {
-            month = "0" + month.toString()
-        }
-
-        if (date < 10) {
-        date = "0" + date.toString()
-        }
-
-        var fullStartDate = year + "-" + month + "-" + date + "T00:00"
-
-        var year1 = eventToEdit.start.getFullYear()
-        var month1 = eventToEdit.start.getMonth() + 1
-        var date1 = eventToEdit.start.getDate()
-
-
-        if (month1 < 10) {
-            month1 = "0" + month1.toString()
-        }
-
-        if (date1 < 10) {
-        date1 = "0" + date1.toString()
-        }
-
-        var fullEndDate = year1 + "-" + month1 + "-" + date1 + "T00:00"
-
         console.log(eventToEdit.start);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
             desc: eventToEdit.desc,
-            start: fullStartDate,
-            end: fullEndDate,
+            start: eventToEdit.start,
+            end: eventToEdit.end,
             invitees: eventToEdit.invitees,
             groups: eventToEdit.groups,
             calendar: eventToEdit.calendar,
@@ -321,8 +368,8 @@ class Cal extends Component {
         let deletedEvent = this.state.events.filter (
             event => event["eventId"] === this.state.eventId
         )
-        console.log(updatedEvents)
-        console.log(deletedEvent)
+        //console.log(updatedEvents)
+        //console.log(deletedEvent)
         this.setState({ events: updatedEvents });
         this.delete_event(deletedEvent[0])
     }
@@ -374,7 +421,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.state.start}
+                          defaultValue={this.formatDateStart(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value), this.handleStartTime;
                           }}
@@ -382,7 +429,7 @@ class Cal extends Component {
                         <TextField 
                           className={classes.inputMargin}
                           type="datetime-local"
-                          value={this.state.end}
+                          defaultValue={this.formatDateEnd(this.state.end)}
                           InputProps={{disableUnderline: true}}
                           onChange={e => {
                             this.setEnd(e.target.value), this.handleEndTime;
@@ -452,7 +499,15 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.setNewEvent(), this.handleClose();
+                        if (this.state.start >= this.state.end) {
+                            
+                            console.log("i am hereeee")
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            this.handleClose();
+                        } else {
+                            this.setNewEvent(), this.handleClose();
+                        }
                     }}
                     >
                     Submit
@@ -486,7 +541,8 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          value={this.state.start}
+                          defaultValue={this.formatActualDate(this.state.start)}
+                          value={this.formatActualDate(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value);
                           }}
@@ -495,7 +551,8 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.state.end}
+                          defaultValue={this.formatActualDate(this.state.start)}
+                          value={this.formatActualDate(this.state.end)}
                           onChange={e => {
                             this.setEnd(e.target.value);
                           }}
