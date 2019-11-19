@@ -811,7 +811,7 @@ function Event({ event }) {
 					<button type="button" onClick={this.view.bind(null, 'month')}>Month</button>
 					<button type="button" onClick={this.view.bind(null, 'week')}>Week</button>
 					<button type="button" onClick={this.view.bind(null, 'day')}>Day</button>
-					<button type="button" onClick={this.view.bind(null, 'agenda')}>Agenda</button>
+					<button type="button" onClick={this.view.bind(null, 'agenda')}>Schedule</button>
 				</div>
             </div>
         )
