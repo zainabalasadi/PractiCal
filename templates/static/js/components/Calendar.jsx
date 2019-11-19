@@ -529,12 +529,14 @@ class Cal extends Component {
                           value={this.state.calendar}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Default'
+                          defaultValue='Select Calendar'
                           onChange={e => {
                             this.setCalendar(e.target.value);
                           }}
                         >
-                        {this.state.calendars.map(item => {
+                        <option value="Select Calendar...">Select Calendar...</option>
+                        {
+                            this.state.calendars.map(item => {
                             return (
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
                             );
@@ -549,11 +551,6 @@ class Cal extends Component {
                     color="primary"
                     onClick={() => {
                         if (this.state.start >= this.state.end) {
-                            
-                            // console.log("i am hereeee")
-                            // console.log(this.state.start)
-                            // console.log(this.state.end)
-                            // this.handleClose();
                             alert("You can't make an event end before it starts!!!!")
                         } else {
                             this.setNewEvent(), this.handleClose();
@@ -654,11 +651,12 @@ class Cal extends Component {
                         value={this.state.calendar}
                         InputProps={{disableUnderline: true}}
                         className={classes.selectMargin}
-                        defaultValue='Default'
+                        defaultValue='Select Calendar'
                         onChange={e => {
                             this.setCalendar(e.target.value);
                         }}
                         >
+                        <option value="Select Calendar...">Select Calendar...</option>
                         {this.state.calendars.map(item => {
                             return (
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
