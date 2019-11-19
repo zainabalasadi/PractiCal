@@ -110,6 +110,12 @@ class Cal extends Component {
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
+	    nlpText: "",
+            nlpResult: {},
+            notifs: [
+            ],
+            sidebarChecked: 0,
+            sidebarSetChecked: 0,
         };
         this.handleClose = this.handleClose.bind(this);
     };
@@ -121,7 +127,7 @@ class Cal extends Component {
     // Function to create event and send to back-end
     create_event(event) {
         //console.log(event)
-        // console.log(event.state)
+        console.log(this.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                                     "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
@@ -319,7 +325,11 @@ class Cal extends Component {
     setCalendar(e) { this.setState({ calendar: e }); }
     setStart(e) { this.setState({ start: e }); }
     setEnd(e) { this.setState({ end: e }); }
-        
+    
+    handleNlpData = (e) => {
+	this.setState({title: "", desc: "", start: e.date.substring(0, 10).concat(e.timeStart.substring(10, 19)), end: e.date.substring(0, 10).concat(e.timeEnd.substring(10, 19)), invitees: "", groups: "", openSlot: true}) 
+	console.log(this.state)
+    }
     // Handle's start time select
     handleStartTime = (event, date) => {
         this.setState({ start: date });
@@ -641,7 +651,7 @@ class Cal extends Component {
                   </DialogActions>
                 </Dialog>
             </main>
-            <Sidebar />
+            <Sidebar calendars={this.state.calendars} nlpText={this.state.nlpText} handleNlpData={this.handleNlpData} notifs={this.state.notifs} checked={this.state.sidebarChecked} setChecked={this.state.sidebarSetChecked}/>
             </div>
         );
     }

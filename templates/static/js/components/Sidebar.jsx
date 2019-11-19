@@ -40,20 +40,11 @@ const styles = theme => ({
     }
 });
 
-
 class Sidebar extends Component {  
-    constructor() {
-        super()
-        this.state = {
-            nlpText: "",
-            calendars: [
-            ],
-            notifs: [
-            ],
-            checked: 0,
-            setChecked: 0,
-        }
-        this.handleNlpCreation = this.handleNlpCreation.bind(this);
+    constructor(props) {
+        super(props);
+	this.state = {nlpText: ""}
+        this.handleNlpCreation = this.handleNlpCreation.bind(this)
         this.renderNotifList = this.renderNotifList.bind(this)
     }
 
@@ -83,7 +74,7 @@ class Sidebar extends Component {
           headers: {
             'Content-Type': 'application/json;charset=utf-8'
           }
-        }).then(response => response.json()).then(data => console.log(data))
+        }).then(response => response.json()).then(data => this.props.handleNlpData(data))
         // TODO Insert code to reflect changes in back end on the front end given the 
         // response from the fetch request
     }
@@ -104,9 +95,9 @@ class Sidebar extends Component {
                 new_list.push(calList.calendars[i].name)
         }
 
-        this.setState((prevState) => {
-            calendars: Array.prototype.push.apply(prevState.calendars, new_list)
-        })
+        //this.setState((prevState) => {
+        //    calendars: Array.prototype.push.apply(prevState.calendars, new_list)
+        //})
 
         this.render()
         this.forceUpdate()
@@ -140,9 +131,9 @@ class Sidebar extends Component {
 
 
    renderObject(){
-    for (var i = 0 ; i < this.state.notifs.length ; i++) {
+    for (var i = 0 ; i < this.props.notifs.length ; i++) {
        return (
-           this.renderNotifListsss(this.state.notifs[i])
+           this.renderNotifListsss(this.props.notifs[i])
        )
     }
    }
@@ -194,7 +185,7 @@ class Sidebar extends Component {
                 <h3>My Calendars</h3>
 
                 <List>
-                {this.state.calendars.map(item => {
+                {this.props.calendars.map(item => {
                     const labelId = `checkbox-list-label-${item}`;
                     return (
                     <ListItem className={classes.root} key={item} role={undefined} dense button onClick={this.handleToggle(item)}>
