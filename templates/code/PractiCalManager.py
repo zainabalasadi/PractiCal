@@ -101,7 +101,10 @@ class PractiCalManager():
         except:
             return None
 
-        user = User(userID, userFN, userLN, email, password)
+        # Load preferences
+        prefs = json.loads(prefs) if prefs else None
+        user = User(userID, userFN, userLN, email, password, prefs)
+        prefs = user.getPreferences()
         self._users[userID] = user
 
         # Add contacts to users
@@ -114,20 +117,18 @@ class PractiCalManager():
         except:
             pass
 
-        # Add preferences to users
-        # TODO
 
         # Get events from database
         events = self._db.getUserEvents(userID)
         if events == -1 or not events: events = []
 
-        calendars = {'Default': user.getCalendars()[0]}
+        calendars = {cal.getName(): cal for cal in user.getCalendars()}
         for e in events:
             eventID = e[0]
             cal = e[6]
             # Load calendar if not already loaded
             if cal not in calendars.keys():
-                calendars[cal] = Calendar(cal, 'blue')
+                calendars[cal] = Calendar(cal, prefs['default_colour'])
 
             # Load event
             if eventID not in self._events.keys():
@@ -145,7 +146,7 @@ class PractiCalManager():
                 cal = e[6]
                 # Load calendar if not already loaded
                 if cal not in calendars.keys():
-                    calendars[cal] = Calendar(cal, 'blue')
+                    calendars[cal] = Calendar(cal, prefs['default_colour'])
 
                 # Load event
                 if eventID not in self._events.keys():
@@ -443,7 +444,8 @@ class PractiCalManager():
                         updateObject.getLastName(),
                         updateObject.getEmail(),
                         updateObject.getPassword(),
-                        contacts)
+                        contacts,
+                        json.dumps(updateObject.getPreferences()))
                 elif updateType == self.DBUpdate.DB_UPDATE_INVITE_GOING:
                     self._db.setInvite(
                         updatedObject.getID(),
