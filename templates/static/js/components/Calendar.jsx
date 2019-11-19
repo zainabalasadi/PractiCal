@@ -553,7 +553,8 @@ class Cal extends Component {
                             // console.log("i am hereeee")
                             // console.log(this.state.start)
                             // console.log(this.state.end)
-                            this.handleClose();
+                            // this.handleClose();
+                            alert("You can't make an event end before it starts!!!!")
                         } else {
                             this.setNewEvent(), this.handleClose();
                         }
@@ -682,7 +683,15 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.updateEvent(), this.handleClose();
+                        if (new Date(this.state.start) >= new Date(this.state.end)) {
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            alert("You can't make an event end before it starts!!!!")
+                        } else {
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            this.updateEvent(), this.handleClose();
+                        }
                     }}
                     >
                     Edit
