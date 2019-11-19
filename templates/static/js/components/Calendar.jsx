@@ -7,7 +7,8 @@ import GroupIcon from '@material-ui/icons/Group';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import NotesIcon from '@material-ui/icons/Notes';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import IconButton from '@material-ui/core/IconButton';
 import moment from "moment";
@@ -18,6 +19,7 @@ import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.c
 import { withStyles } from "@material-ui/core/styles";
 
 
+
 // Initialise time localiser
 const localizer = momentLocalizer(moment)
 
@@ -26,7 +28,7 @@ const navHeight = 75;
 
 const styles = theme => ({
     calendar: {
-        height: `calc(100% - ${navHeight}px - 43px)`, 
+        height: `calc(100% - ${navHeight}px - 40px)`, 
         top: navHeight,
         position: "fixed", 
         width: `calc(100% - ${drawerWidth}px + 1px)`,
@@ -88,7 +90,7 @@ const styles = theme => ({
         top: 10, 
         width: 20, height: 20,
         marginRight: 50,
-    }
+    },
 });
 
 
@@ -430,8 +432,8 @@ class Cal extends Component {
                   defaultView = "month"
                   events = {this.state.events}
                   components={{
-                    //event: Event,
-                    toolbar: CustomToolbar
+                    event: Event,
+                    toolbar: CustomToolbar,
                   }}
                   showMultiDayTimes = {true}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
@@ -450,7 +452,6 @@ class Cal extends Component {
                         style: {fontSize: 23} 
                     }}
                     placeholder="Add title"
-                    fullWidth
                     autoFocus
                     margin="dense"
                     onChange={e => {
@@ -484,7 +485,6 @@ class Cal extends Component {
                         <NotesIcon className={classes.icon}/>
                         <TextField 
                           className={classes.inputMargin}
-                          fullWidth
                           placeholder="Add description"
                           margin="dense"
                           InputProps={{disableUnderline: true}}
@@ -573,7 +573,6 @@ class Cal extends Component {
                         style: {fontSize: 23} 
                     }}
                     placeholder="Add title"
-                    fullWidth
                     autoFocus
                     margin="dense"
                     defaultValue={this.state.title}
@@ -606,7 +605,6 @@ class Cal extends Component {
                         <NotesIcon className={classes.icon}/>
                         <TextField
                           className={classes.inputMargin}
-                          fullWidth
                           placeholder="Add description"
                           InputProps={{disableUnderline: true}}
                           margin="dense"
@@ -692,87 +690,57 @@ class Cal extends Component {
 }
 
 function Event({ event }) {
-    // let popoverClickRootClose = (
-    //   <Popover id="popover-trigger-click-root-close" style={{ zIndex: 10000 }}>
-    //     <strong>Holy guacamole!</strong> Check this info.
-    //     <strong>{event.title}</strong>
-    //   </Popover>
-    // );
-  
-    // console.log(event);
+    var hour = event.start.getHours()
+    var ampm = "am "
+
+    if (hour > 12) {
+        hour -= 12;
+        ampm = "pm "
+    } else if (hour === 0) {
+       hour = 12;
+    }
+
     return (
-      <div>
-        <div>{event.title}</div>
-      </div>
+        <div>{hour}{ampm}{event.title}</div>
     );
   }
 
-  function CustomToolbar() {
-    return (
-      <div className="toolbar-container">
-  
-        <div className="back-next-buttons">
-          <button onClick={() => this.navigate('PREV')} className="btn btn-back">
-            <ArrowBackIosIcon/>
-          </button>
-          <label className='label-date'>Aug-Sept 2016</label>
-        </div>
-  
-        <div className="filter-container">
-          {/* <ButtonGroup> */}
-            <Button className="bg-filter-off"><span className="label-filter-off">Day</span></Button>
-            <Button className="bg-filter-off"><span className="label-filter-off">Week</span></Button>
-            <Button className="bg-filter-off"><span className="label-filter-off">Month</span></Button>
-            <Button className="bg-filter-off"><span className="label-filter-off">Year</span></Button>
-          {/* </ButtonGroup> */}
-  
-  
-        </div>
-      </div >
-    )
-  }
+  class CustomToolbar extends React.Component {
+    render() {
+        let { localizer: { messages }, label } = this.props
+        const { classes } = this.props;
+        return(
+            <div className="rbc-toolbar">
+                {/* Arrows */}
+                <NavigateBeforeIcon className="prevNext" onClick={this.navigate.bind(null, navigate.PREVIOUS)}/>
+                <p className="prevNext todayButton"onClick={this.navigate.bind(null, navigate.TODAY)}>Today</p>
+                <NavigateNextIcon className="prevNext" onClick={this.navigate.bind(null, navigate.NEXT)}/>
+                {/* Title */}
+                <span className="rbc-toolbar-label">{label}</span>
+                {/* Views */}
+                <div className="rbc-btn-group">
+					<button type="button" onClick={this.view.bind(null, 'month')}>Month</button>
+					<button type="button" onClick={this.view.bind(null, 'week')}>Week</button>
+					<button type="button" onClick={this.view.bind(null, 'day')}>Day</button>
+					<button type="button" onClick={this.view.bind(null, 'agenda')}>Agenda</button>
+				</div>
+            </div>
+        )
+    }
+    navigate = action => {
+        this.props.onNavigate(action)
+    }
+    view = action => {
+        this.props.onView(action);
+    }
+}
+
+export let navigate = {
+    PREVIOUS: 'PREV',
+    NEXT: 'NEXT',
+    TODAY: 'TODAY',
+    DATE: 'DATE',
+}
 
 export default withStyles(styles)(Cal);
 
-// eventStyleGetter: function(event, start, end, isSelected) {
-//     console.log(event);
-//     var backgroundColor = '#' + event.hexColor;
-//     var style = {
-//         backgroundColor: backgroundColor,
-//         borderRadius: '0px',
-//         opacity: 0.8,
-//         color: 'black',
-//         border: '0px',
-//         display: 'block'
-//     };
-//     return {
-//         style: style
-//     };
-// },
-
-// getEventStyle(event, start, end, isSelected) {
-//     const style = {}
-//     const todayDate = new Date().getDate()
-
-//     if (start.getDate() === todayDate) {
-//       style.backgroundColor = 'green'
-//     } else if (start.getDate() < todayDate) {
-//       style.backgroundColor = 'red'
-//     } else if (start.getDate() > todayDate) {
-//       style.backgroundColor = 'blue'
-//     }
-//     if (event.bgcolor) {
-//       style.backgroundColor = event.bgcolor
-//     }
-
-//     return { style }
-//   }
-
-
-                  // UNCOMMENT LATER TO COLOUR DIFF EVENTS
-                  //eventPropGetter={(this.eventStyleGetter)}
-                //   eventPropGetter={event => ({
-                //     style: {
-                //       backgroundColor: event.color,
-                //     },
-                //   })}

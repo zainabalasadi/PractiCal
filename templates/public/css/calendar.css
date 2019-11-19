@@ -126,10 +126,44 @@ h3 {
     color: #566EE9 !important;
 }
 
+.prevNext {
+    cursor: pointer;
+    margin-bottom: 0 !important;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.rbc-toolbar-label {
+    text-align: left !important;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.todayButton {
+    font-size: 14px;
+    border: 1px solid #DADCE0;
+    border-radius: 4px;
+    padding: 4px 16px 4px 16px;
+}
+
+.rbc-btn-group {
+    font-size: 14px;
+    box-shadow: none !important;
+    margin-right: 10px;
+}
+
+.rbc-toolbar button {
+    border: 1px solid #DADCE0;
+}
+
 /** Current time indicator **/
 .rbc-current-time-indicator {
     height: 2px !important;
     background-color: #EC3E3D !important;
+}
+
+.rbc-day-slot .rbc-event{
+    border: 0px !important
 }
 
 /** Event padding **/
