@@ -186,20 +186,20 @@ class Sidebar extends Component {
 
                 <List>
                 {this.props.calendars.map(item => {
-                    const labelId = `checkbox-list-label-${item}`;
+                    const labelId = `checkbox-list-label-${item.name}`;
                     return (
-                    <ListItem className={classes.root} key={item} role={undefined} dense button onClick={this.handleToggle(item)}>
+                    <ListItem className={classes.root} key={item.name} role={undefined} dense button onClick={this.handleToggle(item)}>
                         <ListItemIcon className={classes.check}>
                             <Checkbox
                             className={classes.check}
                             edge="start"
-                            //checked={this.state.checked.indexOf(item) !== -1}
+                            checked="true"
                             tabIndex={-1}
                             disableRipple
                             inputProps={{ 'aria-labelledby': labelId }}
                             />
                         </ListItemIcon>
-                        <ListItemText id={labelId} primary={`${item}`} />
+                        <ListItemText id={labelId} primary={`${item.name}`} />
                             <ListItemSecondaryAction>
                                 <IconButton edge="end" aria-label="comments">
                                     <MoreVertIcon />
