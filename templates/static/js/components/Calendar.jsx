@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
 import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
 import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
-// import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
+import CloseIcon from '@material-ui/icons/Close';
+import GroupIcon from '@material-ui/icons/Group';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import NotesIcon from '@material-ui/icons/Notes';
+
+
+import IconButton from '@material-ui/core/IconButton';
 import moment from "moment";
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
@@ -44,11 +51,43 @@ const styles = theme => ({
     toolbar: theme.mixins.toolbar,
     title: {
         fontSize: 100,
-        margin: '20px 0 20px 0',
+        margin: '40px 0 20px 50px',
+        maxWidth: 500,
+        width: 500,
     },
     inputMargin: {
-        margin: '8px 0 8px 0',
+        margin: '4px 0 5px 0',
+        marginLeft: 50,
+        maxWidth: 500,
+        width: 500,
+        borderRadius: theme.shape.borderRadius,
+        borderWidth: '50',
+        '&:hover': {
+            backgroundColor: '#F2F3F4',
+        },
     },
+    selectMargin: {
+        margin: '4px 0 4px 0',
+        marginLeft: 50,
+        maxWidth: 150,
+        width: 150,
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+    },
+    iconDiv: {
+        position: 'relative', 
+        display: 'inline-block'
+    },
+    icon: {
+        position: 'absolute', 
+        left: 4, 
+        top: 10, 
+        width: 20, height: 20,
+        marginRight: 50,
+    }
 });
 
 
@@ -58,64 +97,8 @@ class Cal extends Component {
         super();
         this.state = {
             // Loading sample events, remove later
-            events: [  
-              {
-                id: 0,
-                title: 'All Day Event very long title',
-                allDay: true,
-                start: new Date(2019, 10, 27, 2, 0, 0),
-                end: new Date(2019, 10, 27, 4, 0, 0),
-              },
-              {
-                id: 1,
-                title: 'Long Event',
-                start: new Date(2019, 10, 5, 8, 0, 0),
-                end: new Date(2019, 10, 8, 9, 0, 0),
-              },
-              {
-                id: 2,
-                title: 'Hawaii',
-                start: new Date(2019, 10, 18, 12, 0, 0),
-                end: new Date(2019, 10, 18, 2, 0, 0),
-              },
-              {
-                id: 3,
-                title: 'Party',
-                start: new Date(2019, 10, 5, 5, 0, 0),
-                end: new Date(2019, 10, 5, 12, 0, 0),
-              },  
-              {
-                id: 4,
-                title: 'Conference',
-                start: new Date(2019, 10, 8, 4, 0, 0),
-                end: new Date(2019, 10, 8, 12, 0, 0),
-                desc: 'Big conference for important people',
-              },
-              {
-                id: 5,
-                title: 'Double Event',
-                start: new Date(2019, 10, 8, 18, 0, 0),
-                end: new Date(2019, 10, 8, 20, 0, 0),
-              },
-              {
-                id: 6,
-                title: 'Triple Event',
-                start: new Date(2019, 10, 8, 1, 0, 0),
-                end: new Date(2019, 10, 8, 3, 0, 0),
-              },
-              {
-                id: 7,
-                title: '4 Event',
-                start: new Date(2019, 10, 8, 2, 0, 0),
-                end: new Date(2019, 10, 8, 5, 0, 0),
-              },
-              {
-                id: 8,
-                title: '5 Event',
-                start: new Date(2019, 10, 8, 3, 0, 0),
-                end: new Date(2019, 10, 8, 8, 0, 0),
-              },
-            ],
+            events: [],
+            calendars: [],
             title: "",
             start: "",
             end: "",
@@ -123,6 +106,7 @@ class Cal extends Component {
             invitees: "",
             groups: "",
             calendar: "",
+            eventId: "",
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
@@ -130,13 +114,17 @@ class Cal extends Component {
         this.handleClose = this.handleClose.bind(this);
     };
 
+    componentDidMount() {
+        this.get_calendars()
+    }
+
     // Function to create event and send to back-end
     create_event(event) {
-        console.log(event)
+        //console.log(event)
         // console.log(event.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "cal": event.calendar}))
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
         let response = fetch('/createEvent', {
             method: 'POST',
             headers: {
@@ -144,7 +132,7 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "cal": event.calendar})
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
         }).then((data) => data.json()).then(event => {
             console.log(event.success);
             if (event.success) {
@@ -161,42 +149,138 @@ class Cal extends Component {
     edit_event(event) {
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "cal": event.calendar}))
-        let response = fetch('/createEvent', {
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
+        let response = fetch('/editEvent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "cal": event.calendar})
-        }).then((data) => data.json()).then(event => editEvent(event));
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+        }).then((data) => data.json());
     }
 
-    // DO LATER
+    delete_event(event) {
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc,
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
+        let response = fetch('/deleteEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": event.title, "desc": event.desc,
+                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+        }).then((data) => data.json());
+    }
+
     get_calendars() {
         let response = fetch('/getEvents', {
-            method: 'POST'
+            method: 'GET'
 
-        }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
+        }).then((data) => data.json()).then(data => this.renderComponentsFromList(data));
     }
 
-    // DO LATER
-    get_events_by_calendar() {
-        let response = fetch('/getEvents', {
-            method: 'POST'
+    renderComponentsFromList(calendarList) {
+        for (var i = 0 ; i < calendarList.calendars.length ; i++) {
+            this.state.calendars.push(calendarList.calendars[i])
+            for (var j = 0 ; j < calendarList.calendars[i].events.length; j++) {
+                //var startStr = JSON.parse(calendarList.calendars[i].events[j].start)
+                var start = new Date(calendarList.calendars[i].events[j].start)
+                calendarList.calendars[i].events[j].start = start
 
-        }).then((data) => data.json()).then(calendarList => renderComponentsFromList(calendarList));
+                var end = new Date(calendarList.calendars[i].events[j].end)
+                calendarList.calendars[i].events[j].end = end
+                //console.log(calendarList.calendars[i].events[j].start)
+
+                this.state.events.push(calendarList.calendars[i].events[j])
+            }
+        }
+        this.forceUpdate()
     }
 
     // Closes modal
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
     }
+
+    formatDateStart(date) {
+        
+        var today = new Date();
+
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = '' + today.getHours(),
+            min = '' + today.getMinutes();
+        
+        console.log(d)
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hour.length < 2) 
+            hour = '0' + hour;
+        if (min.length < 2) 
+            min = '0' + min;
+    
+        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+    }
+
+    formatDateEnd(date) {
+        console.log(date)
+        var today = new Date();
+
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = '' + (today.getHours() + 1),
+            min = '' + today.getMinutes();
+        
+        console.log(d)
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hour.length < 2) 
+            hour = '0' + hour;
+        if (min.length < 2) 
+            min = '0' + min;
+    
+        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+    }
+
+    formatActualDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear(),
+            hour = '' + d.getHours(),
+            min = '' + d.getMinutes();
+        
+        console.log(d)
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hour.length < 2) 
+            hour = '0' + hour;
+        if (min.length < 2) 
+            min = '0' + min;
+    
+        return [year, month, day].join('-') + "T" + hour + ":" + min;
+    }
         
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        console.log("Edit calendar info", eventToEdit);
+        console.log(eventToEdit.start);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
@@ -206,6 +290,7 @@ class Cal extends Component {
             invitees: eventToEdit.invitees,
             groups: eventToEdit.groups,
             calendar: eventToEdit.calendar,
+            eventId: eventToEdit.eventId,
         });
     }
         
@@ -222,6 +307,7 @@ class Cal extends Component {
             invitees: event.invitees,
             groups: event.groups,
             calendar: event.calendar,
+            eventId: event.eventId,
         });
     }
         
@@ -246,8 +332,8 @@ class Cal extends Component {
         
     // Onclick callback function that pushes new event into events array.
     setNewEvent() {
-        const { title, desc, start, end, invitees, groups, calendar } = this.state;
-        let event = { title, desc, start, end, invitees, groups, calendar };
+        const { title, desc, start, end, invitees, groups, calendar, eventId } = this.state;
+        let event = { title, desc, start, end, invitees, groups, calendar, eventId };
         let events = this.state.events.slice();
         events.push(event);
         this.setState({ events });
@@ -256,7 +342,7 @@ class Cal extends Component {
         
     // Updates Existing Event Title and/or Description
     updateEvent() {
-        const { title, desc, start, end, events, invitees, groups, calendar, clickedEvent } = this.state;
+        const { title, desc, start, end, events, invitees, groups, calendar, clickedEvent, eventId } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
         updatedEvent[index].title = title;
@@ -266,29 +352,38 @@ class Cal extends Component {
         updatedEvent[index].invitees = invitees;
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
+        updatedEvent[index].eventId = eventId;
         this.setState({
             events: updatedEvent
         });
-        this.edit_event(updatedEvent)
+        this.edit_event(updatedEvent[index])
     }
         
     // Filters out specific event that is to be deleted and set that variable to state
     deleteEvent() {
         let updatedEvents = this.state.events.filter (
-            event => event["start"] !== this.state.start
+            event => event["eventId"] !== this.state.eventId
         );
+
+        let deletedEvent = this.state.events.filter (
+            event => event["eventId"] === this.state.eventId
+        )
+        //console.log(updatedEvents)
+        //console.log(deletedEvent)
         this.setState({ events: updatedEvents });
+        this.delete_event(deletedEvent[0])
     }
 
     render() {
         const { classes } = this.props;
         return (
-            <div className={classes.root}>
+            <div className={classes.root} >
             <CssBaseline />
             <Navbar/>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 <Calendar className={classes.calendar}
+                //onLoad={console.log('LOADED')}
                   selectable
                   popup
                   localizer = {localizer}
@@ -303,7 +398,10 @@ class Cal extends Component {
                 //   }}
                 />
                 {/* Modal for booking new event */}
-                <Dialog open={this.state.openSlot} onClose={this.handleClose}>
+                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose}>
+                <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
+                    <CloseIcon />
+                </IconButton>
                   <DialogContent>
                     <TextField className={classes.title}
                     inputProps={{
@@ -317,77 +415,99 @@ class Cal extends Component {
                       this.setTitle(e.target.value);
                     }}
                     />
-                    <br />
-                    <TextField 
-                    className={classes.inputMargin}
-                    fullWidth
-                    placeholder="Add description"
-                    margin="dense"
-                    onChange={e => {
-                      this.setDescription(e.target.value);
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    defaultValue={this.state.start}
-                    onChange={e => {
-                        this.setStart(e.target.value), this.handleStartTime;
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    value={this.state.end}
-                    onChange={e => {
-                        this.setEnd(e.target.value), this.handleEndTime;
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    placeholder="Add invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setInvitees(e.target.value);
-                    }}
-                    />
-                    <TextField 
-                    className={classes.inputMargin}
-                    placeholder="Add group invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setGroups(e.target.value);
-                    }}
-                    /> 
-                    <InputLabel htmlFor="demo-dialog-native">Calendar</InputLabel>
-                    <Select
-                      native
-                      value={this.state.calendar}
-                      defaultValue='Default'
-                      onChange={e => {
-                        this.setCalendar(e.target.value);
-                      }}
-                    >
-                        <option value="" />
-                        <option value={"Default"}>Default</option>
-                        <option value={"Work"}>Work</option>
-                        <option value={"Social"}>Social</option>
-                    </Select>                   
+                    <div className={classes.iconDiv}>
+                        <ScheduleIcon className={classes.icon}/>
+                        <TextField 
+                          className={classes.inputMargin}
+                          InputProps={{disableUnderline: true}}
+                          type="datetime-local"
+                          defaultValue={this.formatDateStart(this.state.start)}
+                          onChange={e => {
+                            this.setStart(e.target.value), this.handleStartTime;
+                          }}
+                        />
+                        <TextField 
+                          className={classes.inputMargin}
+                          type="datetime-local"
+                          defaultValue={this.formatDateEnd(this.state.end)}
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setEnd(e.target.value), this.handleEndTime;
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <NotesIcon className={classes.icon}/>
+                        <TextField 
+                          className={classes.inputMargin}
+                          fullWidth
+                          placeholder="Add description"
+                          margin="dense"
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setDescription(e.target.value);
+                          }}
+                        />
+                    </div>
+                    
+
+                    <div className={classes.iconDiv}>
+                        <GroupIcon className={classes.icon}/>
+                        <TextField 
+                          className={classes.inputMargin}
+                          placeholder="Add invitees"
+                          margin="dense"
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setInvitees(e.target.value);
+                          }}
+                        />
+
+                        <TextField 
+                          className={classes.inputMargin}
+                          placeholder="Add group invitees"
+                          margin="dense"
+                          InputProps={{disableUnderline: true}}
+                          onChange={e => {
+                            this.setGroups(e.target.value);
+                          }}
+                        /> 
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <CalendarTodayIcon className={classes.icon}/>
+                        <Select
+                          native
+                          value={this.state.calendar}
+                          InputProps={{disableUnderline: true}}
+                          className={classes.selectMargin}
+                          defaultValue='Default'
+                          onChange={e => {
+                            this.setCalendar(e.target.value);
+                          }}
+                        >
+                        {this.state.calendars.map(item => {
+                            return (
+                                <option value={`${item.name}`}>{`${item.name}`}</option>
+                            );
+                        })}
+                        </Select> 
+                    </div>                  
                   </DialogContent>
                   <DialogActions>
-                    <Button 
-                    label="Cancel" 
-                    color="primary"
-                    onClick={this.handleClose} 
-                    >
-                    Cancel
-                    </Button>
                     <Button
                     label="Submit"
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.setNewEvent(), this.handleClose();
+                        if (this.state.start >= this.state.end) {
+                            
+                            console.log("i am hereeee")
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            this.handleClose();
+                        } else {
+                            this.setNewEvent(), this.handleClose();
+                        }
                     }}
                     >
                     Submit
@@ -396,7 +516,10 @@ class Cal extends Component {
                 </Dialog>
 
                 {/* Material-ui Modal for Existing Event */}
-                <Dialog open={this.state.openEvent} onClose={this.handleClose}>
+                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openEvent} onClose={this.handleClose}>
+                <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
+                    <CloseIcon />
+                </IconButton>
                   <DialogContent>
                     <TextField 
                     className={classes.title}
@@ -412,75 +535,89 @@ class Cal extends Component {
                       this.setTitle(e.target.value);
                     }}
                     />
-                    <br />
-                    <TextField
-                    className={classes.inputMargin}
-                    fullWidth
-                    placeholder="Add description"
-                    margin="dense"
-                    multiline={true}
-                    defaultValue={this.state.desc}
-                    onChange={e => {
-                      this.setDescription(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    value={this.state.start}
-                    onChange={e => {
-                        this.setStart(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    type="datetime-local"
-                    defaultValue={this.state.end}
-                    onChange={e => {
-                        this.setEnd(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    defaultValue={this.state.invitees}
-                    placeholder="Add invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setInvitees(e.target.value);
-                    }}
-                    />
-                    <TextField
-                    className={classes.inputMargin}
-                    defaultValue={this.state.group}
-                    placeholder="Add group invitees"
-                    margin="dense"
-                    onChange={e => {
-                        this.setGroup(e.target.value);
-                    }}
-                    /> 
-                    <InputLabel htmlFor="demo-dialog-native">Calendar</InputLabel>
-                    <Select
-                      native
-                      value={this.state.calendar}
-                      defaultValue='Default'
-                      onChange={e => {
-                        this.setCalendar(e.target.value);
-                      }}
-                    >
-                        <option value="" />
-                        <option value={"Default"}>Default</option>
-                        <option value={"Work"}>Work</option>
-                        <option value={"Social"}>Social</option>
-                    </Select> 
+                    <div className={classes.iconDiv}>
+                        <ScheduleIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          InputProps={{disableUnderline: true}}
+                          type="datetime-local"
+                          defaultValue={this.formatActualDate(this.state.start)}
+                          value={this.formatActualDate(this.state.start)}
+                          onChange={e => {
+                            this.setStart(e.target.value);
+                          }}
+                        />
+                        <TextField
+                          className={classes.inputMargin}
+                          InputProps={{disableUnderline: true}}
+                          type="datetime-local"
+                          defaultValue={this.formatActualDate(this.state.start)}
+                          value={this.formatActualDate(this.state.end)}
+                          onChange={e => {
+                            this.setEnd(e.target.value);
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <NotesIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          fullWidth
+                          placeholder="Add description"
+                          InputProps={{disableUnderline: true}}
+                          margin="dense"
+                          multiline={true}
+                          defaultValue={this.state.desc}
+                          onChange={e => {
+                            this.setDescription(e.target.value);
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <GroupIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          defaultValue={this.state.invitees}
+                          InputProps={{disableUnderline: true}}
+                          placeholder="Add invitees"
+                          margin="dense"
+                          onChange={e => {
+                            this.setInvitees(e.target.value);
+                          }}
+                        />
+
+                        <TextField
+                          className={classes.inputMargin}
+                          defaultValue={this.state.group}
+                          InputProps={{disableUnderline: true}}
+                          placeholder="Add group invitees"
+                          margin="dense"
+                          onChange={e => {
+                            this.setGroup(e.target.value);
+                          }}
+                        /> 
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <CalendarTodayIcon className={classes.icon}/>
+                        <Select
+                        native
+                        value={this.state.calendar}
+                        InputProps={{disableUnderline: true}}
+                        className={classes.selectMargin}
+                        defaultValue='Default'
+                        onChange={e => {
+                            this.setCalendar(e.target.value);
+                        }}
+                        >
+                        {this.state.calendars.map(item => {
+                            return (
+                                <option value={`${item.name}`}>{`${item.name}`}</option>
+                            );
+                        })}
+                        </Select> 
+                    </div>
                   </DialogContent>
                   <DialogActions>
-                    <Button 
-                    label="Cancel" 
-                    color="primary"
-                    onClick={this.handleClose} 
-                    >
-                    Cancel
-                    </Button>
                     <Button
                     label="Delete"
                     variant="contained" 
@@ -492,14 +629,14 @@ class Cal extends Component {
                     Delete
                     </Button>
                     <Button
-                    label="Submit"
+                    label="Edit"
                     variant="contained" 
                     color="primary"
                     onClick={() => {
                       this.updateEvent(), this.handleClose();
                     }}
                     >
-                    Submit
+                    Edit
                     </Button>
                   </DialogActions>
                 </Dialog>

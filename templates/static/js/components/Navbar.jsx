@@ -105,26 +105,42 @@ class Navbar extends Component {
                   groupEmail: 'jeff@email.com;sarah@email.com;alice@email.com',
                 },
             ],
+            notifs: [
+
+            ],
             groupName: "",
             groupEmail: "",
             contactName: "",
             contactEmail: "",
             openContacts: false,
             openNotification: false,
+            searchText: "",
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleContactOpen = this.handleContactOpen.bind(this);
     };
 
+    setSearchText(e) {
+        this.setState({ searchText: e.target.value })
+    }
+
     search() {
-        let response = fetch('/searchEvent', {
+        let response = fetch('/searchEvents', {
             method: 'POST',
-            body: JSON.stringify({"queryString": searchText}),
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
-            }
-        }).then(response => response.json()).then(data => console.log(data))
+            },
+        body: JSON.stringify({"queryString": this.state.searchText})
+        }).then(response => response.json()).then(data => this.showSearchResults(data))
+        // }).then(response => response.json()).then(data => console.log(data))
         // TODO Insert code to change state of front end given response from the back end
+    }
+
+    showSearchResults(events) {
+        console.log(events)
+        for(var i = 0; i < events.length; i++) {
+            console.log(events[i].desc)
+        }
     }
 
     // Function to create contact and send to back-end
@@ -181,6 +197,31 @@ class Navbar extends Component {
         this.setState({ openContacts: false, openNotification: false });
     };
 
+    get_notifs() {
+        let response = fetch('/getNotifs', {
+            method: 'GET'
+
+        }).then((data) => data.json()).then(data => this.renderComponentsFromList(data));
+    }
+
+//     NOW THAT ITS IN STATE HOW DO I PASS THIS ONTO <NOTIFICATION/>
+    renderComponentsFromList(notifList) {
+        console.log(notifList)
+
+        var new_list = new Array()
+        for (var i = 0 ; i < notifList.length ; i++) {
+            console.log(notifList[i])
+            new_list.push(notifList[i])
+        }
+
+        this.setState((prevState) => {
+            events: Array.prototype.push.apply(prevState.notifs, new_list)
+        })
+    }
+
+    logout() {
+//         TODO
+    }
 
     render() {
         const { classes } = this.props;
@@ -202,28 +243,39 @@ class Navbar extends Component {
                         }}
                         inputProps={{ 'aria-label': 'search' }}
                         name="search"
-                        // value={searchText}
+                        value={this.state.searchText}
                         onChange={e => {
-                            // setSearchText(e.target.value)
-                            // console.log(searchText)
+                            this.setSearchText(e)
                         }}
                         onKeyPress={e => {
                             if (e.key === "Enter") {
-                            search()
+                                this.search()
                             }
                         }}
                         />
                     </div>
                     <TimeBreakdown/>
                     <div className={classes.grow} />
-                    <Notification/>
+                    <Notification data={this.get_notifs()}/>
                     <div>
                         <IconButton color="inherit" onClick={this.handleContactOpen}>
                             <PeopleIcon />
                         </IconButton>
-                        <IconButton color="inherit">
-                            <AccountCircle />
-                        </IconButton>
+{/*                         <IconButton color="inherit"> */}
+{/*                             <AccountCircle/> */}
+
+                            <Button
+                                label="Logout"
+                                onClick={() => {
+                                    this.logout();
+                                }}
+                            >
+                                LOGOUT
+                            </Button>
+
+
+
+{/*                         </IconButton> */}
                     </div>
                 </Toolbar>
             </AppBar>

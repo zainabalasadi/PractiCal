@@ -29,7 +29,7 @@ const styles = theme => ({
     input: {
         marginBottom: theme.spacing(8),
     },
-    root: {
+        root: {
         width: '100%',
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
@@ -48,13 +48,16 @@ class Sidebar extends Component {
             nlpText: "",
             calendars: [
             ],
+            notifs: [
+            ],
             checked: 0,
             setChecked: 0,
         }
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
+        this.renderNotifList = this.renderNotifList.bind(this)
     }
 
-    componentDidMount() {
+        componentDidMount() {
         console.log('calling...')
         this.getCalList()
     }
@@ -62,15 +65,15 @@ class Sidebar extends Component {
     handleToggle = value => () => {
         // const currentIndex = this.state.checked.indexOf(value);
         // const newChecked = [...this.state.checked];
-    
         // if (currentIndex === -1) {
         //   newChecked.push(value);
         // } else {
         //   newChecked.splice(currentIndex, 1);
         // }
-    
+
         // this.state.setChecked(newChecked);
     };
+
 
     handleNlpCreation(e) {
         console.log(e.target.value)
@@ -109,6 +112,57 @@ class Sidebar extends Component {
         this.forceUpdate()
     }
 
+
+
+
+   getNotifList() {
+        let response = fetch('/getNotifs', {
+            method: 'GET'
+
+        }).then((data) => data.json()).then(data => this.renderNotifList(data));
+    }
+
+    renderNotifList(calList) {
+        console.log(calList)
+        var new_list1 = new Array()
+        for (var i = 0 ; i < calList.length ; i++) {
+                console.log(calList[i])
+                new_list1.push(calList[i])
+        }
+
+        this.setState((prevState) => {
+            notifs: Array.prototype.push.apply(prevState.notifs, new_list1)
+        })
+
+        this.render()
+        this.forceUpdate()
+    }
+
+
+   renderObject(){
+    for (var i = 0 ; i < this.state.notifs.length ; i++) {
+       return (
+           this.renderNotifListsss(this.state.notifs[i])
+       )
+    }
+   }
+
+   renderNotifListsss(e) {
+        console.log(e.title)
+        return (
+            <h10>
+                {e.title}
+                <br></br>
+                {e.sender}
+                <br></br>
+                {e.start}
+                <br></br>
+                {e.type}
+            </h10>
+        )
+   }
+
+
     render() {
         const { classes } = this.props;
         return (
@@ -142,7 +196,6 @@ class Sidebar extends Component {
                 <List>
                 {this.state.calendars.map(item => {
                     const labelId = `checkbox-list-label-${item}`;
-                    
                     return (
                     <ListItem className={classes.root} key={item} role={undefined} dense button onClick={this.handleToggle(item)}>
                         <ListItemIcon className={classes.check}>
@@ -164,7 +217,16 @@ class Sidebar extends Component {
                         </ListItem>
                     );
                     })}
-                    </List>                
+                    </List>
+                <h3>My Notifs</h3>
+                <Button
+                label="notifs"
+                onClick={() => {
+                      this.getNotifList();
+                    }}>
+                NO CLICK ME
+                </Button>
+                {this.renderObject()}
             </Drawer>
         );
     }
