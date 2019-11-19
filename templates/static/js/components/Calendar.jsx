@@ -138,7 +138,10 @@ class Cal extends Component {
             if (event.success) {
                 // append to events list
                 console.log("Created event successfully")
-                this.state.events.push(event)
+                // event.start = new Date(event.start)
+                // console.log(event.start)
+                // event.end = new Date(event.end)
+                // this.state.events.push(event)
             } else {
                 console.log("Failed event creation")
             }
@@ -188,12 +191,13 @@ class Cal extends Component {
             this.state.calendars.push(calendarList.calendars[i])
             for (var j = 0 ; j < calendarList.calendars[i].events.length; j++) {
                 //var startStr = JSON.parse(calendarList.calendars[i].events[j].start)
+                console.log(calendarList.calendars[i].events[j].start)
                 var start = new Date(calendarList.calendars[i].events[j].start)
                 calendarList.calendars[i].events[j].start = start
 
                 var end = new Date(calendarList.calendars[i].events[j].end)
                 calendarList.calendars[i].events[j].end = end
-                //console.log(calendarList.calendars[i].events[j].start)
+                console.log(calendarList.calendars[i].events[j].start)
 
                 this.state.events.push(calendarList.calendars[i].events[j])
             }
@@ -217,7 +221,7 @@ class Cal extends Component {
             hour = '' + today.getHours(),
             min = '' + today.getMinutes();
         
-        console.log(d)
+        // console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -232,7 +236,7 @@ class Cal extends Component {
     }
 
     formatDateEnd(date) {
-        console.log(date)
+        // console.log(date)
         var today = new Date();
 
         var d = new Date(date),
@@ -242,7 +246,7 @@ class Cal extends Component {
             hour = '' + (today.getHours() + 1),
             min = '' + today.getMinutes();
         
-        console.log(d)
+        // console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -264,7 +268,7 @@ class Cal extends Component {
             hour = '' + d.getHours(),
             min = '' + d.getMinutes();
         
-        console.log(d)
+        // console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -280,7 +284,7 @@ class Cal extends Component {
         
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        console.log(eventToEdit.start);
+        // console.log(eventToEdit.start);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
@@ -296,7 +300,7 @@ class Cal extends Component {
         
     //  Allows user to click on existing event
     handleEventSelected(event) {
-        console.log("event", event);
+        // console.log("event", event);
         this.setState ({
             openEvent: true,
             clickedEvent: event,
@@ -335,7 +339,24 @@ class Cal extends Component {
         const { title, desc, start, end, invitees, groups, calendar, eventId } = this.state;
         let event = { title, desc, start, end, invitees, groups, calendar, eventId };
         let events = this.state.events.slice();
-        events.push(event);
+
+        var s = new Date(start)
+        console.log(s)
+        var e = new Date(end)
+        console.log(e)
+
+        let eventFE = { 
+            "title": title,
+            "desc": desc,
+            "start": s,
+            "end": e,
+            "invitees": invitees,
+            "groups": groups,
+            "calendar": calendar,
+            "eventId": eventId 
+        };
+
+        events.push(eventFE);
         this.setState({ events });
         this.create_event(event)
     }
@@ -501,9 +522,9 @@ class Cal extends Component {
                     onClick={() => {
                         if (this.state.start >= this.state.end) {
                             
-                            console.log("i am hereeee")
-                            console.log(this.state.start)
-                            console.log(this.state.end)
+                            // console.log("i am hereeee")
+                            // console.log(this.state.start)
+                            // console.log(this.state.end)
                             this.handleClose();
                         } else {
                             this.setNewEvent(), this.handleClose();
@@ -655,7 +676,7 @@ function Event({ event }) {
     //   </Popover>
     // );
   
-    console.log(event);
+    // console.log(event);
     return (
       <div>
         <div>{event.start.getHours().toString()}</div>
