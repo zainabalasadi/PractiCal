@@ -70,3 +70,14 @@ creating a single object shared between all instances of Calendar. Create, edit,
 and delete event functionality working between front and backend and is
 persistent in the database. Fixed some inconsistencies in test data being loaded
 into database during initialisation.
+
+18/11/2019:
+Implemented contacts and groups in the backend. Contacts are stored as a json
+in the database in the user table in the form {email: [groups]}. Contacts and
+groups loaded when user logs in. Waiting for frontend Implementation to properly
+test.
+
+19/11/2019:
+Implemented and tested user preferences. Will mainly be used to store calendar
+colour and references to empty calendars. Waiting on routes and frontend
+integration to fully test user preferences.
