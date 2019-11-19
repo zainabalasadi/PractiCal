@@ -68,7 +68,6 @@ def createEvent():
                 desc = r['desc'] if 'desc' in r.keys() else ''
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
-                # print(r['calendar'])
                 cal = current_user.getCalendarByName(r['calendar'])
                 invitees = None
                 if 'invitees' in r:
@@ -77,12 +76,10 @@ def createEvent():
                 if 'groups' in r:
                         groups = r['groups']
                 if (cal != None):
-                        # print("Adding event")
                         event = PCM.addEvent(userID=userId, title=name,
                             description=desc, startDateTime=startDate,
                             endDateTime=endDate, calendarName=cal.getName())
                         cal.addEvent(event)
-                        print("event added")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -96,9 +93,7 @@ def editEvent():
                 event = PCM.getEventByID(r['eventId'])
                 if event is not None:
                         if (event.getName() != r['name']):
-                                # print("name edited from " + event.getName() + " to " + r['name'])
                                 event.setName(r['name'])
-                                # print(event.getName())
                         if event.getDescription() != r['desc']:
                                 event.setDescription(r['desc'])
                         if event.getStartDateTime() != r['startDate']:
@@ -106,14 +101,12 @@ def editEvent():
                         if event.getEndDateTime() != r['endDate']:
                                 event.setEndDateTime(r['endDate'].replace('T', ' '))
                         current_user.moveEvent(event, r['calendar'])
-                        # TODO: Need PCM fn to update db entries
                         PCM.addToUpdateQueue(current_user.getID(), event,
                                 PCM.DBUpdate.DB_UPDATE_EVENT,
                                 current_user.getCalendarByName(r['calendar']))
                         PCM.sendNotification(event.getID(),
                                 current_user.getID(), event.getInvitees(),
                                 Notification.NOTIF_EVENTCHANGE)
-                        print("event updated")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -125,13 +118,8 @@ def deleteEvent():
         if request.method == 'POST':
                 r = request.get_json()
                 event = PCM.getEventByID(r['eventId'])
-                print(r['eventId'])
-                print(r['calendar'])
                 if event is not None:
-                        # print("Trying to delete")
-                        # TODO: Need PCM fn to update db entries
                         PCM.deleteEvent(event.getID(), current_user.getID())
-                        print("event deleted")
                 return jsonify({"success": "True"})
 
 
@@ -140,14 +128,12 @@ def deleteEvent():
 def getEvents():
         ret = []
         for cal in current_user.getCalendars():
-                # print(cal)
                 calObj = {}
                 calObj['name'] = cal.getName()
                 calObj['colour'] = cal.getColour()
                 calObj['user'] = current_user.getFirstName()
                 eventList = []
                 for event in cal.getEvents():
-                        print(cal.getName(), ":", event.getName())
                         eventDict = {}
                         eventDict['creator'] = event.getUserID()
                         eventDict['title'] = event.getName()
@@ -172,10 +158,25 @@ def getEvents():
 def searchEvents():
         if request.method == 'POST':
                 r = request.get_json()
-                eventList = []
-                for event in current_user.getEventsByQuery(r['queryString']):
+                eventsByTitle = current_user.getEventsByQuery(r['queryString'])
+                eventsByHost = []
+                for calendar in current_user.getCalendars():
+                        # self._calendar[calendar]
+                        for event in calendar.getEvents():
+                                userID = event.getUserID()
+                                firstName = PCM.getUserInfo(userID=userID)[0]
+                                lastName = PCM.getUserInfo(userID=userID)[1]
+                                userName = firstName + " " + lastName
+                                if r['queryString'].lower() in userName.lower():
+                                    eventsByHost.append(event)
+                listOfEvents = eventsByTitle + eventsByHost
+                resultList = []
+                for event in listOfEvents:
                         eventDict = {}
-                        eventDict['creator'] = event.getUserID()
+                        userID = event.getUserID()
+                        firstName = PCM.getUserInfo(userID=userID)[0]
+                        lastName = PCM.getUserInfo(userID=userID)[1]
+                        eventDict['creator'] = firstName + " " + lastName
                         eventDict['title'] = event.getName()
                         eventDict['eventId'] = event.getID()
                         eventDict['desc'] = event.getDescription()
@@ -185,9 +186,8 @@ def searchEvents():
                         eventDict['comments'] = event.getComments()
                         eventDict['invitees'] = event.getInvitees()
                         # eventDict['groups'] = event.getGroups()
-                        eventList.append(eventDict)
-                        print(eventList)
-                return jsonify(eventList)
+                        resultList.append(eventDict)
+                return jsonify(resultList)
 
 
 @index_blueprint.route('/inviteResponse', methods=['POST'])
@@ -298,7 +298,6 @@ def getCategoryHours():
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
 @login_required
 def getName():
-    print(current_user.getFirstName())
     return jsonify(current_user.getFirstName())
 
 
