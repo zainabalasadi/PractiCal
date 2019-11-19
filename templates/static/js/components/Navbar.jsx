@@ -90,8 +90,8 @@ const styles = theme => ({
 });
 
 class Navbar extends Component { 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             contacts: [  
                 {
@@ -141,6 +141,7 @@ class Navbar extends Component {
         for(var i = 0; i < events.length; i++) {
             console.log(events[i].desc)
         }
+        this.props.func(events)
     }
 
     // Function to create contact and send to back-end

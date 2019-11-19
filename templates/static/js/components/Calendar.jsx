@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
-import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Button, TextField } from "@material-ui/core";
 import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
 import CloseIcon from '@material-ui/icons/Close';
 import GroupIcon from '@material-ui/icons/Group';
@@ -105,12 +105,36 @@ class Cal extends Component {
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
+            searchResult: [],
+            search: "",
+            searchOpen: false,
         };
         this.handleClose = this.handleClose.bind(this);
+        this.handleSearchClose = this.handleSearchClose.bind(this)
     };
 
     componentDidMount() {
         this.get_calendars()
+    }
+
+    search = (keyword) => {
+        console.log(keyword)
+        this.setState({ searchResult: keyword, searchOpen: true })
+        console.log(this.state.searchResult)
+        renderSearchList(keyword)
+    }
+
+    renderSearchList(list) {
+        return (
+        <ul>
+       { list.map((e) => {
+            return <li>{e.title} {e.start} {e.end}</li> 
+        })}
+        </ul>
+
+            )
+
+        
     }
 
     // Function to create event and send to back-end
@@ -203,6 +227,10 @@ class Cal extends Component {
     // Closes modal
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
+    }
+
+    handleSearchClose() {
+        this.setState({ searchOpen: false })
     }
 
     formatDateStart(date) {
@@ -399,7 +427,7 @@ class Cal extends Component {
         return (
             <div className={classes.root} >
             <CssBaseline />
-            <Navbar/>
+            <Navbar func={this.search}/>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 <Calendar className={classes.calendar}
@@ -542,7 +570,8 @@ class Cal extends Component {
                             // console.log("i am hereeee")
                             // console.log(this.state.start)
                             // console.log(this.state.end)
-                            this.handleClose();
+                            // this.handleClose();
+                            alert("You can't make an event end before it starts!!!!")
                         } else {
                             this.setNewEvent(), this.handleClose();
                         }
@@ -690,13 +719,40 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.updateEvent(), this.handleClose();
+                        if (new Date(this.state.start) >= new Date(this.state.end)) {
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            alert("You can't make an event end before it starts!!!!")
+                        } else {
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            this.updateEvent(), this.handleClose();
+                        }
                     }}
                     >
                     Edit
                     </Button>
                   </DialogActions>
                 </Dialog>
+
+                <Dialog 
+                open={this.state.searchOpen}
+                onClose={this.handleSearchClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleSearchClose}>
+                        <CloseIcon />
+                    </IconButton>
+                    <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {this.renderSearchList(this.state.searchResult)}
+                    </DialogContentText>
+                </DialogContent>
+                    
+                </Dialog>
+
+                
             </main>
             <Sidebar />
             </div>
