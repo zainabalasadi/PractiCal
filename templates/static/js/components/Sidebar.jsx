@@ -2,18 +2,15 @@ import React, { Component } from "react";
 import { Drawer } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Input from '@material-ui/core/Input';
-import { Dialog, DialogTitle, DialogContent, Button, TextField, Typography } from "@material-ui/core";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Checkbox from '@material-ui/core/Checkbox';
+import { Dialog, DialogTitle, DialogContent, Button, TextField, Checkbox } from "@material-ui/core";
+import { List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import { CirclePicker } from 'react-color'
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const drawerWidth = 300;
 const navHeight = 64;
@@ -32,12 +29,6 @@ const styles = theme => ({
     input: {
         marginBottom: theme.spacing(8),
     },
-        root: {
-        width: '100%',
-        maxWidth: 360,
-        backgroundColor: theme.palette.background.paper,
-        paddingLeft: 0,
-    },
     check: {
         minWidth: 10,
     },
@@ -51,6 +42,13 @@ const styles = theme => ({
         right: theme.spacing(1),
         top: theme.spacing(1),
     },
+    listItem: {
+        height: 40,
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+        paddingLeft: 0,
+    },
 });
 
 
@@ -59,15 +57,14 @@ class Sidebar extends Component {
         super()
         this.state = {
             nlpText: "",
-            calendars: [
-            ],
-            notifs: [
-            ],
-            checked: 0,
-            setChecked: 0,
+            calendars: [],
+            notifs: [],
+            // checked: 0,
+            // setChecked: 0,
             createPopUp: false,
             calName: "",
             calColour: "",
+            anchorEl: null,
         }
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
         this.handleCreateOpen = this.handleCreateOpen.bind(this);
@@ -107,6 +104,27 @@ class Sidebar extends Component {
                 this.state.calendars.push(calendar)
             } else {
                 console.log("Failed calendar creation")
+            }
+        });
+    }
+
+    delete_calendar(calendar) {
+        let response = fetch('/deleteCalendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
+        }).then((data) => data.json()).then(cal => {
+            console.log(cal.success);
+            if (cal.success) {
+                let updatedCalendars = this.state.events.filter (
+                    cal => cal["name"] !== calendar.name
+                );
+        
+                this.setState({ calendar: updatedCalendars });
+            } else {
+                console.log("Failed calendar deleted")
             }
         });
     }
@@ -186,7 +204,12 @@ class Sidebar extends Component {
     };
 
     handleClose() {
-        this.setState({ createPopUp: false });
+        this.setState({ createPopUp: false, anchorEl: null });
+    }
+
+    handleDeleteCal(calendarName) {
+        var string = 'deleting' + calendarName
+        console.log(string)
     }
 
     setCalName = e => { 
@@ -206,18 +229,9 @@ class Sidebar extends Component {
         this.create_calendar(newCal)
     }
 
-    handleToggle = value => () => {
-        // const currentIndex = this.state.checked.indexOf(value);
-        // const newChecked = [...this.state.checked];
-        // if (currentIndex === -1) {
-        //   newChecked.push(value);
-        // } else {
-        //   newChecked.splice(currentIndex, 1);
-        // }
-
-        // this.state.setChecked(newChecked);
-    };
-
+    handleClick = event => {
+    	this.setState({ anchorEl: event.currentTarget });
+  	};
 
     render() {
         const { classes } = this.props;
@@ -255,29 +269,43 @@ class Sidebar extends Component {
                 </div>
                 <List>
                 {this.state.calendars.map(item => {
-                    const labelId = `checkbox-list-label-${item.name}`;
+                    const labelId = `${item.name}`;
                     return (
-                    <ListItem className={classes.root} key={item.name} role={undefined} dense button onClick={this.handleToggle(item)}>
-                        <ListItemIcon className={classes.check}>
-                            <Checkbox
-                            className={classes.check}
-                            edge="start"
-                            //checked={this.state.checked.indexOf(item) !== -1}
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ 'aria-labelledby': labelId }}
-                            />
-                        </ListItemIcon>
-                        <ListItemText id={labelId} primary={`${item.name}`} />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" /*onClick={this.handleMenuOpen}*/>
-                                    <MoreVertIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
+                        <div>
+                            <ListItem className={classes.listItem} key={item.name} role={undefined} dense button>
+                                <ListItemIcon className={classes.check}>
+                                    <Checkbox
+                                    className={classes.check}
+                                    edge="start"
+                                    //checked={this.state.checked.indexOf(item) !== -1}
+                                    tabIndex={-1}
+                                    disableRipple
+                                    inputProps={{ 'aria-labelledby': labelId }}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText id={labelId} primary={`${item.name}`} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end" onClick={this.handleClick}>
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                            </ListItem>
+                            
+                            {/* Menu for each calendar */}
+                            <Menu
+                              anchorEl={this.state.anchorEl}
+                              keepMounted
+                              open={Boolean(this.state.anchorEl)}
+                              onClose={this.handleClose}
+                            >
+                                <MenuItem onClick={this.handleClose}>Edit</MenuItem>
+                                <MenuItem onClick={this.handleDeleteCal(item.name)}>Delete</MenuItem>
+                            </Menu>
+                        </div>
                     );
                     })}
                     </List>
+
                 <h3>My Notifs</h3>
                 <Button
                 label="notifs"

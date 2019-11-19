@@ -7,7 +7,7 @@ import GroupIcon from '@material-ui/icons/Group';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import NotesIcon from '@material-ui/icons/Notes';
-
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 import IconButton from '@material-ui/core/IconButton';
 import moment from "moment";
@@ -22,11 +22,12 @@ import { withStyles } from "@material-ui/core/styles";
 const localizer = momentLocalizer(moment)
 
 const drawerWidth = 300;
-const navHeight = 64;
+const navHeight = 75;
 
 const styles = theme => ({
     calendar: {
         height: `calc(100% - ${navHeight}px - 43px)`, 
+        top: navHeight,
         position: "fixed", 
         width: `calc(100% - ${drawerWidth}px + 1px)`,
         marginLeft: "15px"
@@ -115,6 +116,7 @@ class Cal extends Component {
     };
 
     componentDidMount() {
+        const view = this.props.view;
         this.get_calendars()
     }
 
@@ -217,7 +219,7 @@ class Cal extends Component {
             hour = '' + today.getHours(),
             min = '' + today.getMinutes();
         
-        console.log(d)
+        //console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -232,17 +234,18 @@ class Cal extends Component {
     }
 
     formatDateEnd(date) {
-        console.log(date)
+        //console.log(date)
         var today = new Date();
+        //today.setHours(today.getHours() + 1);
 
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + (today.getHours() + 1),
+            hour = '' + today.getHours(),
             min = '' + today.getMinutes();
         
-        console.log(d)
+        //console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -264,7 +267,7 @@ class Cal extends Component {
             hour = '' + d.getHours(),
             min = '' + d.getMinutes();
         
-        console.log(d)
+        //console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -317,8 +320,8 @@ class Cal extends Component {
     setInvitees(e) { this.setState({ invitees: e }); }
     setGroups(e) { this.setState({ groups: e }); }
     setCalendar(e) { this.setState({ calendar: e }); }
-    setStart(e) { this.setState({ start: e }); }
-    setEnd(e) { this.setState({ end: e }); }
+    setStart(e) { var date = new Date(e); this.setState({ start: date }); }
+    setEnd(e) { var date = new Date(e); this.setState({ end: date }); }
         
     // Handle's start time select
     handleStartTime = (event, date) => {
@@ -388,8 +391,13 @@ class Cal extends Component {
                   popup
                   localizer = {localizer}
                   defaultDate = {new Date()}
+                  {...this.props}
                   defaultView = "month"
                   events = {this.state.events}
+                  components={{
+                    // event: Event,
+                    toolbar: CustomToolbar
+                  }}
                   showMultiDayTimes = {true}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
@@ -421,7 +429,8 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatDateStart(this.state.start)}
+                          //defaultValue={this.formatDateStart(this.state.start)}
+                          value = {this.formatDateStart(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value), this.handleStartTime;
                           }}
@@ -430,6 +439,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           type="datetime-local"
                           defaultValue={this.formatDateEnd(this.state.end)}
+                          value = {new Date(this.formatDateEnd(this.state.end))}
                           InputProps={{disableUnderline: true}}
                           onChange={e => {
                             this.setEnd(e.target.value), this.handleEndTime;
@@ -499,11 +509,11 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
+                        console.log(this.state.start)
+                        console.log(this.state.end)
                         if (this.state.start >= this.state.end) {
                             
                             console.log("i am hereeee")
-                            console.log(this.state.start)
-                            console.log(this.state.end)
                             this.handleClose();
                         } else {
                             this.setNewEvent(), this.handleClose();
@@ -663,6 +673,31 @@ function Event({ event }) {
         
       </div>
     );
+  }
+
+  function CustomToolbar() {
+    return (
+      <div className="toolbar-container">
+  
+        <div className="back-next-buttons">
+          <button onClick={() => this.navigate('PREV')} className="btn btn-back">
+            <ArrowBackIosIcon/>
+          </button>
+          <label className='label-date'>Aug-Sept 2016</label>
+        </div>
+  
+        <div className="filter-container">
+          {/* <ButtonGroup> */}
+            <Button className="bg-filter-off"><span className="label-filter-off">Day</span></Button>
+            <Button className="bg-filter-off"><span className="label-filter-off">Week</span></Button>
+            <Button className="bg-filter-off"><span className="label-filter-off">Month</span></Button>
+            <Button className="bg-filter-off"><span className="label-filter-off">Year</span></Button>
+          {/* </ButtonGroup> */}
+  
+  
+        </div>
+      </div >
+    )
   }
 
 export default withStyles(styles)(Cal);
