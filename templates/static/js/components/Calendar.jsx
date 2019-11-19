@@ -5,6 +5,7 @@ import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
 import CloseIcon from '@material-ui/icons/Close';
 import GroupIcon from '@material-ui/icons/Group';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import CategoryIcon from '@material-ui/icons/Category';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import NotesIcon from '@material-ui/icons/Notes';
 
@@ -96,17 +97,11 @@ class Cal extends Component {
     constructor() {
         super();
         this.state = {
-            // Loading sample events, remove later
             events: [],
             calendars: [],
-            title: "",
-            start: "",
-            end: "",
-            desc: "",
-            invitees: "",
-            groups: "",
-            calendar: "",
-            eventId: "",
+            title: "", start: "", end: "", desc: "",
+            invitees: "", groups: "", calendar: "",
+            eventId: "", category: "",
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
@@ -351,6 +346,7 @@ class Cal extends Component {
     setCalendar(e) { this.setState({ calendar: e }); }
     setStart(e) { this.setState({ start: e }); }
     setEnd(e) { this.setState({ end: e }); }
+    setCategory(e) { this.setState({ category: e }); }
         
     // Handle's start time select
     handleStartTime = (event, date) => {
@@ -364,8 +360,8 @@ class Cal extends Component {
         
     // Onclick callback function that pushes new event into events array.
     setNewEvent() {
-        const { title, desc, start, end, invitees, groups, calendar, eventId } = this.state;
-        let event = { title, desc, start, end, invitees, groups, calendar, eventId };
+        const { title, desc, start, end, invitees, groups, calendar, eventId, category } = this.state;
+        let event = { title, desc, start, end, invitees, groups, calendar, eventId, category };
         let events = this.state.events.slice();
 
         var s = new Date(start)
@@ -381,7 +377,8 @@ class Cal extends Component {
             "invitees": invitees,
             "groups": groups,
             "calendar": calendar,
-            "eventId": eventId 
+            "eventId": eventId,
+            "category": category,
         };
 
         events.push(eventFE);
@@ -391,7 +388,8 @@ class Cal extends Component {
         
     // Updates Existing Event Title and/or Description
     updateEvent() {
-        const { title, desc, start, end, events, invitees, groups, calendar, clickedEvent, eventId } = this.state;
+        const { title, desc, start, end, events, invitees, groups, calendar, 
+                clickedEvent, eventId, category } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
         updatedEvent[index].title = title;
@@ -402,6 +400,7 @@ class Cal extends Component {
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
         updatedEvent[index].eventId = eventId;
+        updatedEvent[index].category = category;
         this.setState({
             events: updatedEvent
         });
@@ -526,7 +525,6 @@ class Cal extends Component {
                         <CalendarTodayIcon className={classes.icon}/>
                         <Select
                           native
-                          value={this.state.calendar}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
                           defaultValue='Select Calendar'
@@ -542,7 +540,26 @@ class Cal extends Component {
                             );
                         })}
                         </Select> 
-                    </div>                  
+                    </div><br />
+                    <div className={classes.iconDiv}>
+                        <CategoryIcon className={classes.icon}/>
+                        <Select
+                          native
+                          defaultValue={this.state.category}
+                          InputProps={{disableUnderline: true}}
+                          className={classes.selectMargin}
+                          defaultValue='Social'
+                          onChange={e => {
+                            this.setCategory(e.target.value);
+                          }}
+                        >
+                        <option value="Work">Work</option>
+                        <option value="Social">Social</option>
+                        <option value="School">School</option>
+                        <option value="Family">Family</option>
+                        
+                        </Select> 
+                    </div>                 
                   </DialogContent>
                   <DialogActions>
                     <Button
@@ -663,7 +680,26 @@ class Cal extends Component {
                             );
                         })}
                         </Select> 
-                    </div>
+                    </div><br />
+                    <div className={classes.iconDiv}>
+                        <CategoryIcon className={classes.icon}/>
+                        <Select
+                          native
+                          value={this.state.category}
+                          InputProps={{disableUnderline: true}}
+                          className={classes.selectMargin}
+                          defaultValue='Social'
+                          onChange={e => {
+                            this.setCategory(e.target.value);
+                          }}
+                        >
+                        <option value="Work">Work</option>
+                        <option value="Social">Social</option>
+                        <option value="School">School</option>
+                        <option value="Family">Family</option>
+                        
+                        </Select> 
+                    </div> 
                   </DialogContent>
                   <DialogActions>
                     <Button
