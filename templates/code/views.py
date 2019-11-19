@@ -67,7 +67,6 @@ def createEvent():
                 desc = r['desc'] if 'desc' in r.keys() else ''
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
-                # print(r['calendar'])
                 cal = current_user.getCalendarByName(r['calendar'])
                 invitees = None
                 if 'invitees' in r:
@@ -81,7 +80,6 @@ def createEvent():
                             description=desc, startDateTime=startDate,
                             endDateTime=endDate, calendarName=cal.getName())
                         cal.addEvent(event)
-                        print("event added")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -112,7 +110,6 @@ def editEvent():
                         PCM.sendNotification(event.getID(),
                                 current_user.getID(), event.getInvitees(),
                                 Notification.NOTIF_EVENTCHANGE)
-                        print("event updated")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -124,13 +121,10 @@ def deleteEvent():
         if request.method == 'POST':
                 r = request.get_json()
                 event = PCM.getEventByID(r['eventId'])
-                print(r['eventId'])
-                print(r['calendar'])
                 if event is not None:
                         # print("Trying to delete")
                         # TODO: Need PCM fn to update db entries
                         PCM.deleteEvent(event.getID(), current_user.getID())
-                        print("event deleted")
                 return jsonify({"success": "True"})
 
 
@@ -146,7 +140,6 @@ def getEvents():
                 calObj['user'] = current_user.getFirstName()
                 eventList = []
                 for event in cal.getEvents():
-                        print(cal.getName(), ":", event.getName())
                         eventDict = {}
                         eventDict['creator'] = event.getUserID()
                         eventDict['title'] = event.getName()
@@ -296,5 +289,4 @@ def getCategoryHours():
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
 @login_required
 def getName():
-    print(current_user.getFirstName())
     return jsonify(current_user.getFirstName())
