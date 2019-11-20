@@ -161,6 +161,8 @@ class Cal extends Component {
             if (event.success) {
                 // append to events list
                 console.log("Created event successfully")
+                this.setState({ events: [] })
+                this.get_calendars()
                 // event.start = new Date(event.start)
                 // console.log(event.start)
                 // event.end = new Date(event.end)
