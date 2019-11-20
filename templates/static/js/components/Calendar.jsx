@@ -410,29 +410,16 @@ class Cal extends Component {
         var e = new Date(end)
         console.log(e)
 
-        let eventFE = {
-            "title": title,
-            "desc": desc,
-            "start": s,
-            "end": e,
-            "invitees": invitees,
-            "groups": groups,
-            "calendar": calendar,
-            "eventId": eventId,
-            "category": category,
-        };
 
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
-        updatedEvent[index].start = start;
-        updatedEvent[index].end = end;
+        updatedEvent[index].start = s;
+        updatedEvent[index].end = e;
         updatedEvent[index].invitees = invitees;
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
         updatedEvent[index].eventId = eventId;
         updatedEvent[index].category = category;
-
-        events.push(eventFE);
 
         this.setState({
             events: updatedEvent
