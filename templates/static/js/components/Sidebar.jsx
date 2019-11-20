@@ -51,21 +51,10 @@ const styles = theme => ({
     },
 });
 
-
 class Sidebar extends Component {  
-    constructor() {
-        super()
-        this.state = {
-            nlpText: "",
-            calendars: [],
-            notifs: [],
-            // checked: 0,
-            // setChecked: 0,
-            createPopUp: false,
-            calName: "",
-            calColour: "",
-            anchorEl: null,
-        }
+    constructor(props) {
+        super(props);
+	this.state = {nlpText: ""}
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
         this.handleCreateOpen = this.handleCreateOpen.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -84,7 +73,7 @@ class Sidebar extends Component {
           headers: {
             'Content-Type': 'application/json;charset=utf-8'
           }
-        }).then(response => response.json()).then(data => console.log(data))
+        }).then(response => response.json()).then(data => this.props.handleNlpData(data))
         // TODO Insert code to reflect changes in back end on the front end given the 
         // response from the fetch request
     }
@@ -145,9 +134,9 @@ class Sidebar extends Component {
                 new_list.push(calList.calendars[i])
         }
 
-        this.setState((prevState) => {
-            calendars: Array.prototype.push.apply(prevState.calendars, new_list)
-        })
+        //this.setState((prevState) => {
+        //    calendars: Array.prototype.push.apply(prevState.calendars, new_list)
+        //})
 
         this.render()
         this.forceUpdate()
@@ -177,11 +166,11 @@ class Sidebar extends Component {
     }
 
    renderObject(){
-        for (var i = 0 ; i < this.state.notifs.length ; i++) {
-            return (
-                this.renderNotifListsss(this.state.notifs[i])
-            )
-        }
+    for (var i = 0 ; i < this.props.notifs.length ; i++) {
+       return (
+           this.renderNotifListsss(this.props.notifs[i])
+       )
+    }
    }
 
    renderNotifListsss(e) {
@@ -268,40 +257,39 @@ class Sidebar extends Component {
                     </IconButton>
                 </div>
                 <List>
-                {this.state.calendars.map(item => {
-                    const labelId = `${item.name}`;
+                {this.props.calendars.map(item => {
+                    const labelId = `checkbox-list-label-${item.name}`;
                     return (
                         <div>
-                            <ListItem className={classes.listItem} key={item.name} role={undefined} dense button>
-                                <ListItemIcon className={classes.check}>
-                                    <Checkbox
-                                    className={classes.check}
-                                    edge="start"
-                                    //checked={this.state.checked.indexOf(item) !== -1}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{ 'aria-labelledby': labelId }}
-                                    />
-                                </ListItemIcon>
-                                <ListItemText id={labelId} primary={`${item.name}`} />
-                                    <ListItemSecondaryAction>
-                                        <IconButton edge="end" onClick={this.handleClick}>
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                            </ListItem>
-                            
-                            {/* Menu for each calendar */}
-                            <Menu
-                              anchorEl={this.state.anchorEl}
-                              keepMounted
-                              open={Boolean(this.state.anchorEl)}
-                              onClose={this.handleClose}
-                            >
-                                <MenuItem onClick={this.handleClose}>Edit</MenuItem>
-                                <MenuItem onClick={this.handleDeleteCal(item.name)}>Delete</MenuItem>
-                            </Menu>
-                        </div>
+                    <ListItem className={classes.root} key={item.name} role={undefined} dense button onClick={this.handleToggle(item)}>
+                        <ListItemIcon className={classes.check}>
+                            <Checkbox
+                            className={classes.check}
+                            edge="start"
+                            checked="true"
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{ 'aria-labelledby': labelId }}
+                            />
+                        </ListItemIcon>
+                        <ListItemText id={labelId} primary={`${item.name}`} />
+                            <ListItemSecondaryAction>
+                                <IconButton edge="end" aria-label="comments">
+                                    <MoreVertIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        {/* Menu for each calendar */}
+                        <Menu
+                        anchorEl={this.state.anchorEl}
+                        keepMounted
+                        open={Boolean(this.state.anchorEl)}
+                        onClose={this.handleClose}
+                      >
+                          <MenuItem onClick={this.handleClose}>Edit</MenuItem>
+                          <MenuItem onClick={this.handleDeleteCal(item.name)}>Delete</MenuItem>
+                      </Menu>
+                      </div>
                     );
                     })}
                     </List>

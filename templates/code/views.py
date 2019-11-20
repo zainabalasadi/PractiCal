@@ -258,7 +258,8 @@ def getIntent():
 
                 return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
                                                 "timeStart": response.query_result.parameters.fields["timeStart"].string_value,
-                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value
+                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value,
+                                                "eventName": response.query_result.parameters.fields["eventName"].string_value
                                                 })
 
 
