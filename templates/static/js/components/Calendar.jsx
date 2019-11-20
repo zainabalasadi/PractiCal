@@ -159,6 +159,8 @@ class Cal extends Component {
         }).then((data) => data.json()).then(event => {
             if (event.success) {
                 // append to events list
+                this.setState({ events: [], calendars: [] })
+                this.get_calendars()
                 console.log("Created event successfully")
                 // event.start = new Date(event.start)
                 // console.log(event.start)
@@ -183,7 +185,7 @@ class Cal extends Component {
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
-        }).then((data) => data.json());
+        }).then((data) => data.json()).then(data => this.forceUpdate());
     }
 
     delete_event(event) {
@@ -686,9 +688,8 @@ class Cal extends Component {
                         value={this.state.calendar}
                         InputProps={{disableUnderline: true}}
                         className={classes.selectMargin}
-                        defaultValue='Select Calendar'
                         onChange={e => {
-                            this.setCalendar(e.target.value), this.forceUpdate();
+                            this.setCalendar(e.target.value), this.eventStyleGetter();
                         }}
                         >
                         <option value="Select Calendar...">Select Calendar...</option>
@@ -706,7 +707,6 @@ class Cal extends Component {
                           value={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Select Category'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
