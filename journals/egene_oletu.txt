@@ -81,3 +81,6 @@ test.
 Implemented and tested user preferences. Will mainly be used to store calendar
 colour and references to empty calendars. Waiting on routes and frontend
 integration to fully test user preferences.
+
+20/11/2019:
+Got logout button working properly.
