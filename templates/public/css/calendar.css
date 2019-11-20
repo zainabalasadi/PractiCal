@@ -3,6 +3,10 @@ html, body {
     height: 100%;
 }
 
+td, tr, th {
+    border: 1px black solid !important;
+}
+
 body {
 	font-family: 'Roboto', sans-serif;
     color: #222328;
@@ -164,6 +168,10 @@ h3 {
 
 .rbc-day-slot .rbc-event{
     border: 0px !important
+}
+
+tr {
+    background-color: transparent !important;
 }
 
 /** Event padding **/

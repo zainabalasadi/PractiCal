@@ -188,40 +188,6 @@ class Sidebar extends Component {
         )
    }
 
-    // handleCreateOpen() {
-    //     this.setState ({ createPopUp: true });
-    // };
-
-    // handleClose() {
-    //     this.setState({ createPopUp: false, anchorEl: null });
-    // }
-
-    // handleDeleteCal(calendarName) {
-    //     var string = 'deleting' + calendarName
-    //     console.log(string)
-    // }
-
-    // setCalName = e => { 
-    //     this.setState({ name: e }); 
-    // };
-
-    // setCalColour = e => { 
-    //     this.setState({ colour: e.hex }); 
-    // };
-
-    // setNewCalendar() {
-    //     const { name, colour } = this.props;
-    //     let newCal = { name, colour };
-    //     let calendars = this.props.calendars.slice();
-    //     calendars.push(newCal);
-    //     this.setState({ calendars });
-    //     this.create_calendar(newCal)
-    // }
-
-    // handleClick = event => {
-    // 	this.setState({ anchorEl: event.currentTarget });
-  	// };
-
     render() {
         const { classes } = this.props;
         return (
@@ -261,7 +227,7 @@ class Sidebar extends Component {
                     const labelId = `checkbox-list-label-${item.name}`;
                     return (
                         <div>
-                    <ListItem className={classes.root} key={item.name} role={undefined} dense button>
+                    <ListItem className={classes.listItem} key={item.name} role={undefined} dense button>
                         <ListItemIcon className={classes.check}>
                             <Checkbox
                             className={classes.check}
@@ -284,7 +250,7 @@ class Sidebar extends Component {
                         anchorEl={this.props.anchorEl}
                         keepMounted
                         open={Boolean(this.props.anchorEl)}
-                        onClose={this.handleClose}
+                        onClose={this.props.handleClose}
                       >
                           <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
                           <MenuItem onClick={this.props.handleDeleteCal(item.name)}>Delete</MenuItem>
@@ -305,11 +271,11 @@ class Sidebar extends Component {
                 {this.renderObject()}
                 
                 {/* Modal to create new calendar */}
-                <Dialog open={this.props.createPopUp} onClose={this.handleClose}>
-                    <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
+                <Dialog open={this.props.createPopUp} onClose={this.props.handleClose}>
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={this.props.handleClose}>
                         <CloseIcon />
                     </IconButton>
-                    <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
+                    <DialogTitle id="customized-dialog-title" onClose={this.props.handleClose}>
                         Create a new calendar
                     </DialogTitle>
                     <DialogContent>
@@ -329,7 +295,7 @@ class Sidebar extends Component {
                           variant="contained" 
                           color="primary"
                           onClick={() => {
-                            this.props.setNewCalendar(), this.handleClose();
+                            this.props.setNewCalendar(), this.props.handleClose();
                           }}
                         >
                         Create Calendar

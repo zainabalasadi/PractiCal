@@ -388,7 +388,7 @@ class Cal extends Component {
 	console.log(this.state)
     }
 
-    handleCreateOpen() {
+    handleCreateOpen = () => {
         this.setState ({ createPopUp: true });
     };
 
@@ -397,15 +397,15 @@ class Cal extends Component {
         console.log(string)
     }
 
-    setCalName = e => { 
+    setCalName = (e) => { 
         this.setState({ name: e }); 
     };
 
-    setCalColour = e => { 
+    setCalColour = (e) => { 
         this.setState({ colour: e.hex }); 
     };
 
-    setNewCalendar() {
+    setNewCalendar = () => {
         const { name, colour } = this.props;
         let newCal = { name, colour };
         let calendars = this.props.calendars.slice();
@@ -414,7 +414,7 @@ class Cal extends Component {
         this.create_calendar(newCal)
     }
 
-    handleClick = event => {
+    handleClick = (event) => {
     	this.setState({ anchorEl: event.currentTarget });
   	};
     
