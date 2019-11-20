@@ -166,6 +166,10 @@ h3 {
     border: 0px !important
 }
 
+tr {
+    background-color: transparent !important;
+}
+
 /** Event padding **/
 .rbc-row-segment {
     padding: 0 5px 3px 5px !important;

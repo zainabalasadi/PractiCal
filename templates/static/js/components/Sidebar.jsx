@@ -71,9 +71,9 @@ class Sidebar extends Component {
         this.handleClose = this.handleClose.bind(this);
         this.renderNotifList = this.renderNotifList.bind(this)
     }
-        componentDidMount() {
-        console.log('calling...')
-        this.getCalList()
+
+    componentDidMount() {
+            this.getCalList()
     }
 
     handleNlpCreation(e) {
@@ -97,10 +97,8 @@ class Sidebar extends Component {
             },
         body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
         }).then((data) => data.json()).then(cal => {
-            console.log(cal.success);
             if (cal.success) {
                 console.log("Created calendar successfully")
-                console.log(calendar)
                 this.state.calendars.push(calendar)
             } else {
                 console.log("Failed calendar creation")
@@ -116,7 +114,6 @@ class Sidebar extends Component {
             },
         body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
         }).then((data) => data.json()).then(cal => {
-            console.log(cal.success);
             if (cal.success) {
                 let updatedCalendars = this.state.events.filter (
                     cal => cal["name"] !== calendar.name
@@ -137,12 +134,9 @@ class Sidebar extends Component {
     }
 
     renderCalList(calList) {
-        console.log(calList)
         var new_list = new Array()
-        console.log(calList.calendars)
         for (var i = 0 ; i < calList.calendars.length ; i++) {
-                console.log(calList.calendars[i].name)
-                new_list.push(calList.calendars[i])
+                 new_list.push(calList.calendars[i])
         }
 
         this.setState((prevState) => {
@@ -161,10 +155,8 @@ class Sidebar extends Component {
     }
 
     renderNotifList(calList) {
-        console.log(calList)
         var new_list1 = new Array()
         for (var i = 0 ; i < calList.length ; i++) {
-                console.log(calList[i])
                 new_list1.push(calList[i])
         }
 

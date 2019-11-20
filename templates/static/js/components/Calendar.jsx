@@ -159,12 +159,13 @@ class Cal extends Component {
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
                             "category": event.category})
         }).then((data) => data.json()).then(event => {
-            console.log(event.success);
             if (event.success) {
                 // append to events list
-                console.log("Created event successfully")
-                this.setState({ events: [] })
+                this.setState({ events: [], calendars: [] })
                 this.get_calendars()
+                console.log("Created event successfully")
+                // this.setState({ events: [] })
+                // this.get_calendars()
                 // event.start = new Date(event.start)
                 // console.log(event.start)
                 // event.end = new Date(event.end)
@@ -188,9 +189,8 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category})
-        }).then((data) => data.json());
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+        }).then((data) => data.json()).then(data => this.forceUpdate());
     }
 
     delete_event(event) {
@@ -363,7 +363,7 @@ class Cal extends Component {
     setDescription(e) { this.setState({ desc: e }); }
     setInvitees(e) { this.setState({ invitees: e }); }
     setGroups(e) { this.setState({ groups: e }); }
-    setCalendar(e) { this.setState({ calendar: e }); }
+    setCalendar(e) { this.setState({ calendar: e }), this.setState({ colour: e.colour }); }
     setStart(e) { this.setState({ start: e }); }
     setEnd(e) { this.setState({ end: e }); }
     setCategory(e) { this.setState({ category: e }); }
@@ -433,6 +433,7 @@ class Cal extends Component {
         this.setState({
             events: updatedEvent
         });
+        this.forceUpdate()
         this.edit_event(updatedEvent[index])
     }
         
@@ -456,7 +457,6 @@ class Cal extends Component {
         var backgroundColor = event.colour;
         var style = {
             backgroundColor: backgroundColor,
-
         };
         return {
             style: style
@@ -542,7 +542,6 @@ class Cal extends Component {
                           }}
                         />
                     </div>
-                    
 
                     <div className={classes.iconDiv}>
                         <GroupIcon className={classes.icon}/>
@@ -590,14 +589,14 @@ class Cal extends Component {
                         <CategoryIcon className={classes.icon}/>
                         <Select
                           native
-                          defaultValue={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
+                          defaultValue='Select Category...'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
+                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
@@ -711,9 +710,8 @@ class Cal extends Component {
                         value={this.state.calendar}
                         InputProps={{disableUnderline: true}}
                         className={classes.selectMargin}
-                        defaultValue='Select Calendar'
                         onChange={e => {
-                            this.setCalendar(e.target.value);
+                            this.setCalendar(e.target.value), this.eventStyleGetter();
                         }}
                         >
                         <option value="Select Calendar...">Select Calendar...</option>
@@ -731,7 +729,6 @@ class Cal extends Component {
                           value={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
@@ -802,15 +799,16 @@ class Cal extends Component {
 }
 
 function Event({ event }) {
-    // var hour = event.start.getHours()
-    // var ampm = "am "
+    var start = new Date(event.start),
+        hour = start.getHours();
+    var ampm = "am "
 
-    // if (hour > 12) {
-    //     hour -= 12;
-    //     ampm = "pm "
-    // } else if (hour === 0) {
-    //    hour = 12;
-    // }
+    if (hour > 12) {
+        hour -= 12;
+        ampm = "pm "
+    } else if (hour === 0) {
+       hour = 12;
+    }
 
     return (
         <div>{event.title}</div>
