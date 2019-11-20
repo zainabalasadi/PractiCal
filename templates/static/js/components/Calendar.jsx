@@ -409,6 +409,7 @@ class Cal extends Component {
         console.log(s)
         var e = new Date(end)
         console.log(e)
+        console.log("HELLO WORLD")
 
 
         updatedEvent[index].title = title;
