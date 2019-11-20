@@ -306,9 +306,16 @@ class User(UserMixin):
     #
     # Other
     #
-    def calculateHoursCategory(self, category, week):
-        time = 0
+    def calculateHoursCategory(self):
+        list = {"Work":0,
+                "Social":0,
+                "School":0,
+                "Family":0
+                }
 
-        for calendar in self._calendars:
-            time += calendar.calculateHoursCategory(category, week)
-        return time
+        for category in list:
+            time = 0
+            for calendar in self._calendars:
+                time += calendar.calculateHoursCategory(list[category], datetime.datetime.now())
+            list[category] = time
+        return list
