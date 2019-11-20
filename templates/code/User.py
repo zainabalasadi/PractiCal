@@ -109,7 +109,6 @@ class User(UserMixin):
             self._calendars[newCalName] = newCalendar
             self._preferences['calendars'][newCalName] = \
                 {'colour': newCalendar.getColour()}
-            print(self._preferences)
             return True
 
     def addContact(self, email, firstName="", lastName="", groupName=None):
