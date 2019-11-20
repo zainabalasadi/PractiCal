@@ -724,10 +724,10 @@ if __name__ == "__main__":
     if resp.lower()[0] == "y":
         userPrefs1 = json.dumps(
             {
-                'default_colour': 'blue',
+                'default_colour': '#566EE9',
                 'calendars': {
                     'Default': {
-                        'colour': 'blue'
+                        'colour': '#566EE9'
                     },
                     'Calendar 1': {
                         'colour': 'green'
@@ -739,7 +739,7 @@ if __name__ == "__main__":
             })
         userPrefs2 = json.dumps(
             {
-                'default_colour': 'blue',
+                'default_colour': '#566EE9',
                 'calendars': {
                     'Default': {
                         'colour': '#9C2BAF'

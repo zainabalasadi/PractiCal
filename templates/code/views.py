@@ -44,8 +44,7 @@ def index():
 def logout():
         PCM.logoutUser(current_user.getID())
         logout_user()
-        return redirect(url_for('index.index'))
-
+        print('logged out')
 
 @index_blueprint.route('/forgot', methods=['GET', 'POST'])
 def forgot():
@@ -69,6 +68,7 @@ def createEvent():
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
                 cal = current_user.getCalendarByName(r['calendar'])
+                category = r['category']
                 invitees = None
                 if 'invitees' in r:
                         invitees = r['invitees']
@@ -78,8 +78,10 @@ def createEvent():
                 if (cal != None):
                         event = PCM.addEvent(userID=userId, title=name,
                             description=desc, startDateTime=startDate,
-                            endDateTime=endDate, calendarName=cal.getName())
+                            endDateTime=endDate, calendarName=cal.getName(),
+                                             category=category)
                         cal.addEvent(event)
+                        eventId = event.getID()
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -100,6 +102,8 @@ def editEvent():
                                 event.setStartDateTime(r['startDate'].replace('T', ' '))
                         if event.getEndDateTime() != r['endDate']:
                                 event.setEndDateTime(r['endDate'].replace('T', ' '))
+                        if event.getCategory() != r['category']:
+                                event.setCategory(r['category'])
                         current_user.moveEvent(event, r['calendar'])
                         PCM.addToUpdateQueue(current_user.getID(), event,
                                 PCM.DBUpdate.DB_UPDATE_EVENT,
@@ -169,7 +173,7 @@ def searchEvents():
                                 userName = firstName + " " + lastName
                                 if r['queryString'].lower() in userName.lower():
                                     eventsByHost.append(event)
-                listOfEvents = eventsByTitle + eventsByHost
+                listOfEvents = list(set(eventsByTitle) | set(eventsByHost))
                 resultList = []
                 for event in listOfEvents:
                         eventDict = {}
@@ -254,7 +258,8 @@ def getIntent():
 
                 return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
                                                 "timeStart": response.query_result.parameters.fields["timeStart"].string_value,
-                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value
+                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value,
+                                                "eventName": response.query_result.parameters.fields["eventName"].string_value
                                                 })
 
 
@@ -276,15 +281,38 @@ def sendInvite():
 def getNotifs():
         notifList = []
         # for notif in current_user.getNotifications():
-        notifObj = {}
-        notifObj['title'] = "HIIIII11"#notif.getEvent().getTitle()
-        notifObj['type'] = "HIIIII22"#notif.getNotifType()
-        notifObj['sender'] = "HIIII33I"#notif.getSenderID()
-        notifObj['start'] = "HIIIII44"#notif.getEvent().getStartDateTime()
-
-        notifList.append(notifObj)
+        for notif in current_user.getNotifications():
+            sender = PCM.getUserDetails(userEmail=notif.getSenderEmail())
+            notifType = notif.getNotifType()
+            status = ""
+            if notifType == Notification.NOTIF_EVENTCHANGE:
+                message = "{sender} has updated event {event}"
+            elif notifType == Notification.NOTIF_EVENTINVITE:
+                message = "{sender} has invited you to event {event}"
+            elif notifType == Notification.NOTIF_EVENTDELETE:
+                message = "{sender} has cancelled event {event}"
+            elif notifType == Notification.NOTIF_INVITERESP_GOING:
+                status = "'going'"
+                message = ("{sender} has changed their status to {status} "
+                           "for event {event}")
+            elif notifType == Notification.NOTIF_INVITERESP_MAYBE:
+                status = "'maybe'"
+                message = ("{sender} has changed their status to {status} "
+                           "for event {event}")
+            elif notifType == Notification.NOTIF_INVITERESP_DECLINE:
+                status = "'not going'"
+                message = ("{sender} has changed their status to {status} "
+                           "for event {event}")
+            else:
+                continue
+            message.format(sender="{} {}".format(sender[0], sender[1]),
+                event=notif.getEvent().getName(), status=status)
+            notifObject = {
+                'id': notif.getID(),
+                'message': message
+            }
+            notifList.append(notifObj)
         return jsonify(notifList)
-
 
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
@@ -308,7 +336,7 @@ def createCalendar():
                 r = request.get_json()
                 userId = current_user.getID()
                 name = r['name']
-                colour = r['colour'] 
+                colour = r['colour']
                 if (current_user.getCalendarByName(name) == None):
                         newCalendar = Calendar(name, colour)
                         current_user.addCalendar(newCalendar)

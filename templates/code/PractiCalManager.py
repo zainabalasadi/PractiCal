@@ -171,8 +171,8 @@ class PractiCalManager():
                 if sender and sender != -1: senderEmail = sender[3]
 
             if senderEmail:
-                user.addNotification(Notification(event=self._events[eventID],
-                    notifType=notifType, senderEmail=senderEmail))
+                user.addNotification(event=self._events[eventID],
+                    notifType=notifType, senderEmail=senderEmail)
 
             # Delete notification from database
             self._db.deleteNotification(eventID, senderID, userID, notifType)
@@ -370,13 +370,14 @@ class PractiCalManager():
         event = self._events[eventID]
         for email in receiverEmails:
             receiver = self._db.getUser(email=email)
+            _, _, _, senderEmail, _ = self._db.getUser(userID=senderID)
             receiverID = receiver[0] if receiver and receiver != -1 else 0
             if not receiverID > 0: continue
 
             # Send notification to user if logged in else save to database
             if receiverID in self._users.keys():
-                self._users[receiverID].addNotification(
-                    Notification(event, notifType, senderID))
+                self._users[receiverID].addNotification(event, notifType,
+                    senderEmail)
             else:
                 self._db.addNotification(eventID, senderID, receiverID,
                     notifType)
