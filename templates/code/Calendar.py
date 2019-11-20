@@ -94,8 +94,10 @@ class Calendar():
         weekend = week + datetime.timedelta(days=7)
 
         for event in self._events:
+            print("1")
             if event.getCategory() == category and \
                     event.getStartDateTime() > week and \
                     event.getEndDateTime() < weekend:
+                print("2")
                 time += event.calculateHoursCategory()
         return time

@@ -9,6 +9,8 @@ from templates.code.Group import Group
 from templates.code.Notification import Notification
 from templates.code.Calendar import Calendar
 
+import datetime
+
 class User(UserMixin):
     def __init__(self, userID, firstName, lastName, email,
             preferences=None):
@@ -311,7 +313,7 @@ class User(UserMixin):
 
         for category in list:
             time = 0
-            for calendar in self._calendars:
+            for calendar in self.getCalendars():
                 time += calendar.calculateHoursCategory(list[category], datetime.datetime.now())
             list[category] = time
         return list
