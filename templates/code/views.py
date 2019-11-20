@@ -69,6 +69,7 @@ def createEvent():
                 startDate = r['startDate'].replace('T', ' ')
                 endDate = r['endDate'].replace('T', ' ')
                 cal = current_user.getCalendarByName(r['calendar'])
+                category = r['category']
                 invitees = None
                 if 'invitees' in r:
                         invitees = r['invitees']
@@ -78,7 +79,8 @@ def createEvent():
                 if (cal != None):
                         event = PCM.addEvent(userID=userId, title=name,
                             description=desc, startDateTime=startDate,
-                            endDateTime=endDate, calendarName=cal.getName())
+                            endDateTime=endDate, calendarName=cal.getName(),
+                                             category=category)
                         cal.addEvent(event)
                         eventId = event.getID()
                         return jsonify({"success": "True"})
@@ -101,6 +103,8 @@ def editEvent():
                                 event.setStartDateTime(r['startDate'].replace('T', ' '))
                         if event.getEndDateTime() != r['endDate']:
                                 event.setEndDateTime(r['endDate'].replace('T', ' '))
+                        if event.getCategory() != r['category']:
+                                event.setCategory(r['category'])
                         current_user.moveEvent(event, r['calendar'])
                         PCM.addToUpdateQueue(current_user.getID(), event,
                                 PCM.DBUpdate.DB_UPDATE_EVENT,
