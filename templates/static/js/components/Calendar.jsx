@@ -157,7 +157,6 @@ class Cal extends Component {
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
         }).then((data) => data.json()).then(event => {
-            console.log(event.success);
             if (event.success) {
                 // append to events list
                 console.log("Created event successfully")
@@ -433,7 +432,6 @@ class Cal extends Component {
         var backgroundColor = event.colour;
         var style = {
             backgroundColor: backgroundColor,
-
         };
         return {
             style: style
@@ -690,7 +688,7 @@ class Cal extends Component {
                         className={classes.selectMargin}
                         defaultValue='Select Calendar'
                         onChange={e => {
-                            this.setCalendar(e.target.value);
+                            this.setCalendar(e.target.value), this.eventStyleGetter(this.state), this.forceUpdate();
                         }}
                         >
                         <option value="Select Calendar...">Select Calendar...</option>
