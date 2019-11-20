@@ -107,10 +107,21 @@ class Cal extends Component {
             eventId: "", category: "", colour: "",
             openSlot: false,
             openEvent: false,
+	    openNlp: false,
+	    nlpText: "",
             clickedEvent: {},
             searchResult: [],
             search: "",
             searchOpen: false,
+	    nlpText: "",
+            nlpResult: {},
+            notifs: [],
+            // sidebarChecked: 0,
+            // sidebarSetChecked: 0,
+            createPopUp: false,
+            calName: "",
+            calColour: "",
+            anchorEl: null,
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this)
@@ -130,13 +141,25 @@ class Cal extends Component {
 
     renderSearchList(list) {
         return (
-        <ul>
+        <table>
+        <tr> 
+            <th>Title</th> 
+            <th>Description</th> 
+            <th>Start Time</th>
+            <th>End Time:</th>
+        </tr>
        { list.map((e) => {
-            return <li> <b>Title:</b> {e.title} <b>Description:</b> {e.desc} <b>Start Time:</b> {e.start} <b>End Time:</b> {e.end}</li>
-        })}
-        </ul>
+            return (
+                <tr>
+                    <td>{e.title}</td>
+                    <td>{e.desc}</td>  
+                    <td>{e.start}</td>
+                    <td>{e.end}</td>
+                </tr>
+        )})}
+        </table>
 
-            )
+        )
 
         
     }
@@ -144,7 +167,7 @@ class Cal extends Component {
     // Function to create event and send to back-end
     create_event(event) {
         //console.log(event)
-        // console.log(event.state)
+        console.log(this.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                                     "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
@@ -157,19 +180,12 @@ class Cal extends Component {
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category})
-        }).then((data) => data.json()).then(event => {
+                            "category": event.category})}).then((data) => data.json()).then(event => {
             if (event.success) {
                 // append to events list
                 this.setState({ events: [], calendars: [] })
                 this.get_calendars()
                 console.log("Created event successfully")
-                // this.setState({ events: [] })
-                // this.get_calendars()
-                // event.start = new Date(event.start)
-                // console.log(event.start)
-                // event.end = new Date(event.end)
-                // this.state.events.push(event)
             } else {
                 console.log("Failed event creation")
             }
@@ -189,8 +205,8 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
-        }).then((data) => data.json()).then(data => this.forceUpdate());
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category})}).then((data) => data.json()).then(data => this.forceUpdate());
     }
 
     delete_event(event) {
@@ -206,8 +222,7 @@ class Cal extends Component {
         body: JSON.stringify({"name": event.title, "desc": event.desc,
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category})
-        }).then((data) => data.json());
+                            "category": event.category})}).then((data) => data.json());
     }
 
     get_calendars() {
@@ -240,7 +255,8 @@ class Cal extends Component {
 
     // Closes modal
     handleClose() {
-        this.setState({ openEvent: false, openSlot: false });
+        this.setState({ openEvent: false, openSlot: false, openNlp: false,
+                        createPopUp: false, anchorEl: null });
     }
 
     handleSearchClose() {
@@ -368,6 +384,44 @@ class Cal extends Component {
     setEnd(e) { this.setState({ end: e }); }
     setCategory(e) { this.setState({ category: e }); }
         
+    handleNlpTextbox = (val) => {
+        this.setState({ nlpText: val });
+    };
+    handleNlpData = (e) => {
+	this.setState({title: e.eventName, desc: "", start: e.date.substring(0, 10).concat(e.timeStart.substring(10, 19)), end: e.date.substring(0, 10).concat(e.timeEnd.substring(10, 19)), invitees: "", groups: "", openNlp: true}) 
+	console.log(this.state)
+    }
+
+    handleCreateOpen = () => {
+        this.setState ({ createPopUp: true });
+    };
+
+    handleDeleteCal = (calendarName) => {
+        var string = 'deleting' + calendarName
+        console.log(string)
+    }
+
+    setCalName = (e) => { 
+        this.setState({ name: e }); 
+    };
+
+    setCalColour = (e) => { 
+        this.setState({ colour: e.hex }); 
+    };
+
+    setNewCalendar = () => {
+        const { name, colour } = this.props;
+        let newCal = { name, colour };
+        let calendars = this.props.calendars.slice();
+        calendars.push(newCal);
+        this.setState({ calendars });
+        this.create_calendar(newCal)
+    }
+
+    handleClick = (event) => {
+    	this.setState({ anchorEl: event.currentTarget });
+  	};
+    
     // Handle's start time select
     handleStartTime = (event, date) => {
         this.setState({ start: date });
@@ -453,7 +507,6 @@ class Cal extends Component {
     }
 
     eventStyleGetter(event) {
-        console.log(event);
         var backgroundColor = event.colour;
         var style = {
             backgroundColor: backgroundColor,
@@ -491,15 +544,13 @@ class Cal extends Component {
                 
                 />
                 {/* Modal for booking new event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEntered={this.handleOpenDialog}>
+                <Dialog contentstyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEntered={this.handleOpenDialog}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
                   <DialogContent>
                     <TextField className={classes.title}
-                    inputProps={{
-                        style: {fontSize: 23} 
-                    }}
+                    inputProps={{ style: {fontSize: 23} }}
                     placeholder="Add title"
                     autoFocus
                     margin="dense"
@@ -569,14 +620,13 @@ class Cal extends Component {
                         <CalendarTodayIcon className={classes.icon}/>
                         <Select
                           native
-                          InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
                           defaultValue='Select Calendar'
                           onChange={e => {
                             this.setCalendar(e.target.value), this.eventStyleGetter(this.state);
                           }}
                         >
-                        <option value="Select Calendar...">Select Calendar...</option>
+                        <option value="">Select Calendar</option>
                         {
                             this.state.calendars.map(item => {
                             return (
@@ -589,19 +639,18 @@ class Cal extends Component {
                         <CategoryIcon className={classes.icon}/>
                         <Select
                           native
-                          InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Select Category...'
+                          defaultValue='Select Category'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
-                        <option value="Select Category...">Select Category...</option>
+                        <option value="">Select Category</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
                         <option value="Family">Family</option>
-                        
+                        <option value="Miscellaneous">Miscellaneous</option>
                         </Select> 
                     </div>                 
                   </DialogContent>
@@ -626,20 +675,18 @@ class Cal extends Component {
                 </Dialog>
 
                 {/* Material-ui Modal for Existing Event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openEvent} onClose={this.handleClose}>
+                <Dialog contentstyle={{width: "100%", maxWidth: "none"}} open={this.state.openEvent} onClose={this.handleClose}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
                   <DialogContent>
                     <TextField 
                     className={classes.title}
-                    inputProps={{
-                        style: {fontSize: 23} 
-                    }}
+                    inputProps={{ style: {fontSize: 23} }}
                     placeholder="Add title"
                     autoFocus
                     margin="dense"
-                    defaultValue={this.state.title}
+                    value={this.state.title}
                     onChange={e => {
                       this.setTitle(e.target.value);
                     }}
@@ -650,7 +697,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.start)}
+                          value={this.formatActualDate(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value);
                           }}
@@ -659,7 +706,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.end)}
+                          value={this.formatActualDate(this.state.end)}
                           onChange={e => {
                             this.setEnd(e.target.value);
                           }}
@@ -673,7 +720,7 @@ class Cal extends Component {
                           InputProps={{disableUnderline: true}}
                           margin="dense"
                           multiline={true}
-                          defaultValue={this.state.desc}
+                          value={this.state.desc}
                           onChange={e => {
                             this.setDescription(e.target.value);
                           }}
@@ -683,7 +730,7 @@ class Cal extends Component {
                         <GroupIcon className={classes.icon}/>
                         <TextField
                           className={classes.inputMargin}
-                          defaultValue={this.state.invitees}
+                          value={this.state.invitees}
                           InputProps={{disableUnderline: true}}
                           placeholder="Add invitees"
                           margin="dense"
@@ -694,7 +741,7 @@ class Cal extends Component {
 
                         <TextField
                           className={classes.inputMargin}
-                          defaultValue={this.state.group}
+                          value={this.state.group}
                           InputProps={{disableUnderline: true}}
                           placeholder="Add group invitees"
                           margin="dense"
@@ -708,13 +755,12 @@ class Cal extends Component {
                         <Select
                         native
                         value={this.state.calendar}
-                        InputProps={{disableUnderline: true}}
                         className={classes.selectMargin}
                         onChange={e => {
                             this.setCalendar(e.target.value), this.eventStyleGetter();
                         }}
                         >
-                        <option value="Select Calendar...">Select Calendar...</option>
+                        <option value="">Select Calendar</option>
                         {this.state.calendars.map(item => {
                             return (
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
@@ -727,7 +773,6 @@ class Cal extends Component {
                         <Select
                           native
                           value={this.state.category}
-                          InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
                           onChange={e => {
                             this.setCategory(e.target.value);
@@ -737,7 +782,7 @@ class Cal extends Component {
                         <option value="Social">Social</option>
                         <option value="School">School</option>
                         <option value="Family">Family</option>
-                        
+                        <option value="Miscellaneous">Miscellaneous</option>
                         </Select> 
                     </div> 
                   </DialogContent>
@@ -773,7 +818,7 @@ class Cal extends Component {
                   </DialogActions>
                 </Dialog>
 
-                <Dialog 
+                <Dialog
                 open={this.state.searchOpen}
                 onClose={this.handleSearchClose}
                 aria-labelledby="alert-dialog-title"
@@ -791,8 +836,146 @@ class Cal extends Component {
                 </Dialog>
 
                 
+		
+		        {/* Material-ui Modal for nlp Event */}
+                <Dialog contentstyle={{width: "100%", maxWidth: "none"}} open={this.state.openNlp} onClose={this.handleClose}>
+                <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
+                    <CloseIcon />
+                </IconButton>
+                  <DialogContent>
+                    <TextField 
+                    className={classes.title}
+                    inputProps={{ style: {fontSize: 23} }}
+                    placeholder="Add title"
+                    autoFocus
+                    margin="dense"
+                    value={this.state.title}
+                    onChange={e => {
+                      this.setTitle(e.target.value);
+                    }}
+                    />
+                    <div className={classes.iconDiv}>
+                        <ScheduleIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          InputProps={{ disableUnderline: true }}
+                          type="datetime-local"
+                        //   defaultValue={this.formatActualDate(this.state.start)}
+                          value={this.formatActualDate(this.state.start)}
+                          onChange={e => {
+                            this.setStart(e.target.value);
+                          }}
+                        />
+                        <TextField
+                          className={classes.inputMargin}
+                          InputProps={{disableUnderline: true}}
+                          type="datetime-local"
+                        //   defaultValue={this.formatActualDate(this.state.end)}
+                          value={this.formatActualDate(this.state.end)}
+                          onChange={e => {
+                            this.setEnd(e.target.value);
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <NotesIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          placeholder="Add description"
+                          InputProps={{disableUnderline: true}}
+                          margin="dense"
+                          multiline={true}
+                          value={this.state.desc}
+                          onChange={e => {
+                            this.setDescription(e.target.value);
+                          }}
+                        />
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <GroupIcon className={classes.icon}/>
+                        <TextField
+                          className={classes.inputMargin}
+                          value={this.state.invitees}
+                          InputProps={{disableUnderline: true}}
+                          placeholder="Add invitees"
+                          margin="dense"
+                          onChange={e => {
+                            this.setInvitees(e.target.value);
+                          }}
+                        />
+
+                        <TextField
+                          className={classes.inputMargin}
+                          value={this.state.group}
+                          InputProps={{disableUnderline: true}}
+                          placeholder="Add group invitees"
+                          margin="dense"
+                          onChange={e => {
+                            this.setGroup(e.target.value);
+                          }}
+                        /> 
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <CalendarTodayIcon className={classes.icon}/>
+                        <Select
+                          native
+                          className={classes.selectMargin}
+                          defaultValue='Select Calendar'
+                          onChange={e => {
+                            this.setCalendar(e.target.value), this.eventStyleGetter(this.state);
+                          }}
+                        >
+                        <option value="">Select Calendar</option>
+                        {
+                            this.state.calendars.map(item => {
+                            return (
+                                <option value={`${item.name}`}>{`${item.name}`}</option>
+                            );
+                        })}
+                        </Select> 
+                    </div><br />
+                    <div className={classes.iconDiv}>
+                        <CategoryIcon className={classes.icon}/>
+                        <Select
+                          native
+                          className={classes.selectMargin}
+                          defaultValue='Select Category'
+                          onChange={e => {
+                            this.setCategory(e.target.value);
+                          }}
+                        >
+                        <option value="">Select Category</option>
+                        <option value="Work">Work</option>
+                        <option value="Social">Social</option>
+                        <option value="School">School</option>
+                        <option value="Family">Family</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                        </Select> 
+                    </div>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                    label="submit"
+                    variant="contained" 
+                    color="primary"
+                    onClick={() => {
+                      this.setNewEvent(), this.handleClose();
+                    }}
+                    >
+                    Submit
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
             </main>
-            <Sidebar />
+            <Sidebar calendars={this.state.calendars} nlpText={this.state.nlpText} 
+                    handleNlpData={this.handleNlpData} notifs={this.state.notifs} 
+                    createPopUp={this.state.createPopUp} calName={this.state.calName}
+                    calColour={this.state.calColour} anchorEl={this.state.anchorEl}
+                    handleCreateOpen={this.handleCreateOpen} handleClose={this.handleClose}
+                    handleDeleteCal={this.handleDeleteCal} setCalName={this.setCalName}
+                    setCalColour={this.setCalColour} setNewCalendar={this.setNewCalendar}
+                    handleClick={this.handleClick} setNlpBarState={this.handleNlpTextbox}/>
             </div>
         );
     }
@@ -811,7 +994,7 @@ function Event({ event }) {
     }
 
     return (
-        <div>{event.title}</div>
+        <div>{hour}{ampm}{event.title}</div>
     );
   }
 

@@ -103,7 +103,7 @@ class PractiCalManager():
 
         # Load preferences
         prefs = json.loads(prefs) if prefs else None
-        user = User(userID, userFN, userLN, email, password, prefs)
+        user = User(userID, userFN, userLN, email, prefs)
         prefs = user.getPreferences()
         self._users[userID] = user
 
@@ -428,25 +428,24 @@ class PractiCalManager():
 
                 if updateType == self.DBUpdate.DB_UPDATE_EVENT:
                     self._db.setEvent(
-                        updateObject.getID(),
-                        updateObject.getName(),
-                        updateObject.getDescription(),
-                        updateObject.getStartDateTime(),
-                        updateObject.getEndDateTime(),
-                        update.getCalendar().getName(),
-                        updateObject.getCategory(),
-                        updateObject.getLocation())
+                        eventID=updateObject.getID(),
+                        newTitle=updateObject.getName(),
+                        newDecr=updateObject.getDescription(),
+                        newStartDT=updateObject.getStartDateTime(),
+                        newEndDT=updateObject.getEndDateTime(),
+                        newCalendar=update.getCalendar().getName(),
+                        newCategory=updateObject.getCategory(),
+                        newLocation=updateObject.getLocation())
                 elif updateType == self.DBUpdate.DB_UPDATE_USER:
                     contacts = {email: groups for email, _, _, groups \
                             in updateObject.getContacts()}
                     self._db.setUser(
-                        updateObject.getID(),
-                        updateObject.getFirstName(),
-                        updateObject.getLastName(),
-                        updateObject.getEmail(),
-                        updateObject.getPassword(),
-                        contacts,
-                        json.dumps(updateObject.getPreferences()))
+                        userID=updateObject.getID(),
+                        newFName=updateObject.getFirstName(),
+                        newLName=updateObject.getLastName(),
+                        newEmail=updateObject.getEmail(),
+                        newContacts=contacts,
+                        newPreferences=json.dumps(updateObject.getPreferences()))
                 elif updateType == self.DBUpdate.DB_UPDATE_INVITE_GOING:
                     self._db.setInvite(
                         updatedObject.getID(),

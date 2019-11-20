@@ -44,7 +44,7 @@ def index():
 def logout():
         PCM.logoutUser(current_user.getID())
         logout_user()
-        print('logged out')
+        return jsonify({"success": "True"})
 
 @index_blueprint.route('/forgot', methods=['GET', 'POST'])
 def forgot():
@@ -70,6 +70,7 @@ def createEvent():
                 cal = current_user.getCalendarByName(r['calendar'])
                 category = r['category']
                 invitees = None
+                category = r['category']
                 if 'invitees' in r:
                         invitees = r['invitees']
                 groups = None
@@ -130,6 +131,7 @@ def deleteEvent():
 @index_blueprint.route('/getEvents', methods=['GET', 'POST'])
 @login_required
 def getEvents():
+        # print(current_user.calculateHoursCategory())
         ret = []
         for cal in current_user.getCalendars():
                 calObj = {}
@@ -258,7 +260,8 @@ def getIntent():
 
                 return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
                                                 "timeStart": response.query_result.parameters.fields["timeStart"].string_value,
-                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value
+                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value,
+                                                "eventName": response.query_result.parameters.fields["eventName"].string_value
                                                 })
 
 
@@ -316,11 +319,11 @@ def getNotifs():
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
 def getCategoryHours():
-        if request.method == 'POST':
-                category = request.form.get('category')
-                week = request.form.get('week')
+        if request.method == 'GET':
+                
 
-                return current_user.calculateHoursCategory(category, week)
+                print(current_user.calculateHoursCategory())
+                return 'yolo'
 
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
 @login_required
@@ -339,5 +342,7 @@ def createCalendar():
                 if (current_user.getCalendarByName(name) == None):
                         newCalendar = Calendar(name, colour)
                         current_user.addCalendar(newCalendar)
+                        PCM.addToUpdateQueue(userId, current_user,
+                            PCM.DBUpdate.DB_UPDATE_USER)
                         return jsonify({"success": "True"})
                 return jsonify({"success": "False"})

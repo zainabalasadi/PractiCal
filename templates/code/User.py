@@ -9,14 +9,15 @@ from templates.code.Group import Group
 from templates.code.Notification import Notification
 from templates.code.Calendar import Calendar
 
+import datetime
+
 class User(UserMixin):
-    def __init__(self, userID, firstName, lastName, email, password,
+    def __init__(self, userID, firstName, lastName, email,
             preferences=None):
         self._id = userID
         self._firstName = firstName
         self._lastName = lastName
         self._email = email
-        self._password = password
         if preferences:
             self._preferences = preferences
         else:
@@ -55,10 +56,6 @@ class User(UserMixin):
 
     def is_active(self):
         return self._isActive
-
-    # Validate if provided password matches user password
-    def validate(self, password):
-        return self._password == password
 
     #
     # Getters
@@ -114,6 +111,7 @@ class User(UserMixin):
             self._calendars[newCalName] = newCalendar
             self._preferences['calendars'][newCalName] = \
                 {'colour': newCalendar.getColour()}
+            print(self._preferences)
             return True
 
     def addContact(self, email, firstName="", lastName="", groupName=None):
@@ -306,9 +304,16 @@ class User(UserMixin):
     #
     # Other
     #
-    def calculateHoursCategory(self, category, week):
-        time = 0
+    def calculateHoursCategory(self):
+        list = {"Work":0,
+                "Social":0,
+                "School":0,
+                "Family":0
+                }
 
-        for calendar in self._calendars:
-            time += calendar.calculateHoursCategory(category, week)
-        return time
+        for category in list:
+            time = 0
+            for calendar in self.getCalendars():
+                time += calendar.calculateHoursCategory(list[category], datetime.datetime.now())
+            list[category] = time
+        return list
