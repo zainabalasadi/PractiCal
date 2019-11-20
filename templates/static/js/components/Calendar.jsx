@@ -130,13 +130,25 @@ class Cal extends Component {
 
     renderSearchList(list) {
         return (
-        <ul>
+        <table>
+        <tr> 
+            <th>Title</th> 
+            <th>Description</th> 
+            <th>Start Time</th>
+            <th>End Time:</th>
+        </tr>
        { list.map((e) => {
-            return <li> <b>Title:</b> {e.title} <b>Description:</b> {e.desc} <b>Start Time:</b> {e.start} <b>End Time:</b> {e.end}</li>
-        })}
-        </ul>
+            return (
+                <tr>
+                    <td>{e.title}</td>
+                    <td>{e.desc}</td>  
+                    <td>{e.start}</td>
+                    <td>{e.end}</td>
+                </tr>
+        )})}
+        </table>
 
-            )
+        )
 
         
     }
@@ -157,8 +169,7 @@ class Cal extends Component {
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category})
-        }).then((data) => data.json()).then(event => {
+                            "category": event.category})}).then((data) => data.json()).then(event => {
             if (event.success) {
                 // append to events list
                 this.setState({ events: [], calendars: [] })
@@ -189,8 +200,8 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
-        }).then((data) => data.json()).then(data => this.forceUpdate());
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category})}).then((data) => data.json()).then(data => this.forceUpdate());
     }
 
     delete_event(event) {
@@ -206,8 +217,7 @@ class Cal extends Component {
         body: JSON.stringify({"name": event.title, "desc": event.desc,
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category})
-        }).then((data) => data.json());
+                            "category": event.category})}).then((data) => data.json());
     }
 
     get_calendars() {

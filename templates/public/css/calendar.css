@@ -3,6 +3,10 @@ html, body {
     height: 100%;
 }
 
+td, tr, th {
+    border: 1px black solid !important;
+}
+
 body {
 	font-family: 'Roboto', sans-serif;
     color: #222328;
