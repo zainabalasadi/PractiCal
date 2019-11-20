@@ -241,9 +241,9 @@ class Cal extends Component {
         this.setState({ searchOpen: false })
     }
 
-    handleOpenDialog() {
-        this.setState({ start: })
-    }
+    // handleOpenDialog() {
+    //     this.setState({ start: })
+    // }
 
     formatDateStart(date) {
         
@@ -474,7 +474,7 @@ class Cal extends Component {
                 
                 />
                 {/* Modal for booking new event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEnter={this.handleOpenDialog}>
+                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
@@ -785,18 +785,18 @@ class Cal extends Component {
 }
 
 function Event({ event }) {
-    var hour = event.start.getHours()
-    var ampm = "am "
+    // var hour = event.start.getHours()
+    // var ampm = "am "
 
-    if (hour > 12) {
-        hour -= 12;
-        ampm = "pm "
-    } else if (hour === 0) {
-       hour = 12;
-    }
+    // if (hour > 12) {
+    //     hour -= 12;
+    //     ampm = "pm "
+    // } else if (hour === 0) {
+    //    hour = 12;
+    // }
 
     return (
-        <div>{hour}{ampm}{event.title}</div>
+        <div>{event.title}</div>
     );
   }
 
