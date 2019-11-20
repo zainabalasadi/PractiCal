@@ -272,7 +272,7 @@ class Cal extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + today.getHours(),
+            hour = '' + (today.getHours() + 1),
             min = '' + today.getMinutes();
         
         // console.log(d)
@@ -490,8 +490,8 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          //defaultValue={this.formatDateStart(this.state.start)}
-                          value = {this.formatDateStart(this.state.start)}
+                          defaultValue={this.formatDateStart(this.state.start)}
+                          // value = {this.formatDateStart(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value), this.handleStartTime;
                           }}
@@ -500,7 +500,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           type="datetime-local"
                           defaultValue={this.formatDateEnd(this.state.end)}
-                          value = {new Date(this.formatDateEnd(this.state.end))}
+                          // value = {new Date(this.formatDateEnd(this.state.end))}
                           InputProps={{disableUnderline: true}}
                           onChange={e => {
                             this.setEnd(e.target.value), this.handleEndTime;
@@ -637,7 +637,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.start)}
+                          defaultValue={this.formatActualDate(this.state.end)}
                           onChange={e => {
                             this.setEnd(e.target.value);
                           }}
