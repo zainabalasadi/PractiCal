@@ -404,6 +404,24 @@ class Cal extends Component {
                 clickedEvent, eventId, category } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
+
+        var s = new Date(start)
+        console.log(s)
+        var e = new Date(end)
+        console.log(e)
+
+        let eventFE = {
+            "title": title,
+            "desc": desc,
+            "start": s,
+            "end": e,
+            "invitees": invitees,
+            "groups": groups,
+            "calendar": calendar,
+            "eventId": eventId,
+            "category": category,
+        };
+
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
         updatedEvent[index].start = start;
@@ -413,6 +431,9 @@ class Cal extends Component {
         updatedEvent[index].calendar = calendar;
         updatedEvent[index].eventId = eventId;
         updatedEvent[index].category = category;
+
+        events.push(eventFE);
+
         this.setState({
             events: updatedEvent
         });
