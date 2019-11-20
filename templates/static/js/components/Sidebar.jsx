@@ -56,9 +56,6 @@ class Sidebar extends Component {
         super(props);
 	this.state = {nlpText: ""}
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
-        // this.handleCreateOpen = this.handleCreateOpen.bind(this);
-        // this.handleClose = this.handleClose.bind(this);
-        // this.renderNotifList = this.renderNotifList.bind(this)
     }
 
     componentDidMount() {
