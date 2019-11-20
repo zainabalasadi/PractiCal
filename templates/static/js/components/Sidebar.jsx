@@ -56,9 +56,9 @@ class Sidebar extends Component {
         super(props);
 	this.state = {nlpText: ""}
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
-        this.handleCreateOpen = this.handleCreateOpen.bind(this);
-        this.handleClose = this.handleClose.bind(this);
-        this.renderNotifList = this.renderNotifList.bind(this)
+        // this.handleCreateOpen = this.handleCreateOpen.bind(this);
+        // this.handleClose = this.handleClose.bind(this);
+        // this.renderNotifList = this.renderNotifList.bind(this)
     }
         componentDidMount() {
         console.log('calling...')
@@ -90,7 +90,7 @@ class Sidebar extends Component {
             if (cal.success) {
                 console.log("Created calendar successfully")
                 console.log(calendar)
-                this.state.calendars.push(calendar)
+                this.props.calendars.push(calendar)
             } else {
                 console.log("Failed calendar creation")
             }
@@ -107,7 +107,7 @@ class Sidebar extends Component {
         }).then((data) => data.json()).then(cal => {
             console.log(cal.success);
             if (cal.success) {
-                let updatedCalendars = this.state.events.filter (
+                let updatedCalendars = this.props.events.filter (
                     cal => cal["name"] !== calendar.name
                 );
         
@@ -188,39 +188,39 @@ class Sidebar extends Component {
         )
    }
 
-    handleCreateOpen() {
-        this.setState ({ createPopUp: true });
-    };
+    // handleCreateOpen() {
+    //     this.setState ({ createPopUp: true });
+    // };
 
-    handleClose() {
-        this.setState({ createPopUp: false, anchorEl: null });
-    }
+    // handleClose() {
+    //     this.setState({ createPopUp: false, anchorEl: null });
+    // }
 
-    handleDeleteCal(calendarName) {
-        var string = 'deleting' + calendarName
-        console.log(string)
-    }
+    // handleDeleteCal(calendarName) {
+    //     var string = 'deleting' + calendarName
+    //     console.log(string)
+    // }
 
-    setCalName = e => { 
-        this.setState({ name: e }); 
-    };
+    // setCalName = e => { 
+    //     this.setState({ name: e }); 
+    // };
 
-    setCalColour = e => { 
-        this.setState({ colour: e.hex }); 
-    };
+    // setCalColour = e => { 
+    //     this.setState({ colour: e.hex }); 
+    // };
 
-    setNewCalendar() {
-        const { name, colour } = this.state;
-        let newCal = { name, colour };
-        let calendars = this.state.calendars.slice();
-        calendars.push(newCal);
-        this.setState({ calendars });
-        this.create_calendar(newCal)
-    }
+    // setNewCalendar() {
+    //     const { name, colour } = this.props;
+    //     let newCal = { name, colour };
+    //     let calendars = this.props.calendars.slice();
+    //     calendars.push(newCal);
+    //     this.setState({ calendars });
+    //     this.create_calendar(newCal)
+    // }
 
-    handleClick = event => {
-    	this.setState({ anchorEl: event.currentTarget });
-  	};
+    // handleClick = event => {
+    // 	this.setState({ anchorEl: event.currentTarget });
+  	// };
 
     render() {
         const { classes } = this.props;
@@ -252,7 +252,7 @@ class Sidebar extends Component {
                 />
                 <div>
                     <h3>My Calendars</h3>
-                    <IconButton className={classes.addButton} edge="end" onClick={this.handleCreateOpen}>
+                    <IconButton className={classes.addButton} edge="end" onClick={this.props.handleCreateOpen}>
                         <AddIcon />
                     </IconButton>
                 </div>
@@ -261,7 +261,7 @@ class Sidebar extends Component {
                     const labelId = `checkbox-list-label-${item.name}`;
                     return (
                         <div>
-                    <ListItem className={classes.root} key={item.name} role={undefined} dense button onClick={this.handleToggle(item)}>
+                    <ListItem className={classes.root} key={item.name} role={undefined} dense button>
                         <ListItemIcon className={classes.check}>
                             <Checkbox
                             className={classes.check}
@@ -274,20 +274,20 @@ class Sidebar extends Component {
                         </ListItemIcon>
                         <ListItemText id={labelId} primary={`${item.name}`} />
                             <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="comments">
+                                <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}>
                                     <MoreVertIcon />
                                 </IconButton>
                             </ListItemSecondaryAction>
                         </ListItem>
                         {/* Menu for each calendar */}
                         <Menu
-                        anchorEl={this.state.anchorEl}
+                        anchorEl={this.props.anchorEl}
                         keepMounted
-                        open={Boolean(this.state.anchorEl)}
+                        open={Boolean(this.props.anchorEl)}
                         onClose={this.handleClose}
                       >
-                          <MenuItem onClick={this.handleClose}>Edit</MenuItem>
-                          <MenuItem onClick={this.handleDeleteCal(item.name)}>Delete</MenuItem>
+                          <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
+                          <MenuItem onClick={this.props.handleDeleteCal(item.name)}>Delete</MenuItem>
                       </Menu>
                       </div>
                     );
@@ -305,7 +305,7 @@ class Sidebar extends Component {
                 {this.renderObject()}
                 
                 {/* Modal to create new calendar */}
-                <Dialog open={this.state.createPopUp} onClose={this.handleClose}>
+                <Dialog open={this.props.createPopUp} onClose={this.handleClose}>
                     <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                         <CloseIcon />
                     </IconButton>
@@ -317,19 +317,19 @@ class Sidebar extends Component {
                           placeholder="Calendar Name"
                           margin="dense"
                           onChange={e => {
-                            this.setCalName(e.target.value);
+                            this.props.setCalName(e.target.value);
                           }}
                         />
                         <CirclePicker 
-                          color={ this.state.colour }
-                          onChangeComplete={ this.setCalColour }
+                          color={ this.props.colour }
+                          onChangeComplete={ this.props.setCalColour }
                         />
                         <Button
                           label="Create Contact"
                           variant="contained" 
                           color="primary"
                           onClick={() => {
-                            this.setNewCalendar(), this.handleClose();
+                            this.props.setNewCalendar(), this.handleClose();
                           }}
                         >
                         Create Calendar

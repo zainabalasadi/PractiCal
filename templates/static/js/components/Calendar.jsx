@@ -114,10 +114,13 @@ class Cal extends Component {
             searchOpen: false,
 	    nlpText: "",
             nlpResult: {},
-            notifs: [
-            ],
-            sidebarChecked: 0,
-            sidebarSetChecked: 0,
+            notifs: [],
+            // sidebarChecked: 0,
+            // sidebarSetChecked: 0,
+            createPopUp: false,
+            calName: "",
+            calColour: "",
+            anchorEl: null,
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this)
@@ -247,7 +250,8 @@ class Cal extends Component {
 
     // Closes modal
     handleClose() {
-        this.setState({ openEvent: false, openSlot: false, openNlp: false });
+        this.setState({ openEvent: false, openSlot: false, openNlp: false,
+                        createPopUp: false, anchorEl: null });
     }
 
     handleSearchClose() {
@@ -380,6 +384,37 @@ class Cal extends Component {
 	this.setState({title: e.eventName, desc: "", start: e.date.substring(0, 10).concat(e.timeStart.substring(10, 19)), end: e.date.substring(0, 10).concat(e.timeEnd.substring(10, 19)), invitees: "", groups: "", openNlp: true}) 
 	console.log(this.state)
     }
+
+    handleCreateOpen() {
+        this.setState ({ createPopUp: true });
+    };
+
+    handleDeleteCal = (calendarName) => {
+        var string = 'deleting' + calendarName
+        console.log(string)
+    }
+
+    setCalName = e => { 
+        this.setState({ name: e }); 
+    };
+
+    setCalColour = e => { 
+        this.setState({ colour: e.hex }); 
+    };
+
+    setNewCalendar() {
+        const { name, colour } = this.props;
+        let newCal = { name, colour };
+        let calendars = this.props.calendars.slice();
+        calendars.push(newCal);
+        this.setState({ calendars });
+        this.create_calendar(newCal)
+    }
+
+    handleClick = event => {
+    	this.setState({ anchorEl: event.currentTarget });
+  	};
+    
     // Handle's start time select
     handleStartTime = (event, date) => {
         this.setState({ start: date });
@@ -924,7 +959,14 @@ class Cal extends Component {
                 </Dialog>
 
             </main>
-            <Sidebar calendars={this.state.calendars} nlpText={this.state.nlpText} handleNlpData={this.handleNlpData} notifs={this.state.notifs} checked={this.state.sidebarChecked} setChecked={this.state.sidebarSetChecked}/>
+            <Sidebar calendars={this.state.calendars} nlpText={this.state.nlpText} 
+                    handleNlpData={this.handleNlpData} notifs={this.state.notifs} 
+                    createPopUp={this.state.createPopUp} calName={this.state.calName}
+                    calColour={this.state.calColour} anchorEl={this.state.anchorEl}
+                    handleCreateOpen={this.handleCreateOpen} handleClose={this.handleClose}
+                    handleDeleteCal={this.handleDeleteCal} setCalName={this.setCalName}
+                    setCalColour={this.setCalColour} setNewCalendar={this.setNewCalendar}
+                    handleClick={this.handleClick}/>
             </div>
         );
     }
