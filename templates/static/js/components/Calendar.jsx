@@ -164,8 +164,8 @@ class Cal extends Component {
                 this.setState({ events: [], calendars: [] })
                 this.get_calendars()
                 console.log("Created event successfully")
-                this.setState({ events: [] })
-                this.get_calendars()
+                // this.setState({ events: [] })
+                // this.get_calendars()
                 // event.start = new Date(event.start)
                 // console.log(event.start)
                 // event.end = new Date(event.end)
@@ -589,14 +589,14 @@ class Cal extends Component {
                         <CategoryIcon className={classes.icon}/>
                         <Select
                           native
-                          defaultValue={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
+                          defaultValue='Select Category...'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
+                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
