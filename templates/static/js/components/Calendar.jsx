@@ -253,8 +253,8 @@ class Cal extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + today.getHours(),
-            min = '' + today.getMinutes();
+            hour = '' + d.getHours(),
+            min = '' + d.getMinutes();
         
         // console.log(d)
     
@@ -278,8 +278,8 @@ class Cal extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + (today.getHours() + 1),
-            min = '' + today.getMinutes();
+            hour = '' + (d.getHours()),
+            min = '' + d.getMinutes();
         
         // console.log(d)
     
