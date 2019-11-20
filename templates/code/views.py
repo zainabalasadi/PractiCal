@@ -169,7 +169,7 @@ def searchEvents():
                                 userName = firstName + " " + lastName
                                 if r['queryString'].lower() in userName.lower():
                                     eventsByHost.append(event)
-                listOfEvents = eventsByTitle + eventsByHost
+                listOfEvents = list(set(eventsByTitle) | set(eventsByHost))
                 resultList = []
                 for event in listOfEvents:
                         eventDict = {}

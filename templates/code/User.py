@@ -268,8 +268,17 @@ class User(UserMixin):
     #                return event
     #    return None
 
+    # search through own events by description
+    def searchEventsByDescription(self, desc):
+        listOfEvents = []
+        for calendar in self._calendars:
+            for event in self._calendars[calendar].getEvents():
+                if desc.lower() in event.getDescription().lower():
+                    listOfEvents.append(event)
+        return listOfEvents
+
     def getEventsByQuery(self, queryString):
-        return self.searchEventsByTitle(queryString)
+        return list(set(self.searchEventsByTitle(queryString)) | set(self.searchEventsByDescription(queryString)))
         # + self.searchEventsByHost(queryString)
 
     # MOVED TO views.py because PCM needed

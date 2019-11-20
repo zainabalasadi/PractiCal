@@ -239,6 +239,10 @@ class Cal extends Component {
         this.setState({ searchOpen: false })
     }
 
+    handleOpenDialog() {
+        this.setState({ start: })
+    }
+
     formatDateStart(date) {
         
         var today = new Date();
@@ -468,7 +472,7 @@ class Cal extends Component {
                 
                 />
                 {/* Modal for booking new event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose}>
+                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEnter={this.handleOpenDialog}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
@@ -570,12 +574,11 @@ class Cal extends Component {
                           defaultValue={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Select Category...'
+                          defaultValue='Social'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
-                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
@@ -709,12 +712,11 @@ class Cal extends Component {
                           value={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Select Category'
+                          defaultValue='Social'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
-                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
