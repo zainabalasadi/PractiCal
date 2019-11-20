@@ -70,6 +70,7 @@ def createEvent():
                 cal = current_user.getCalendarByName(r['calendar'])
                 category = r['category']
                 invitees = None
+                category = r['category']
                 if 'invitees' in r:
                         invitees = r['invitees']
                 groups = None
