@@ -2,4 +2,4 @@
 __pycache__/
 templates/__pycache__/
 templates/code/__pycache__/
-templates/public/bundle.js/
+templates/public/bundle.js
