@@ -44,7 +44,7 @@ def index():
 def logout():
         PCM.logoutUser(current_user.getID())
         logout_user()
-        print('logged out')
+        return jsonify({"success": "True"})
 
 @index_blueprint.route('/forgot', methods=['GET', 'POST'])
 def forgot():
@@ -339,5 +339,7 @@ def createCalendar():
                 if (current_user.getCalendarByName(name) == None):
                         newCalendar = Calendar(name, colour)
                         current_user.addCalendar(newCalendar)
+                        PCM.addToUpdateQueue(userId, current_user,
+                            PCM.DBUpdate.DB_UPDATE_USER)
                         return jsonify({"success": "True"})
                 return jsonify({"success": "False"})
