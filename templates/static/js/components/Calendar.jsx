@@ -411,6 +411,7 @@ class Cal extends Component {
         this.setState({
             events: updatedEvent
         });
+        this.forceUpdate()
         this.edit_event(updatedEvent[index])
     }
         
