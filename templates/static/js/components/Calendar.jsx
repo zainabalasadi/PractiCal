@@ -319,7 +319,7 @@ class Cal extends Component {
         
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        // console.log(eventToEdit.start);
+        console.log(eventToEdit.start);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
@@ -483,7 +483,7 @@ class Cal extends Component {
                 
                 />
                 {/* Modal for booking new event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose}>
+                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEntered={this.handleOpenDialog}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
