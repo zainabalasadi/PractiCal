@@ -238,7 +238,7 @@ class Navbar extends Component {
                             <SearchIcon />
                         </div>
                         <InputBase
-                        fullWidth='true'
+                        fullWidth={true}
                         placeholder="Search"
                         classes={{
                             root: classes.inputRoot,
