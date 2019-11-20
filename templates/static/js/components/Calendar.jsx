@@ -845,7 +845,7 @@ class Cal extends Component {
 
                 
 		
-		{/* Material-ui Modal for nlp Event */}
+		        {/* Material-ui Modal for nlp Event */}
                 <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openNlp} onClose={this.handleClose}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
@@ -969,7 +969,7 @@ class Cal extends Component {
                     handleCreateOpen={this.handleCreateOpen} handleClose={this.handleClose}
                     handleDeleteCal={this.handleDeleteCal} setCalName={this.setCalName}
                     setCalColour={this.setCalColour} setNewCalendar={this.setNewCalendar}
-                    handleClick={this.handleClick}/>
+                    handleClick={this.handleClick} setNlpBarState={this.handleNlpTextbox}/>
             </div>
         );
     }
