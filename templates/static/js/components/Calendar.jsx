@@ -348,7 +348,7 @@ class Cal extends Component {
     setDescription(e) { this.setState({ desc: e }); }
     setInvitees(e) { this.setState({ invitees: e }); }
     setGroups(e) { this.setState({ groups: e }); }
-    setCalendar(e) { this.setState({ calendar: e }); }
+    setCalendar(e) { this.setState({ calendar: e }), this.setState({ colour: e.colour }); }
     setStart(e) { this.setState({ start: e }); }
     setEnd(e) { this.setState({ end: e }); }
     setCategory(e) { this.setState({ category: e }); }
@@ -517,7 +517,6 @@ class Cal extends Component {
                           }}
                         />
                     </div>
-                    
 
                     <div className={classes.iconDiv}>
                         <GroupIcon className={classes.icon}/>
@@ -689,7 +688,7 @@ class Cal extends Component {
                         className={classes.selectMargin}
                         defaultValue='Select Calendar'
                         onChange={e => {
-                            this.setCalendar(e.target.value), this.eventStyleGetter(this.state), this.forceUpdate();
+                            this.setCalendar(e.target.value), this.forceUpdate();
                         }}
                         >
                         <option value="Select Calendar...">Select Calendar...</option>
@@ -779,7 +778,8 @@ class Cal extends Component {
 }
 
 function Event({ event }) {
-    var hour = event.start.getHours()
+    var start = new Date(event.start),
+        hour = start.getHours();
     var ampm = "am "
 
     if (hour > 12) {
