@@ -8,6 +8,7 @@ import requests
 from templates.code.Notification import Notification
 from templates.code.PractiCalManager import PractiCalManager
 from templates.code.User import User
+from templates.code.Calendar import Calendar
 
 DIALOGFLOW_PROJECT_ID = 'practical-proueq'
 DIALOGFLOW_LANGUAGE_CODE = 'en-US'
@@ -298,3 +299,18 @@ def getCategoryHours():
 @login_required
 def getName():
     return jsonify(current_user.getFirstName())
+
+
+@index_blueprint.route('/createCalendar', methods=['POST'])
+@login_required
+def createCalendar():
+        if request.method == 'POST':
+                r = request.get_json()
+                userId = current_user.getID()
+                name = r['name']
+                colour = r['colour'] 
+                if (current_user.getCalendarByName(name) == None):
+                        newCalendar = Calendar(name, colour)
+                        current_user.addCalendar(newCalendar)
+                        return jsonify({"success": "True"})
+                return jsonify({"success": "False"})

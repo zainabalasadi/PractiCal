@@ -742,17 +742,17 @@ if __name__ == "__main__":
                 'default_colour': 'blue',
                 'calendars': {
                     'Default': {
-                        'colour': 'blue'
+                        'colour': '#9C2BAF'
                     },
                     'Social': {
-                        'colour': 'green'
+                        'colour': '#FF9612'
                     },
-                    'Family': {
-                        'colour': 'red'
+                    'Work': {
+                        'colour': '#9ACE4E'
                     },
-                    'Other': {
-                        'colour': 'grey'
-                    }
+                    'Uni': {
+                        'colour': '#9C2BAF'
+                    },
                 }
             })
         cursor.execute(("INSERT INTO users "
@@ -785,27 +785,27 @@ if __name__ == "__main__":
                         "(2, 'Lunch with Sarah', 'Circular Quay', '2019-11-13T"
                         "12:00:00', '2019-11-13T13:30:00', 'Social'), "
                         "(2, 'Doctor Appointment', 'Ask about hay fever', '2019-11-15T"
-                        "13:00:00', '2019-11-15T13:30:00', 'Social'), "
+                        "13:00:00', '2019-11-15T13:30:00', 'Default'), "
                         "(2, 'AI Conference', 'Chat to Fred for job opportunities', '2019-11-18T"
-                        "09:00:00', '2019-11-20T18:00:00', 'Default'), "
+                        "09:00:00', '2019-11-20T18:00:00', 'Work'), "
                         "(2, 'COMP4920 Diary Due', 'Submit project diaries by Give', '2019-11-24T"
-                        "18:30:00', '2019-11-24T19:45:00', 'Default'), "
+                        "18:30:00', '2019-11-24T19:45:00', 'Uni'), "
                         "(2, 'COMP4920 Peer Assessment', 'Submit peer assessments on Moodle', '2019-11-24T"
-                        "13:30:00', '2019-11-24T13:45:00', 'Default'), "
+                        "13:30:00', '2019-11-24T13:45:00', 'Uni'), "
                         "(2, 'COMP4920 Project Due', 'Event 9 description', '2019-11-24T"
-                        "21:00:00', '2019-11-24T23:55:00', 'Default'), "
+                        "21:00:00', '2019-11-24T23:55:00', 'Uni'), "
                         "(2, 'COMP4920 Presentation', 'Presenting the wonderful PractiCal to staff', '2019-11-25T"
-                        "15:00:00', '2019-11-25T17:00:00', 'Default'), "
+                        "15:00:00', '2019-11-25T17:00:00', 'Uni'), "
                         "(2, 'End of Term Drinks', 'Casual Dress Code', '2019-11-25T"
-                        "18:00:00', '2019-11-25T20:00:00', 'Default'), "
+                        "18:00:00', '2019-11-25T20:00:00', 'Uni'), "
                         "(2, 'COMP9444 Exam', 'Bring: Pens/pencils, Calculator - UNSW Approved', '2019-11-30T"
-                        "13:45:00', '2019-11-30T15:00:00', 'Default'), "
+                        "13:45:00', '2019-11-30T15:00:00', 'Uni'), "
                         "(2, 'COMP4418 Exam', 'No Calculator', '2019-12-05T"
-                        "08:45:00', '2019-12-05T11:00:00', 'Default'), "
+                        "08:45:00', '2019-12-05T11:00:00', 'Uni'), "
                         "(2, 'Meenas Graduation', 'Bring Flowers', '2019-12-13T"
                         "08:45:00', '2019-12-13T11:00:00', 'Social'), "
-                        "(2, 'CHRISTMAS!!!', 'WOOHOO', '2019-12-25T"
-                        "00:00:00', '2019-12-25T24:00:00', 'Family'), "
+                        "(2, 'CHRISTMAS', 'WOOHOO!', '2019-12-25T"
+                        "00:00:00', '2019-12-25T24:00:00', 'Social'), "
 
                         "(3, 'Event 11 title', 'Event 11 description', '2019-11-06 "
                         "09:30:00.000Z', '2019-11-06 17:00:00.000Z', 'Default'), "

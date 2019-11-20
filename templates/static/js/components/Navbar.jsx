@@ -90,8 +90,8 @@ const styles = theme => ({
 });
 
 class Navbar extends Component { 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             contacts: [  
                 {
@@ -139,19 +139,20 @@ class Navbar extends Component {
     showSearchResults(events) {
         console.log(events)
         for(var i = 0; i < events.length; i++) {
-            console.log(events[i].desc)
+            //console.log(events[i].desc)
         }
+        this.props.func(events)
     }
 
     // Function to create contact and send to back-end
     create_contact(contact) {
-        console.log(contact)
+        //.log(contact)
         
     }
 
     // Function to create group and send to back-end
     create_group(group) {
-        console.log(group)
+        //console.log(group)
         
     }
 
@@ -206,11 +207,11 @@ class Navbar extends Component {
 
 //     NOW THAT ITS IN STATE HOW DO I PASS THIS ONTO <NOTIFICATION/>
     renderComponentsFromList(notifList) {
-        console.log(notifList)
+        //console.log(notifList)
 
         var new_list = new Array()
         for (var i = 0 ; i < notifList.length ; i++) {
-            console.log(notifList[i])
+            //console.log(notifList[i])
             new_list.push(notifList[i])
         }
 
@@ -250,6 +251,7 @@ class Navbar extends Component {
                         onKeyPress={e => {
                             if (e.key === "Enter") {
                                 this.search()
+                                this.setState({ searchText: ""})
                             }
                         }}
                         />
