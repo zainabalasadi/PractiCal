@@ -132,7 +132,7 @@ class Cal extends Component {
         return (
         <ul>
        { list.map((e) => {
-            return <li> Title: {e.title} Description: {e.desc} Start Time: {e.start} End Time: {e.end}</li>
+            return <li> <b>Title:</b> {e.title} <b>Description:</b> {e.desc} <b>Start Time:</b> {e.start} <b>End Time:</b> {e.end}</li>
         })}
         </ul>
 
@@ -568,11 +568,12 @@ class Cal extends Component {
                           defaultValue={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
+                          defaultValue='Select Category...'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
+                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
@@ -706,11 +707,12 @@ class Cal extends Component {
                           value={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
+                          defaultValue='Select Category'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
+                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
