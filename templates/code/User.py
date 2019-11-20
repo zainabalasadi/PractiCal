@@ -34,7 +34,7 @@ class User(UserMixin):
                 self._preferences['calendars'][cal]['colour'])
         self._contacts = dict()
         self._groups = dict()
-        self._notifications = []
+        self._notifications = dict()
         self._isAuthenticated = False
         self._isActive = True
 
@@ -97,7 +97,7 @@ class User(UserMixin):
         return list(self._groups.values())
 
     def getNotifications(self):
-        return self._notifications
+        return list(self._notifications.values())
 
     def getPreferences(self):
         return self._preferences
@@ -141,9 +141,17 @@ class User(UserMixin):
         except:
             self._groups[group.getName()] = group
 
-    def addNotification(self, notif):
-        if notif not in self._notifications:
-            self._notifications.append(notif)
+    def addNotification(self, event, notifType, senderEmail):
+        for notif in self._notifications.values():
+            if notif.getEvent() == event and notif.getNotifType() == notifType:
+                return
+        if notifType < Notification.NOTIF_EVENTCHANGE or \
+                notifType > Notification.NOTIF_INVITERESP_NONE:
+            return
+        ids = list(self._notifications.keys()).sort()
+        newID = ids[-1] + 1
+        self._notifications[newID] = Notification(
+            newID, event, notifType, senderEmail)
 
     # Adds new invite to default calendar
     def addInvite(self, event):
@@ -198,9 +206,13 @@ class User(UserMixin):
         except:
             return False
 
-    def removeNotification(self, notif):
-        if notif in self.getNotifications():
-            self._notifications.remove(notif)
+    def removeNotification(self, notif, notifID=None):
+        if not notifID: notifID = notif.getID()
+        try:
+            del self._notifications[notifID]
+        except:
+            pass
+        return
 
     # Removes invite from account and related notifications
     def removeInvite(self, event):
@@ -222,11 +234,6 @@ class User(UserMixin):
     def deleteEvent(self, event):
         for calendar in self._calendars.values():
             calendar.deleteEvent(event)
-
-    def removeInvite(self, event):
-        self._defaultCalendar.removeInvite(event)
-        for calendar in self._calendars:
-            calendar.removeInvite(event)
 
     #
     # Invite response methods

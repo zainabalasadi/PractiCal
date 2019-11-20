@@ -44,8 +44,7 @@ def index():
 def logout():
         PCM.logoutUser(current_user.getID())
         logout_user()
-        return redirect(url_for('index.index'))
-
+        print('logged out')
 
 @index_blueprint.route('/forgot', methods=['GET', 'POST'])
 def forgot():
@@ -276,15 +275,38 @@ def sendInvite():
 def getNotifs():
         notifList = []
         # for notif in current_user.getNotifications():
-        notifObj = {}
-        notifObj['title'] = "HIIIII11"#notif.getEvent().getTitle()
-        notifObj['type'] = "HIIIII22"#notif.getNotifType()
-        notifObj['sender'] = "HIIII33I"#notif.getSenderID()
-        notifObj['start'] = "HIIIII44"#notif.getEvent().getStartDateTime()
-
-        notifList.append(notifObj)
+        for notif in current_user.getNotifications():
+            sender = PCM.getUserDetails(userEmail=notif.getSenderEmail())
+            notifType = notif.getNotifType()
+            status = ""
+            if notifType == Notification.NOTIF_EVENTCHANGE:
+                message = "{sender} has updated event {event}"
+            elif notifType == Notification.NOTIF_EVENTINVITE:
+                message = "{sender} has invited you to event {event}"
+            elif notifType == Notification.NOTIF_EVENTDELETE:
+                message = "{sender} has cancelled event {event}"
+            elif notifType == Notification.NOTIF_INVITERESP_GOING:
+                status = "'going'"
+                message = ("{sender} has changed their status to {status} "
+                           "for event {event}")
+            elif notifType == Notification.NOTIF_INVITERESP_MAYBE:
+                status = "'maybe'"
+                message = ("{sender} has changed their status to {status} "
+                           "for event {event}")
+            elif notifType == Notification.NOTIF_INVITERESP_DECLINE:
+                status = "'not going'"
+                message = ("{sender} has changed their status to {status} "
+                           "for event {event}")
+            else:
+                continue
+            message.format(sender="{} {}".format(sender[0], sender[1]),
+                event=notif.getEvent().getName(), status=status)
+            notifObject = {
+                'id': notif.getID(),
+                'message': message
+            }
+            notifList.append(notifObj)
         return jsonify(notifList)
-
 
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
@@ -308,7 +330,7 @@ def createCalendar():
                 r = request.get_json()
                 userId = current_user.getID()
                 name = r['name']
-                colour = r['colour'] 
+                colour = r['colour']
                 if (current_user.getCalendarByName(name) == None):
                         newCalendar = Calendar(name, colour)
                         current_user.addCalendar(newCalendar)
