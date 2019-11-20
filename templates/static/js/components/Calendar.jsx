@@ -570,11 +570,12 @@ class Cal extends Component {
                           defaultValue={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
+                          defaultValue='Select Category...'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
+                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
@@ -708,11 +709,12 @@ class Cal extends Component {
                           value={this.state.category}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
+                          defaultValue='Select Category'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
+                        <option value="Select Category...">Select Category...</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
