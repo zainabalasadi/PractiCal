@@ -174,6 +174,7 @@ class DatabaseManager():
             cursor = self._db.cursor()
             cursor.execute(sql, val)
             rowcount = cursor.rowcount
+            self._db.commit()
             cursor.close()
 
             if not rowcount:
