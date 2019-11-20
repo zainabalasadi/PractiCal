@@ -80,6 +80,7 @@ def createEvent():
                             description=desc, startDateTime=startDate,
                             endDateTime=endDate, calendarName=cal.getName())
                         cal.addEvent(event)
+                        eventId = event.getID()
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
