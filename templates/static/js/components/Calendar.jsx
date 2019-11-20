@@ -147,7 +147,8 @@ class Cal extends Component {
         // console.log(event.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category}))
         let response = fetch('/createEvent', {
             method: 'POST',
             headers: {
@@ -155,7 +156,8 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category})
         }).then((data) => data.json()).then(event => {
             console.log(event.success);
             if (event.success) {
@@ -177,7 +179,8 @@ class Cal extends Component {
     edit_event(event) {
         console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category}))
         let response = fetch('/editEvent', {
             method: 'POST',
             headers: {
@@ -185,14 +188,16 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc, 
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category})
         }).then((data) => data.json());
     }
 
     delete_event(event) {
         console.log(JSON.stringify({"name": event.title, "desc": event.desc,
                                     "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId}))
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category}))
         let response = fetch('/deleteEvent', {
             method: 'POST',
             headers: {
@@ -200,7 +205,8 @@ class Cal extends Component {
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc,
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId})
+                            "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category})
         }).then((data) => data.json());
     }
 
@@ -330,6 +336,7 @@ class Cal extends Component {
             groups: eventToEdit.groups,
             calendar: eventToEdit.calendar,
             eventId: eventToEdit.eventId,
+            category: eventToEdit.category,
         });
     }
         
@@ -347,6 +354,7 @@ class Cal extends Component {
             groups: event.groups,
             calendar: event.calendar,
             eventId: event.eventId,
+            category: event.category,
         });
     }
         
