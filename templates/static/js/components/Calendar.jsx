@@ -132,7 +132,7 @@ class Cal extends Component {
         return (
         <ul>
        { list.map((e) => {
-            return <li> Title: {e.title} Description: {e.desc} Start Time: {e.start} End Time: {e.end}</li>
+            return <li> <b>Title:</b> {e.title} <b>Description:</b> {e.desc} <b>Start Time:</b> {e.start} <b>End Time:</b> {e.end}</li>
         })}
         </ul>
 
