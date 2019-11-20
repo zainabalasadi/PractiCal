@@ -52,3 +52,18 @@ material-ui components and then adding fetch request functionality to
 connect with backend.
 
 - Completed the "Weekly overview of events" user story.
+--------------------------------------------------------------------------
+
+Sprint 6: 13/11 - 19/11
+- Fixed bugs on front-end and back-end to load events from database. This
+involved refactoring code views.py which contians our endpoints.
+
+- Connected back-end functionality to front-end for search. The app can
+now search by title or host and a list of matching events appear in a 
+dialog box.
+
+- Added an error message to pop-up if invalid start and end times are 
+entered when creating events.
+
+- Fixed bugs which caused the app to crash if the view mode was changed
+after creating an event.

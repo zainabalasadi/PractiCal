@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer} from 'react-big-calendar';
-import { Dialog, DialogActions, DialogContent, Button, TextField } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Button, TextField } from "@material-ui/core";
 import { InputLabel, Select, CssBaseline } from '@material-ui/core/';
 import CloseIcon from '@material-ui/icons/Close';
 import GroupIcon from '@material-ui/icons/Group';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import CategoryIcon from '@material-ui/icons/Category';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import NotesIcon from '@material-ui/icons/Notes';
-
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import IconButton from '@material-ui/core/IconButton';
 import moment from "moment";
@@ -18,15 +20,17 @@ import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.c
 import { withStyles } from "@material-ui/core/styles";
 
 
+
 // Initialise time localiser
 const localizer = momentLocalizer(moment)
 
 const drawerWidth = 300;
-const navHeight = 64;
+const navHeight = 75;
 
 const styles = theme => ({
     calendar: {
-        height: `calc(100% - ${navHeight}px - 43px)`, 
+        height: `calc(100% - ${navHeight}px - 40px)`, 
+        top: navHeight,
         position: "fixed", 
         width: `calc(100% - ${drawerWidth}px + 1px)`,
         marginLeft: "15px"
@@ -87,7 +91,7 @@ const styles = theme => ({
         top: 10, 
         width: 20, height: 20,
         marginRight: 50,
-    }
+    },
 });
 
 
@@ -96,26 +100,45 @@ class Cal extends Component {
     constructor() {
         super();
         this.state = {
-            // Loading sample events, remove later
             events: [],
             calendars: [],
-            title: "",
-            start: "",
-            end: "",
-            desc: "",
-            invitees: "",
-            groups: "",
-            calendar: "",
-            eventId: "",
+            title: "", start: "", end: "", desc: "",
+            invitees: "", groups: "", calendar: "",
+            eventId: "", category: "", colour: "",
             openSlot: false,
             openEvent: false,
             clickedEvent: {},
+            searchResult: [],
+            search: "",
+            searchOpen: false,
         };
         this.handleClose = this.handleClose.bind(this);
+        this.handleSearchClose = this.handleSearchClose.bind(this)
     };
 
     componentDidMount() {
+        const view = this.props.view;
         this.get_calendars()
+    }
+
+    search = (keyword) => {
+        console.log(keyword)
+        this.setState({ searchResult: keyword, searchOpen: true })
+        console.log(this.state.searchResult)
+        renderSearchList(keyword)
+    }
+
+    renderSearchList(list) {
+        return (
+        <ul>
+       { list.map((e) => {
+            return <li> <b>Title:</b> {e.title} <b>Description:</b> {e.desc} <b>Start Time:</b> {e.start} <b>End Time:</b> {e.end}</li>
+        })}
+        </ul>
+
+            )
+
+        
     }
 
     // Function to create event and send to back-end
@@ -138,7 +161,12 @@ class Cal extends Component {
             if (event.success) {
                 // append to events list
                 console.log("Created event successfully")
-                this.state.events.push(event)
+                this.setState({ events: [] })
+                this.get_calendars()
+                // event.start = new Date(event.start)
+                // console.log(event.start)
+                // event.end = new Date(event.end)
+                // this.state.events.push(event)
             } else {
                 console.log("Failed event creation")
             }
@@ -188,13 +216,16 @@ class Cal extends Component {
             this.state.calendars.push(calendarList.calendars[i])
             for (var j = 0 ; j < calendarList.calendars[i].events.length; j++) {
                 //var startStr = JSON.parse(calendarList.calendars[i].events[j].start)
+                console.log(calendarList.calendars[i].events[j].start)
                 var start = new Date(calendarList.calendars[i].events[j].start)
                 calendarList.calendars[i].events[j].start = start
 
                 var end = new Date(calendarList.calendars[i].events[j].end)
                 calendarList.calendars[i].events[j].end = end
-                //console.log(calendarList.calendars[i].events[j].start)
-
+                console.log(calendarList.calendars[i].events[j].start)
+                
+                // Add colour as attribute
+                calendarList.calendars[i].events[j].colour = calendarList.calendars[i].colour;
                 this.state.events.push(calendarList.calendars[i].events[j])
             }
         }
@@ -205,6 +236,14 @@ class Cal extends Component {
     handleClose() {
         this.setState({ openEvent: false, openSlot: false });
     }
+
+    handleSearchClose() {
+        this.setState({ searchOpen: false })
+    }
+
+    // handleOpenDialog() {
+    //     this.setState({ start: })
+    // }
 
     formatDateStart(date) {
         
@@ -217,7 +256,7 @@ class Cal extends Component {
             hour = '' + today.getHours(),
             min = '' + today.getMinutes();
         
-        console.log(d)
+        // console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -232,7 +271,7 @@ class Cal extends Component {
     }
 
     formatDateEnd(date) {
-        console.log(date)
+        // console.log(date)
         var today = new Date();
 
         var d = new Date(date),
@@ -242,7 +281,7 @@ class Cal extends Component {
             hour = '' + (today.getHours() + 1),
             min = '' + today.getMinutes();
         
-        console.log(d)
+        // console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -264,7 +303,7 @@ class Cal extends Component {
             hour = '' + d.getHours(),
             min = '' + d.getMinutes();
         
-        console.log(d)
+        // console.log(d)
     
         if (month.length < 2) 
             month = '0' + month;
@@ -280,7 +319,7 @@ class Cal extends Component {
         
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        console.log(eventToEdit.start);
+        // console.log(eventToEdit.start);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
@@ -296,7 +335,7 @@ class Cal extends Component {
         
     //  Allows user to click on existing event
     handleEventSelected(event) {
-        console.log("event", event);
+        // console.log("event", event);
         this.setState ({
             openEvent: true,
             clickedEvent: event,
@@ -319,6 +358,7 @@ class Cal extends Component {
     setCalendar(e) { this.setState({ calendar: e }); }
     setStart(e) { this.setState({ start: e }); }
     setEnd(e) { this.setState({ end: e }); }
+    setCategory(e) { this.setState({ category: e }); }
         
     // Handle's start time select
     handleStartTime = (event, date) => {
@@ -332,27 +372,55 @@ class Cal extends Component {
         
     // Onclick callback function that pushes new event into events array.
     setNewEvent() {
-        const { title, desc, start, end, invitees, groups, calendar, eventId } = this.state;
-        let event = { title, desc, start, end, invitees, groups, calendar, eventId };
+        const { title, desc, start, end, invitees, groups, calendar, eventId, category } = this.state;
+        let event = { title, desc, start, end, invitees, groups, calendar, eventId, category };
         let events = this.state.events.slice();
-        events.push(event);
+
+        var s = new Date(start)
+        console.log(s)
+        var e = new Date(end)
+        console.log(e)
+
+        let eventFE = { 
+            "title": title,
+            "desc": desc,
+            "start": s,
+            "end": e,
+            "invitees": invitees,
+            "groups": groups,
+            "calendar": calendar,
+            "eventId": eventId,
+            "category": category,
+        };
+
+        events.push(eventFE);
         this.setState({ events });
         this.create_event(event)
     }
         
     // Updates Existing Event Title and/or Description
     updateEvent() {
-        const { title, desc, start, end, events, invitees, groups, calendar, clickedEvent, eventId } = this.state;
+        const { title, desc, start, end, events, invitees, groups, calendar, 
+                clickedEvent, eventId, category } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
+
+        var s = new Date(start)
+        console.log(s)
+        var e = new Date(end)
+        console.log(e)
+
+
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
-        updatedEvent[index].start = start;
-        updatedEvent[index].end = end;
+        updatedEvent[index].start = s;
+        updatedEvent[index].end = e;
         updatedEvent[index].invitees = invitees;
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
         updatedEvent[index].eventId = eventId;
+        updatedEvent[index].category = category;
+
         this.setState({
             events: updatedEvent
         });
@@ -374,12 +442,24 @@ class Cal extends Component {
         this.delete_event(deletedEvent[0])
     }
 
+    eventStyleGetter(event) {
+        console.log(event);
+        var backgroundColor = event.colour;
+        var style = {
+            backgroundColor: backgroundColor,
+
+        };
+        return {
+            style: style
+        };
+    }
+
     render() {
         const { classes } = this.props;
         return (
             <div className={classes.root} >
             <CssBaseline />
-            <Navbar/>
+            <Navbar func={this.search}/>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 <Calendar className={classes.calendar}
@@ -388,14 +468,18 @@ class Cal extends Component {
                   popup
                   localizer = {localizer}
                   defaultDate = {new Date()}
+                  {...this.props}
                   defaultView = "month"
                   events = {this.state.events}
+                  components={{
+                    event: Event,
+                    toolbar: CustomToolbar,
+                  }}
                   showMultiDayTimes = {true}
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
-                //   components={{
-                //     event: Event
-                //   }}
+                  eventPropGetter={(this.eventStyleGetter)}
+                
                 />
                 {/* Modal for booking new event */}
                 <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose}>
@@ -408,7 +492,6 @@ class Cal extends Component {
                         style: {fontSize: 23} 
                     }}
                     placeholder="Add title"
-                    fullWidth
                     autoFocus
                     margin="dense"
                     onChange={e => {
@@ -422,6 +505,7 @@ class Cal extends Component {
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
                           defaultValue={this.formatDateStart(this.state.start)}
+                          //value = {this.formatDateStart(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value), this.handleStartTime;
                           }}
@@ -430,6 +514,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           type="datetime-local"
                           defaultValue={this.formatDateEnd(this.state.end)}
+                          //value = {new Date(this.formatDateEnd(this.state.end))}
                           InputProps={{disableUnderline: true}}
                           onChange={e => {
                             this.setEnd(e.target.value), this.handleEndTime;
@@ -440,7 +525,6 @@ class Cal extends Component {
                         <NotesIcon className={classes.icon}/>
                         <TextField 
                           className={classes.inputMargin}
-                          fullWidth
                           placeholder="Add description"
                           margin="dense"
                           InputProps={{disableUnderline: true}}
@@ -477,21 +561,41 @@ class Cal extends Component {
                         <CalendarTodayIcon className={classes.icon}/>
                         <Select
                           native
-                          value={this.state.calendar}
                           InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Default'
+                          defaultValue='Select Calendar'
                           onChange={e => {
-                            this.setCalendar(e.target.value);
+                            this.setCalendar(e.target.value), this.eventStyleGetter(this.state);
                           }}
                         >
-                        {this.state.calendars.map(item => {
+                        <option value="Select Calendar...">Select Calendar...</option>
+                        {
+                            this.state.calendars.map(item => {
                             return (
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
                             );
                         })}
                         </Select> 
-                    </div>                  
+                    </div><br />
+                    <div className={classes.iconDiv}>
+                        <CategoryIcon className={classes.icon}/>
+                        <Select
+                          native
+                          defaultValue={this.state.category}
+                          InputProps={{disableUnderline: true}}
+                          className={classes.selectMargin}
+                          defaultValue='Social'
+                          onChange={e => {
+                            this.setCategory(e.target.value);
+                          }}
+                        >
+                        <option value="Work">Work</option>
+                        <option value="Social">Social</option>
+                        <option value="School">School</option>
+                        <option value="Family">Family</option>
+                        
+                        </Select> 
+                    </div>                 
                   </DialogContent>
                   <DialogActions>
                     <Button
@@ -499,12 +603,10 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
+                        console.log(this.state.start)
+                        console.log(this.state.end)
                         if (this.state.start >= this.state.end) {
-                            
-                            console.log("i am hereeee")
-                            console.log(this.state.start)
-                            console.log(this.state.end)
-                            this.handleClose();
+                            alert("You can't make an event end before it starts!!!!")
                         } else {
                             this.setNewEvent(), this.handleClose();
                         }
@@ -527,7 +629,6 @@ class Cal extends Component {
                         style: {fontSize: 23} 
                     }}
                     placeholder="Add title"
-                    fullWidth
                     autoFocus
                     margin="dense"
                     defaultValue={this.state.title}
@@ -542,7 +643,6 @@ class Cal extends Component {
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
                           defaultValue={this.formatActualDate(this.state.start)}
-                          value={this.formatActualDate(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value);
                           }}
@@ -551,8 +651,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.start)}
-                          value={this.formatActualDate(this.state.end)}
+                          defaultValue={this.formatActualDate(this.state.end)}
                           onChange={e => {
                             this.setEnd(e.target.value);
                           }}
@@ -562,7 +661,6 @@ class Cal extends Component {
                         <NotesIcon className={classes.icon}/>
                         <TextField
                           className={classes.inputMargin}
-                          fullWidth
                           placeholder="Add description"
                           InputProps={{disableUnderline: true}}
                           margin="dense"
@@ -604,18 +702,38 @@ class Cal extends Component {
                         value={this.state.calendar}
                         InputProps={{disableUnderline: true}}
                         className={classes.selectMargin}
-                        defaultValue='Default'
+                        defaultValue='Select Calendar'
                         onChange={e => {
                             this.setCalendar(e.target.value);
                         }}
                         >
+                        <option value="Select Calendar...">Select Calendar...</option>
                         {this.state.calendars.map(item => {
                             return (
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
                             );
                         })}
                         </Select> 
-                    </div>
+                    </div><br />
+                    <div className={classes.iconDiv}>
+                        <CategoryIcon className={classes.icon}/>
+                        <Select
+                          native
+                          value={this.state.category}
+                          InputProps={{disableUnderline: true}}
+                          className={classes.selectMargin}
+                          defaultValue='Social'
+                          onChange={e => {
+                            this.setCategory(e.target.value);
+                          }}
+                        >
+                        <option value="Work">Work</option>
+                        <option value="Social">Social</option>
+                        <option value="School">School</option>
+                        <option value="Family">Family</option>
+                        
+                        </Select> 
+                    </div> 
                   </DialogContent>
                   <DialogActions>
                     <Button
@@ -633,13 +751,40 @@ class Cal extends Component {
                     variant="contained" 
                     color="primary"
                     onClick={() => {
-                      this.updateEvent(), this.handleClose();
+                        if (new Date(this.state.start) >= new Date(this.state.end)) {
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            alert("You can't make an event end before it starts!!!!")
+                        } else {
+                            console.log(this.state.start)
+                            console.log(this.state.end)
+                            this.updateEvent(), this.handleClose();
+                        }
                     }}
                     >
                     Edit
                     </Button>
                   </DialogActions>
                 </Dialog>
+
+                <Dialog 
+                open={this.state.searchOpen}
+                onClose={this.handleSearchClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleSearchClose}>
+                        <CloseIcon />
+                    </IconButton>
+                    <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {this.renderSearchList(this.state.searchResult)}
+                    </DialogContentText>
+                </DialogContent>
+                    
+                </Dialog>
+
+                
             </main>
             <Sidebar />
             </div>
@@ -648,64 +793,57 @@ class Cal extends Component {
 }
 
 function Event({ event }) {
-    // let popoverClickRootClose = (
-    //   <Popover id="popover-trigger-click-root-close" style={{ zIndex: 10000 }}>
-    //     <strong>Holy guacamole!</strong> Check this info.
-    //     <strong>{event.title}</strong>
-    //   </Popover>
-    // );
-  
-    console.log(event);
+    // var hour = event.start.getHours()
+    // var ampm = "am "
+
+    // if (hour > 12) {
+    //     hour -= 12;
+    //     ampm = "pm "
+    // } else if (hour === 0) {
+    //    hour = 12;
+    // }
+
     return (
-      <div>
-        <div>{event.start.getHours().toString()}</div>
         <div>{event.title}</div>
-        
-      </div>
     );
   }
 
+  class CustomToolbar extends React.Component {
+    render() {
+        let { localizer: { messages }, label } = this.props
+        const { classes } = this.props;
+        return(
+            <div className="rbc-toolbar">
+                {/* Arrows */}
+                <NavigateBeforeIcon className="prevNext" onClick={this.navigate.bind(null, navigate.PREVIOUS)}/>
+                <p className="prevNext todayButton"onClick={this.navigate.bind(null, navigate.TODAY)}>Today</p>
+                <NavigateNextIcon className="prevNext" onClick={this.navigate.bind(null, navigate.NEXT)}/>
+                {/* Title */}
+                <span className="rbc-toolbar-label">{label}</span>
+                {/* Views */}
+                <div className="rbc-btn-group">
+					<button type="button" onClick={this.view.bind(null, 'month')}>Month</button>
+					<button type="button" onClick={this.view.bind(null, 'week')}>Week</button>
+					<button type="button" onClick={this.view.bind(null, 'day')}>Day</button>
+					<button type="button" onClick={this.view.bind(null, 'agenda')}>Schedule</button>
+				</div>
+            </div>
+        )
+    }
+    navigate = action => {
+        this.props.onNavigate(action)
+    }
+    view = action => {
+        this.props.onView(action);
+    }
+}
+
+export let navigate = {
+    PREVIOUS: 'PREV',
+    NEXT: 'NEXT',
+    TODAY: 'TODAY',
+    DATE: 'DATE',
+}
+
 export default withStyles(styles)(Cal);
 
-// eventStyleGetter: function(event, start, end, isSelected) {
-//     console.log(event);
-//     var backgroundColor = '#' + event.hexColor;
-//     var style = {
-//         backgroundColor: backgroundColor,
-//         borderRadius: '0px',
-//         opacity: 0.8,
-//         color: 'black',
-//         border: '0px',
-//         display: 'block'
-//     };
-//     return {
-//         style: style
-//     };
-// },
-
-// getEventStyle(event, start, end, isSelected) {
-//     const style = {}
-//     const todayDate = new Date().getDate()
-
-//     if (start.getDate() === todayDate) {
-//       style.backgroundColor = 'green'
-//     } else if (start.getDate() < todayDate) {
-//       style.backgroundColor = 'red'
-//     } else if (start.getDate() > todayDate) {
-//       style.backgroundColor = 'blue'
-//     }
-//     if (event.bgcolor) {
-//       style.backgroundColor = event.bgcolor
-//     }
-
-//     return { style }
-//   }
-
-
-                  // UNCOMMENT LATER TO COLOUR DIFF EVENTS
-                  //eventPropGetter={(this.eventStyleGetter)}
-                //   eventPropGetter={event => ({
-                //     style: {
-                //       backgroundColor: event.color,
-                //     },
-                //   })}

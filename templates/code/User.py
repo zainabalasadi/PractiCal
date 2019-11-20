@@ -10,13 +10,28 @@ from templates.code.Notification import Notification
 from templates.code.Calendar import Calendar
 
 class User(UserMixin):
-    def __init__(self, userID, firstName, lastName, email, password):
+    def __init__(self, userID, firstName, lastName, email, password,
+            preferences=None):
         self._id = userID
         self._firstName = firstName
         self._lastName = lastName
         self._email = email
         self._password = password
-        self._calendars = {'Default': Calendar('Default', 'blue')}
+        if preferences:
+            self._preferences = preferences
+        else:
+            self._preferences = {
+                'default_colour': '#566EE9',
+                'calendars': {
+                    'Default': {
+                        'colour': '#566EE9'
+                    }
+                }
+            }
+        self._calendars = dict()
+        for cal in self._preferences['calendars'].keys():
+            self._calendars[cal] = Calendar(cal,
+                self._preferences['calendars'][cal]['colour'])
         self._contacts = dict()
         self._groups = dict()
         self._notifications = []
@@ -66,10 +81,8 @@ class User(UserMixin):
     def getCalendarByName(self, name):
         try:
             cal = self._calendars[name]
-            print ("got calendar" + name)
         except:
             cal = None
-            print ("didnt get cal")
         return cal
 
     def getContacts(self):
@@ -86,6 +99,9 @@ class User(UserMixin):
     def getNotifications(self):
         return self._notifications
 
+    def getPreferences(self):
+        return self._preferences
+
     #
     # Adders
     #
@@ -96,6 +112,8 @@ class User(UserMixin):
             return False
         except:
             self._calendars[newCalName] = newCalendar
+            self._preferences['calendars'][newCalName] = \
+                {'colour': newCalendar.getColour()}
             return True
 
     def addContact(self, email, firstName="", lastName="", groupName=None):
@@ -134,16 +152,27 @@ class User(UserMixin):
     #
     # Setters
     #
-    def changeCalendarName(self, calendar, name):
+    def changeCalendarName(self, calendar, newName):
         try:
-            self._calendars[calendar.getName()].setName(name)
+            # Update calendar
+            oldName = calendar.getName()
+            del self._calendars[oldName]
+            calendar.setName(newName)
+            self._calendars[newName] = calendar
+
+            # Update user preferences
+            calPref = self._preferences[oldName]
+            del self._preferences['calendars'][oldName]
+            self._preferences['calendars'][newName] = calPref
             return True
         except:
             return False
 
     def changeCalendarColour(self, calendar, colour):
         try:
-            self._calendars[calendar.getName()].setColour(colour)
+            calName = calendar.getName()
+            self._calendars[calName].setColour(colour)
+            self._preferences['calendars'][calName]['colour'] = colour
             return True
         except:
             return False
@@ -161,7 +190,10 @@ class User(UserMixin):
         try:
             del self._calendars[calendar.getName()]
             if calendar.getName() == 'Default':
-                self._calendars['Default'] = Calendar('Default', 'blue')
+                self._calendars['Default'] = Calendar('Default',
+                    calendar.getColour())
+            else:
+                del self._preferences['calendars'][calendar.getName()]
             return True
         except:
             return False
@@ -236,8 +268,17 @@ class User(UserMixin):
     #                return event
     #    return None
 
+    # search through own events by description
+    def searchEventsByDescription(self, desc):
+        listOfEvents = []
+        for calendar in self._calendars:
+            for event in self._calendars[calendar].getEvents():
+                if desc.lower() in event.getDescription().lower():
+                    listOfEvents.append(event)
+        return listOfEvents
+
     def getEventsByQuery(self, queryString):
-        return self.searchEventsByTitle(queryString)
+        return list(set(self.searchEventsByTitle(queryString)) | set(self.searchEventsByDescription(queryString)))
         # + self.searchEventsByHost(queryString)
 
     # MOVED TO views.py because PCM needed

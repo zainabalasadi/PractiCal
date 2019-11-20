@@ -66,7 +66,7 @@ const styles = theme => ({
     inputRoot: {
         color: 'inherit',
     },
-  
+
     inputInput: {
         padding: theme.spacing(1, 1, 1, 7),
         transition: theme.transitions.create('width'),
@@ -80,7 +80,7 @@ const styles = theme => ({
         margin: 0,
         padding: theme.spacing(2),
     },
-      
+
     closeButton: {
         position: 'absolute',
         right: theme.spacing(1),
@@ -89,17 +89,17 @@ const styles = theme => ({
 
 });
 
-class Navbar extends Component { 
-    constructor() {
-        super();
+class Navbar extends Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            contacts: [  
+            contacts: [
                 {
                   contactName: 'Jeff Lastname',
                   contactEmail: 'jeff@email.com',
                 },
             ],
-            groups: [  
+            groups: [
                 {
                   groupName: 'COMP4920',
                   groupEmail: 'jeff@email.com;sarah@email.com;alice@email.com',
@@ -139,20 +139,21 @@ class Navbar extends Component {
     showSearchResults(events) {
         console.log(events)
         for(var i = 0; i < events.length; i++) {
-            console.log(events[i].desc)
+            //console.log(events[i].desc)
         }
+        this.props.func(events)
     }
 
     // Function to create contact and send to back-end
     create_contact(contact) {
-        console.log(contact)
-        
+        //.log(contact)
+
     }
 
     // Function to create group and send to back-end
     create_group(group) {
-        console.log(group)
-        
+        //console.log(group)
+
     }
 
     setNewContact() {
@@ -174,17 +175,17 @@ class Navbar extends Component {
     }
 
     // Sets the state of input
-    setContactEmail = e => { 
-        this.setState({ contactEmail: e }); 
+    setContactEmail = e => {
+        this.setState({ contactEmail: e });
     };
-    setContactName = e => { 
-        this.setState({ contactName: e }); 
+    setContactName = e => {
+        this.setState({ contactName: e });
     };
-    setGroupEmail = e => { 
-        this.setState({ groupEmail: e }); 
+    setGroupEmail = e => {
+        this.setState({ groupEmail: e });
     };
-    setGroupName = e => { 
-        this.setState({ groupName: e }); 
+    setGroupName = e => {
+        this.setState({ groupName: e });
     };
 
     handleContactOpen() {
@@ -206,11 +207,11 @@ class Navbar extends Component {
 
 //     NOW THAT ITS IN STATE HOW DO I PASS THIS ONTO <NOTIFICATION/>
     renderComponentsFromList(notifList) {
-        console.log(notifList)
+        //console.log(notifList)
 
         var new_list = new Array()
         for (var i = 0 ; i < notifList.length ; i++) {
-            console.log(notifList[i])
+            //console.log(notifList[i])
             new_list.push(notifList[i])
         }
 
@@ -220,7 +221,9 @@ class Navbar extends Component {
     }
 
     logout() {
-//         TODO
+      let response = fetch('/logout', {
+          method: 'GET',
+      }).then((data) => data.json())
     }
 
     render() {
@@ -250,6 +253,7 @@ class Navbar extends Component {
                         onKeyPress={e => {
                             if (e.key === "Enter") {
                                 this.search()
+                                this.setState({ searchText: ""})
                             }
                         }}
                         />
@@ -264,14 +268,16 @@ class Navbar extends Component {
 {/*                         <IconButton color="inherit"> */}
 {/*                             <AccountCircle/> */}
 
-                            <Button
+                            <a href="/">
+                              <Button
                                 label="Logout"
                                 onClick={() => {
                                     this.logout();
                                 }}
-                            >
+                              >
                                 LOGOUT
-                            </Button>
+                              </Button>
+                            </a>
 
 
 
@@ -290,19 +296,19 @@ class Navbar extends Component {
                 </DialogTitle>
 
                 <DialogContent>
-                    <TextField 
+                    <TextField
                         placeholder="Group name"
                         margin="dense"
                         onChange={this.setGroupName}
                     />
-                    <TextField 
+                    <TextField
                         placeholder="Emails"
                         margin="dense"
                         onChange={this.setGroupEmail}
                     />
                     <Button
                         label="Create Group"
-                        variant="contained" 
+                        variant="contained"
                         color="primary"
                         onClick={() => {
                             this.setNewGroup();
@@ -313,19 +319,19 @@ class Navbar extends Component {
 
 
 
-                        <TextField 
+                        <TextField
                         placeholder="Contact name"
                         margin="dense"
                         onChange={this.setContactName}
                     />
-                    <TextField 
+                    <TextField
                         placeholder="Email"
                         margin="dense"
                         onChange={this.setContactEmail}
                     />
                     <Button
                         label="Create Contact"
-                        variant="contained" 
+                        variant="contained"
                         color="primary"
                         onClick={() => {
                             this.setNewContact();

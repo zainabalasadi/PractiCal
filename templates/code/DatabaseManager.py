@@ -1,6 +1,7 @@
 import mysql.connector
 import argparse
 import bcrypt
+import json
 
 HOST = "localhost"
 USER = "admin"
@@ -721,61 +722,95 @@ if __name__ == "__main__":
     print("Would you like to load in test data? (y/n)")
     resp = input()
     if resp.lower()[0] == "y":
+        userPrefs1 = json.dumps(
+            {
+                'default_colour': 'blue',
+                'calendars': {
+                    'Default': {
+                        'colour': 'blue'
+                    },
+                    'Calendar 1': {
+                        'colour': 'green'
+                    },
+                    'Calendar 2': {
+                        'colour': 'red'
+                    }
+                }
+            })
+        userPrefs2 = json.dumps(
+            {
+                'default_colour': 'blue',
+                'calendars': {
+                    'Default': {
+                        'colour': '#9C2BAF'
+                    },
+                    'Social': {
+                        'colour': '#FF9612'
+                    },
+                    'Work': {
+                        'colour': '#9ACE4E'
+                    },
+                    'Uni': {
+                        'colour': '#9C2BAF'
+                    },
+                }
+            })
         cursor.execute(("INSERT INTO users "
-                        "(first_name, last_name, email, password)"
+                        "(first_name, last_name, email, password, preferences)"
                         "VALUES "
-                        "('Egene', 'Oletu', 'egene.o@email.com', '{password}'), "
-                        "('Zainab', 'Alasadi', 'zainab.a@email.com', '{password}'), "
-                        "('Morgan', 'Green', 'morgan.g@email.com', '{password}'), "
-                        "('Derrick', 'Foo', 'derrick.f@email.com', '{password}'), "
-                        "('Michael', 'Ho', 'michael.h@email.com', '{password}')"
+                        "('Egene', 'Oletu', 'egene.o@email.com', '{password}', '{up1}'), "
+                        "('Zainab', 'Alasadi', 'zainab.a@email.com', '{password}', '{up2}'), "
+                        "('Morgan', 'Green', 'morgan.g@email.com', '{password}', '{up1}'), "
+                        "('Derrick', 'Foo', 'derrick.f@email.com', '{password}', '{up1}'), "
+                        "('Michael', 'Ho', 'michael.h@email.com', '{password}', '{up1}')"
                         "".format(password=str(bcrypt.hashpw('password'.encode('utf-8'),
-                            bcrypt.gensalt()).decode("utf-8")))))
+                            bcrypt.gensalt()).decode("utf-8")), up1=userPrefs1,
+                            up2=userPrefs2)))
         cursor.execute(("INSERT INTO events "
                         "(uid, title, descr, startdt, enddt, calendar) "
                         "VALUES "
                         "(1, 'Event 1 title', 'Event 1 description', '2019-11-06 "
-                        "12:00:00.000Z', '2019-11-06 13:00:00.000Z', 'Default') ,"
+                        "12:00:00.000Z', '2019-11-06 13:00:00.000Z', 'Default'), "
                         "(1, 'Event 2 title', 'Event 2 description', '2019-11-07 "
-                        "12:00:00.000Z', '2019-11-07 13:00:00.000Z', 'Default') ,"
+                        "12:00:00.000Z', '2019-11-07 13:00:00.000Z', 'Default'), "
                         "(1, 'Event 3 title', 'Event 3 description', '2019-11-08 "
-                        "12:00:00.000Z', '2019-11-08 13:00:00.000Z', 'cal2') ,"
+                        "12:00:00.000Z', '2019-11-08 13:00:00.000Z', 'Calendar 1'), "
                         "(1, 'Event 4 title', 'Event 4 description', '2019-11-09 "
-                        "12:00:00.000Z', '2019-11-09 13:00:00.000Z', 'cal2') ,"
+                        "12:00:00.000Z', '2019-11-09 13:00:00.000Z', 'Calendar 1'), "
                         "(1, 'Event 5 title', 'Event 5 description', '2019-11-10 "
-                        "12:00:00.000Z', '2019-11-10 13:00:00.000Z', 'cal2') ,"
+                        "12:00:00.000Z', '2019-11-10 13:00:00.000Z', 'Calendar 2'), "
 
                         "(2, 'Sprint Meeting', 'Sprint Meeting 5, discussing merging back-end and front-end', '2019-10-30T"
-                        "14:00:00', '2019-10-30T16:00:00', 'Uni') ,"
+                        "14:00:00', '2019-10-30T16:00:00', 'Uni'), "
                         "(2, 'Lunch with Sarah', 'Circular Quay', '2019-11-13T"
-                        "12:00:00', '2019-11-13T13:30:00', 'Social') ,"
+                        "12:00:00', '2019-11-13T13:30:00', 'Social'), "
                         "(2, 'Doctor Appointment', 'Ask about hay fever', '2019-11-15T"
-                        "13:00:00', '2019-11-15T13:30:00', 'Social') ,"
+                        "13:00:00', '2019-11-15T13:30:00', 'Default'), "
                         "(2, 'AI Conference', 'Chat to Fred for job opportunities', '2019-11-18T"
-                        "09:00:00', '2019-11-20T18:00:00', 'Default') ,"
+                        "09:00:00', '2019-11-20T18:00:00', 'Work'), "
                         "(2, 'COMP4920 Diary Due', 'Submit project diaries by Give', '2019-11-24T"
-                        "18:30:00', '2019-11-24T19:45:00', 'Default') ,"
+                        "18:30:00', '2019-11-24T19:45:00', 'Uni'), "
                         "(2, 'COMP4920 Peer Assessment', 'Submit peer assessments on Moodle', '2019-11-24T"
-                        "13:30:00', '2019-11-24T13:45:00', 'Default') ,"
+                        "13:30:00', '2019-11-24T13:45:00', 'Uni'), "
                         "(2, 'COMP4920 Project Due', 'Event 9 description', '2019-11-24T"
-                        "21:00:00', '2019-11-24T23:55:00', 'Default') ,"
+                        "21:00:00', '2019-11-24T23:55:00', 'Uni'), "
                         "(2, 'COMP4920 Presentation', 'Presenting the wonderful PractiCal to staff', '2019-11-25T"
-                        "15:00:00', '2019-11-25T17:00:00', 'Default') ,"
+                        "15:00:00', '2019-11-25T17:00:00', 'Uni'), "
                         "(2, 'End of Term Drinks', 'Casual Dress Code', '2019-11-25T"
-                        "18:00:00', '2019-11-25T20:00:00', 'Default') ,"
+                        "18:00:00', '2019-11-25T20:00:00', 'Uni'), "
                         "(2, 'COMP9444 Exam', 'Bring: Pens/pencils, Calculator - UNSW Approved', '2019-11-30T"
-                        "13:45:00', '2019-11-30T15:00:00', 'Default') ,"
+                        "13:45:00', '2019-11-30T15:00:00', 'Uni'), "
                         "(2, 'COMP4418 Exam', 'No Calculator', '2019-12-05T"
-                        "08:45:00', '2019-12-05T11:00:00', 'Default') ,"
+                        "08:45:00', '2019-12-05T11:00:00', 'Uni'), "
                         "(2, 'Meenas Graduation', 'Bring Flowers', '2019-12-13T"
-                        "08:45:00', '2019-12-13T11:00:00', 'Social') ,"
-                        "(2, 'CHRISTMAS!!!', 'WOOHOO', '2019-12-25T"
-                        "00:00:00', '2019-12-25T24:00:00', 'Family') ,"
+                        "08:45:00', '2019-12-13T11:00:00', 'Social'), "
+                        "(2, 'CHRISTMAS', 'WOOHOO!', '2019-12-25T"
+                        "00:00:00', '2019-12-25T24:00:00', 'Social'), "
 
                         "(3, 'Event 11 title', 'Event 11 description', '2019-11-06 "
-                        "09:30:00.000Z', '2019-11-06 17:00:00.000Z', 'Default') ,"
+                        "09:30:00.000Z', '2019-11-06 17:00:00.000Z', 'Default'), "
                         "(3, 'Event 12 title', 'Event 12 description', '2019-11-07 "
-                        "09:30:00.000Z', '2019-11-07 17:00:00.000Z', 'Default') ,"
+                        "09:30:00.000Z', '2019-11-07 17:00:00.000Z', 'Default'), "
                         "(3, 'Event 13 title', 'Event 13 description', '2019-11-08 "
                         "09:30:00.000Z', '2019-11-08 17:00:00.000Z', 'Default')"))
     db.commit()
