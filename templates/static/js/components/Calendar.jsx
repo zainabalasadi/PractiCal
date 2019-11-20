@@ -108,6 +108,7 @@ class Cal extends Component {
             openSlot: false,
             openEvent: false,
 	    openNlp: false,
+	    nlpText: "",
             clickedEvent: {},
             searchResult: [],
             search: "",
@@ -379,7 +380,9 @@ class Cal extends Component {
     setEnd(e) { this.setState({ end: e }); }
     setCategory(e) { this.setState({ category: e }); }
         
-    
+    handleNlpTextbox = (val) => {
+        this.setState({ nlpText: val });
+    };
     handleNlpData = (e) => {
 	this.setState({title: e.eventName, desc: "", start: e.date.substring(0, 10).concat(e.timeStart.substring(10, 19)), end: e.date.substring(0, 10).concat(e.timeEnd.substring(10, 19)), invitees: "", groups: "", openNlp: true}) 
 	console.log(this.state)

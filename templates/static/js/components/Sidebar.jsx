@@ -240,9 +240,9 @@ class Sidebar extends Component {
                   inputProps={{
                     'aria-label': 'description',
                   }}
-                  value={ this.state.nlpText }
+                  value={ this.props.nlpText }
                   onChange={e => {
-                    this.setState({ nlpText: e.target.value})
+                    this.props.setNlpBarState(e.target.value)
                   }}
                   onKeyPress={ e => {
                     if (e.key === "Enter") {
