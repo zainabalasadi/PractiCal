@@ -10,13 +10,12 @@ from templates.code.Notification import Notification
 from templates.code.Calendar import Calendar
 
 class User(UserMixin):
-    def __init__(self, userID, firstName, lastName, email, password,
+    def __init__(self, userID, firstName, lastName, email,
             preferences=None):
         self._id = userID
         self._firstName = firstName
         self._lastName = lastName
         self._email = email
-        self._password = password
         if preferences:
             self._preferences = preferences
         else:
@@ -55,10 +54,6 @@ class User(UserMixin):
 
     def is_active(self):
         return self._isActive
-
-    # Validate if provided password matches user password
-    def validate(self, password):
-        return self._password == password
 
     #
     # Getters
@@ -114,6 +109,7 @@ class User(UserMixin):
             self._calendars[newCalName] = newCalendar
             self._preferences['calendars'][newCalName] = \
                 {'colour': newCalendar.getColour()}
+            print(self._preferences)
             return True
 
     def addContact(self, email, firstName="", lastName="", groupName=None):
