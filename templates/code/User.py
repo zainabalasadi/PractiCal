@@ -21,10 +21,10 @@ class User(UserMixin):
             self._preferences = preferences
         else:
             self._preferences = {
-                'default_colour': 'blue',
+                'default_colour': '#566EE9',
                 'calendars': {
                     'Default': {
-                        'colour': 'blue'
+                        'colour': '#566EE9'
                     }
                 }
             }
