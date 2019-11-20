@@ -175,12 +175,6 @@ class Cal extends Component {
                 this.setState({ events: [], calendars: [] })
                 this.get_calendars()
                 console.log("Created event successfully")
-                this.setState({ events: [] })
-                this.get_calendars()
-                // event.start = new Date(event.start)
-                // console.log(event.start)
-                // event.end = new Date(event.end)
-                // this.state.events.push(event)
             } else {
                 console.log("Failed event creation")
             }
@@ -503,7 +497,6 @@ class Cal extends Component {
     }
 
     eventStyleGetter(event) {
-        console.log(event);
         var backgroundColor = event.colour;
         var style = {
             backgroundColor: backgroundColor,
@@ -541,15 +534,13 @@ class Cal extends Component {
                 
                 />
                 {/* Modal for booking new event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEntered={this.handleOpenDialog}>
+                <Dialog contentstyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEntered={this.handleOpenDialog}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
                   <DialogContent>
                     <TextField className={classes.title}
-                    inputProps={{
-                        style: {fontSize: 23} 
-                    }}
+                    inputProps={{ style: {fontSize: 23} }}
                     placeholder="Add title"
                     autoFocus
                     margin="dense"
@@ -619,14 +610,13 @@ class Cal extends Component {
                         <CalendarTodayIcon className={classes.icon}/>
                         <Select
                           native
-                          InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
                           defaultValue='Select Calendar'
                           onChange={e => {
                             this.setCalendar(e.target.value), this.eventStyleGetter(this.state);
                           }}
                         >
-                        <option value="Select Calendar...">Select Calendar...</option>
+                        <option value="">Select Calendar</option>
                         {
                             this.state.calendars.map(item => {
                             return (
@@ -639,19 +629,18 @@ class Cal extends Component {
                         <CategoryIcon className={classes.icon}/>
                         <Select
                           native
-                          defaultValue={this.state.category}
-                          InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
-                          defaultValue='Social'
+                          defaultValue='Select Category'
                           onChange={e => {
                             this.setCategory(e.target.value);
                           }}
                         >
+                        <option value="">Select Category</option>
                         <option value="Work">Work</option>
                         <option value="Social">Social</option>
                         <option value="School">School</option>
                         <option value="Family">Family</option>
-                        
+                        <option value="Miscellaneous">Miscellaneous</option>
                         </Select> 
                     </div>                 
                   </DialogContent>
@@ -676,20 +665,18 @@ class Cal extends Component {
                 </Dialog>
 
                 {/* Material-ui Modal for Existing Event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openEvent} onClose={this.handleClose}>
+                <Dialog contentstyle={{width: "100%", maxWidth: "none"}} open={this.state.openEvent} onClose={this.handleClose}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
                   <DialogContent>
                     <TextField 
                     className={classes.title}
-                    inputProps={{
-                        style: {fontSize: 23} 
-                    }}
+                    inputProps={{ style: {fontSize: 23} }}
                     placeholder="Add title"
                     autoFocus
                     margin="dense"
-                    defaultValue={this.state.title}
+                    value={this.state.title}
                     onChange={e => {
                       this.setTitle(e.target.value);
                     }}
@@ -700,7 +687,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.start)}
+                          value={this.formatActualDate(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value);
                           }}
@@ -709,7 +696,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.end)}
+                          value={this.formatActualDate(this.state.end)}
                           onChange={e => {
                             this.setEnd(e.target.value);
                           }}
@@ -723,7 +710,7 @@ class Cal extends Component {
                           InputProps={{disableUnderline: true}}
                           margin="dense"
                           multiline={true}
-                          defaultValue={this.state.desc}
+                          value={this.state.desc}
                           onChange={e => {
                             this.setDescription(e.target.value);
                           }}
@@ -733,7 +720,7 @@ class Cal extends Component {
                         <GroupIcon className={classes.icon}/>
                         <TextField
                           className={classes.inputMargin}
-                          defaultValue={this.state.invitees}
+                          value={this.state.invitees}
                           InputProps={{disableUnderline: true}}
                           placeholder="Add invitees"
                           margin="dense"
@@ -744,7 +731,7 @@ class Cal extends Component {
 
                         <TextField
                           className={classes.inputMargin}
-                          defaultValue={this.state.group}
+                          value={this.state.group}
                           InputProps={{disableUnderline: true}}
                           placeholder="Add group invitees"
                           margin="dense"
@@ -758,13 +745,12 @@ class Cal extends Component {
                         <Select
                         native
                         value={this.state.calendar}
-                        InputProps={{disableUnderline: true}}
                         className={classes.selectMargin}
                         onChange={e => {
                             this.setCalendar(e.target.value), this.eventStyleGetter();
                         }}
                         >
-                        <option value="Select Calendar...">Select Calendar...</option>
+                        <option value="">Select Calendar</option>
                         {this.state.calendars.map(item => {
                             return (
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
@@ -777,7 +763,6 @@ class Cal extends Component {
                         <Select
                           native
                           value={this.state.category}
-                          InputProps={{disableUnderline: true}}
                           className={classes.selectMargin}
                           onChange={e => {
                             this.setCategory(e.target.value);
@@ -787,7 +772,7 @@ class Cal extends Component {
                         <option value="Social">Social</option>
                         <option value="School">School</option>
                         <option value="Family">Family</option>
-                        
+                        <option value="Miscellaneous">Miscellaneous</option>
                         </Select> 
                     </div> 
                   </DialogContent>
@@ -843,21 +828,18 @@ class Cal extends Component {
                 
 		
 		        {/* Material-ui Modal for nlp Event */}
-                <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openNlp} onClose={this.handleClose}>
+                <Dialog contentstyle={{width: "100%", maxWidth: "none"}} open={this.state.openNlp} onClose={this.handleClose}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
                   <DialogContent>
                     <TextField 
                     className={classes.title}
-                    inputProps={{
-                        style: {fontSize: 23} 
-                    }}
+                    inputProps={{ style: {fontSize: 23} }}
                     placeholder="Add title"
-                    fullWidth
                     autoFocus
                     margin="dense"
-                    defaultValue={this.state.title}
+                    value={this.state.title}
                     onChange={e => {
                       this.setTitle(e.target.value);
                     }}
@@ -866,9 +848,9 @@ class Cal extends Component {
                         <ScheduleIcon className={classes.icon}/>
                         <TextField
                           className={classes.inputMargin}
-                          InputProps={{disableUnderline: true}}
+                          InputProps={{ disableUnderline: true }}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.start)}
+                        //   defaultValue={this.formatActualDate(this.state.start)}
                           value={this.formatActualDate(this.state.start)}
                           onChange={e => {
                             this.setStart(e.target.value);
@@ -878,7 +860,7 @@ class Cal extends Component {
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
-                          defaultValue={this.formatActualDate(this.state.start)}
+                        //   defaultValue={this.formatActualDate(this.state.end)}
                           value={this.formatActualDate(this.state.end)}
                           onChange={e => {
                             this.setEnd(e.target.value);
@@ -889,12 +871,11 @@ class Cal extends Component {
                         <NotesIcon className={classes.icon}/>
                         <TextField
                           className={classes.inputMargin}
-                          fullWidth
                           placeholder="Add description"
                           InputProps={{disableUnderline: true}}
                           margin="dense"
                           multiline={true}
-                          defaultValue={this.state.desc}
+                          value={this.state.desc}
                           onChange={e => {
                             this.setDescription(e.target.value);
                           }}
@@ -904,7 +885,7 @@ class Cal extends Component {
                         <GroupIcon className={classes.icon}/>
                         <TextField
                           className={classes.inputMargin}
-                          defaultValue={this.state.invitees}
+                          value={this.state.invitees}
                           InputProps={{disableUnderline: true}}
                           placeholder="Add invitees"
                           margin="dense"
@@ -915,7 +896,7 @@ class Cal extends Component {
 
                         <TextField
                           className={classes.inputMargin}
-                          defaultValue={this.state.group}
+                          value={this.state.group}
                           InputProps={{disableUnderline: true}}
                           placeholder="Add group invitees"
                           margin="dense"
@@ -927,20 +908,38 @@ class Cal extends Component {
                     <div className={classes.iconDiv}>
                         <CalendarTodayIcon className={classes.icon}/>
                         <Select
-                        native
-                        value={this.state.calendar}
-                        InputProps={{disableUnderline: true}}
-                        className={classes.selectMargin}
-                        defaultValue='Default'
-                        onChange={e => {
-                            this.setCalendar(e.target.value);
-                        }}
+                          native
+                          className={classes.selectMargin}
+                          defaultValue='Select Calendar'
+                          onChange={e => {
+                            this.setCalendar(e.target.value), this.eventStyleGetter(this.state);
+                          }}
                         >
-                        {this.state.calendars.map(item => {
+                        <option value="">Select Calendar</option>
+                        {
+                            this.state.calendars.map(item => {
                             return (
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
                             );
                         })}
+                        </Select> 
+                    </div><br />
+                    <div className={classes.iconDiv}>
+                        <CategoryIcon className={classes.icon}/>
+                        <Select
+                          native
+                          className={classes.selectMargin}
+                          defaultValue='Select Category'
+                          onChange={e => {
+                            this.setCategory(e.target.value);
+                          }}
+                        >
+                        <option value="">Select Category</option>
+                        <option value="Work">Work</option>
+                        <option value="Social">Social</option>
+                        <option value="School">School</option>
+                        <option value="Family">Family</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
                         </Select> 
                     </div>
                   </DialogContent>

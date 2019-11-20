@@ -219,12 +219,12 @@ class Sidebar extends Component {
                     const labelId = `checkbox-list-label-${item.name}`;
                     return (
                         <div>
-                    <ListItem className={classes.listItem} key={item.name} role={undefined} dense button>
+                    <ListItem className={classes.listItem} key={item.name} dense button>
                         <ListItemIcon className={classes.check}>
                             <Checkbox
                             className={classes.check}
                             edge="start"
-                            checked="true"
+                            checked={true}
                             tabIndex={-1}
                             disableRipple
                             inputProps={{ 'aria-labelledby': labelId }}
@@ -245,7 +245,7 @@ class Sidebar extends Component {
                         onClose={this.props.handleClose}
                       >
                           <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                          <MenuItem onClick={this.props.handleDeleteCal(item.name)}>Delete</MenuItem>
+                          <MenuItem /*onClick={this.props.handleDeleteCal(item.name)}*/>Delete</MenuItem>
                       </Menu>
                       </div>
                     );
