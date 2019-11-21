@@ -204,7 +204,6 @@ class Navbar extends Component {
         }).then((data) => data.json()).then(data => this.renderComponentsFromList(data));
     }
 
-//     NOW THAT ITS IN STATE HOW DO I PASS THIS ONTO <NOTIFICATION/>
     renderComponentsFromList(notifList) {
         //console.log(notifList)
 

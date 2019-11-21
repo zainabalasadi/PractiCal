@@ -131,7 +131,6 @@ def deleteEvent():
 @index_blueprint.route('/getEvents', methods=['GET', 'POST'])
 @login_required
 def getEvents():
-        print(current_user.calculateHoursCategory())
         ret = []
         for cal in current_user.getCalendars():
                 calObj = {}
@@ -320,10 +319,8 @@ def getNotifs():
 @login_required
 def getCategoryHours():
         if request.method == 'GET':
-                
+                return current_user.calculateHoursCategory()
 
-                print(current_user.calculateHoursCategory())
-                return 'yolo'
 
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
 @login_required
