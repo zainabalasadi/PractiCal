@@ -58,7 +58,12 @@ class TimeBreakdown extends Component {
         this.setState({ setOpen: false });
     }
 
+    getHours() {
+        let response = fetch('/getCategoryHours', {
+            method: 'GET'
 
+        }).then((data) => data.json());
+    }
 
     render() {
         const { classes } = this.props;
