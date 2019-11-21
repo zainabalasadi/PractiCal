@@ -54,7 +54,7 @@ const styles = theme => ({
 class Sidebar extends Component {  
     constructor(props) {
         super(props);
-	this.state = {nlpText: ""}
+	    this.state = {nlpText: ""}
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
     }
 
@@ -90,6 +90,13 @@ class Sidebar extends Component {
                 console.log("Failed calendar creation")
             }
         });
+    }
+
+    deleteCal(calendar) {
+        let updatedCalendars = this.props.events.filter (
+            cal => cal["name"] != calendar.name
+        );
+        this.delete_calendar(calendar)
     }
 
     delete_calendar(calendar) {
@@ -213,19 +220,11 @@ class Sidebar extends Component {
                 </div>
                 <List>
                 {this.props.calendars.map(item => {
-                    const labelId = `checkbox-list-label-${item.name}`;
+                    const labelId = `cal-${item.name}`;
                     return (
                         <div>
                     <ListItem className={classes.listItem} key={item.name} dense button>
                         <ListItemIcon className={classes.check}>
-                            <Checkbox
-                            className={classes.check}
-                            edge="start"
-                            checked={true}
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ 'aria-labelledby': labelId }}
-                            />
                         </ListItemIcon>
                         <ListItemText id={labelId} primary={`${item.name}`} />
                             <ListItemSecondaryAction>
@@ -242,7 +241,7 @@ class Sidebar extends Component {
                         onClose={this.props.handleClose}
                       >
                           <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                          <MenuItem /*onClick={this.props.handleDeleteCal(item.name)}*/>Delete</MenuItem>
+                          <MenuItem /*onClick={this.props.deleteCal(item.name)}*/>Delete</MenuItem>
                       </Menu>
                       </div>
                     );

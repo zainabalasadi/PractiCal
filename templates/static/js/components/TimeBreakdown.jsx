@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@material
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from "@material-ui/core/styles";
+import TimelineIcon from '@material-ui/icons/Timeline';
 
 const styles = theme => ({
     closeButton: {
@@ -61,9 +62,9 @@ class TimeBreakdown extends Component {
         const { classes } = this.props;
         return (
         <div>
-            <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
-                TimeBreakdowns test button
-            </Button>
+            <IconButton color="inherit" onClick={this.handleClickOpen}>
+                <TimelineIcon />
+            </IconButton>
             <Dialog
             open={this.state.setOpen}
             onClose={this.handleClose}
