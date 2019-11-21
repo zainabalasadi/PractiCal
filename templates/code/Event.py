@@ -104,5 +104,5 @@ class Event():
             comments.deleteComment(comment)
 
     def calculateHoursCategory(self):
-        dateTimeDifference = datetime.datetime.strptime(self.getEndDateTime(), "%Y-%m-%dT%H:%M:%S%z") - datetime.datetime.strptime(self.getStartDateTime(), "%Y-%m-%dT%H:%M:%S%z")
+        dateTimeDifference = datetime.datetime.strptime(self.getEndDateTime(), "%Y-%m-%dT%H:%M:%S") - datetime.datetime.strptime(self.getStartDateTime(), "%Y-%m-%dT%H:%M:%S")
         return dateTimeDifference.total_seconds() / 3600
