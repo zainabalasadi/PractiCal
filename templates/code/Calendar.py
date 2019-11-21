@@ -94,8 +94,8 @@ class Calendar():
         weekend = week + datetime.timedelta(days=7)
 
         for event in self._events:
-            start = datetime.datetime.strptime(event.getStartDateTime()[:-5], "%Y-%m-%dT%H:%M:%S")
-            end = datetime.datetime.strptime(event.getEndDateTime()[:-5], "%Y-%m-%dT%H:%M:%S")
+            start = datetime.datetime.strptime(event.getStartDateTime(), "%Y-%m-%dT%H:%M")
+            end = datetime.datetime.strptime(event.getEndDateTime(), "%Y-%m-%dT%H:%M")
             if event.getCategory() == category and \
                     start > week and \
                     end < weekend:
