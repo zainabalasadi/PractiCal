@@ -58,6 +58,13 @@ class TimeBreakdown extends Component {
         this.setState({ setOpen: false });
     }
 
+    getHours() {
+        let response = fetch('/getCategoryHours', {
+            method: 'GET'
+
+        }).then((data) => data.json());
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -77,7 +84,13 @@ class TimeBreakdown extends Component {
                 <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Last week, you spent
+                        Last week, you spent:
+                        {
+                            this.getHours().map(([name, time]) => {
+                            return (
+                                <h1>`${name} ${time}`</h1>
+                            );
+                        })}
                     </DialogContentText>
                 </DialogContent>
             </Dialog>
