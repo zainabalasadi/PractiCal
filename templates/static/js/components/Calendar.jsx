@@ -362,9 +362,32 @@ class Cal extends Component {
     handleNlpTextbox = (val) => { this.setState({ nlpText: val }); };
     
     handleNlpData = (e) => {
+        var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear(),
+        hour = '' + d.getHours(),
+        min = '' + d.getMinutes();
 
-	this.setState({title: e.eventName, desc: "", start: e.date.substring(0, 10).concat(e.timeStart.substring(10, 16)), end: e.date.substring(0, 10).concat(e.timeEnd.substring(10, 16)), invitees: "", groups: "", openNlp: true}) 
-	console.log(this.state)
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+        if (hour.length < 2) 
+            hour = '0' + hour;
+        if (min.length < 2) 
+            min = '0' + min;
+	    	if (e.date == "") {
+		    e.date = [year, month, day].join('-') + "T"
+		}
+		if (e.timeStart == "") {
+        	e.timeStart=[year, month, day].join('-') + "T" + hour + ":" + '00';
+		} 
+		if (e.timeEnd == "") {
+			e.timeEnd = e.timeStart
+		}
+		this.setState({title: e.eventName, desc: "", start: e.date.substring(0, 10).concat(e.timeStart.substring(10, 16)), end: e.date.substring(0, 10).concat(e.timeEnd.substring(10, 16)), invitees: "", groups: "", openNlp: true}) 
+		console.log(this.state)
     }
 
     handleCreateOpen = () => {
