@@ -143,8 +143,9 @@ class User(UserMixin):
         if notifType < Notification.NOTIF_EVENTCHANGE or \
                 notifType > Notification.NOTIF_INVITERESP_NONE:
             return
-        ids = list(self._notifications.keys()).sort()
-        newID = ids[-1] + 1
+        ids = list(self._notifications.keys())
+        ids.sort()
+        newID = ids[-1] + 1 if ids else 1
         self._notifications[newID] = Notification(
             newID, event, notifType, senderEmail)
 
