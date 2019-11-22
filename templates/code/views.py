@@ -94,7 +94,6 @@ def editEvent():
         if request.method == 'POST':
                 r = request.get_json()
                 event = PCM.getEventByID(r['eventId'])
-                print(event)
                 if event is not None:
                         if (event.getName() != r['name']):
                                 event.setName(r['name'])
@@ -103,15 +102,17 @@ def editEvent():
                         if event.getStartDateTime() != r['startDate']:
                                 if (len(r['startDate']) == 16):
                                     event.setStartDateTime(r['startDate'])
+                                    print(event.getStartDateTime())
                                 elif (len(r['startDate']) == 24):
                                     event.setStartDateTime(r['startDate'][:-8])
-                                print("time changed")
-                                print(event.getStartDateTime())
+                                    print(event.getStartDateTime())
                         if event.getEndDateTime() != r['endDate']:
                                 if (len(r['endDate']) == 16):
                                     event.setEndDateTime(r['endDate'])
+                                    print(event.getEndDateTime())
                                 elif (len(r['endDate']) == 24):
                                     event.setEndDateTime(r['endDate'][:-8])
+                                    print(event.getEndDateTime())
                         if event.getCategory() != r['category']:
                                 event.setCategory(r['category'])
                         current_user.moveEvent(event, r['calendar'])

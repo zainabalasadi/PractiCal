@@ -91,7 +91,7 @@ class Sidebar extends Component {
             cal => cal["name"] === calendar.name
         );
         //this.setState({ events: updatedEvents });
-        this.delete_calendar(deletedCalendar[0])
+        //this.delete_calendar(deletedCalendar[0])
     }
 
     delete_calendar(calendar) {
