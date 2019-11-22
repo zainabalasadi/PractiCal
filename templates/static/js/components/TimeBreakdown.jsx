@@ -14,7 +14,7 @@ const styles = theme => ({
     },
     heading: {
         fontSize: 100,
-        margin: '20px 0 20px 0',
+        margin: '20px 0 10px 0',
     }
 });
 
@@ -89,6 +89,7 @@ class TimeBreakdown extends Component {
                 <TimelineIcon />
             </IconButton>
             <Dialog
+            maxWidth = {'md'}
             open={this.state.setOpen}
             onClose={this.handleClose}
             aria-labelledby="alert-dialog-title"
@@ -100,12 +101,27 @@ class TimeBreakdown extends Component {
                 <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <b>Last week, you spent:<br></br></b>
-                        {this.state.social} hours on your Social Life<br></br>
-                        {this.state.work} hours on your Work Life<br></br>
-                        {this.state.school} hours on your School Life<br></br>
-                        {this.state.family} hours on your Family Life<br></br>
-                        {this.state.misc} hours on your Miscellaneous Life
+                    <p className="timeIntro">Last week, you spent:</p>
+                    <div class="inline social tiles">
+                        <p class="timeNum">{this.state.social}<span>hours</span></p>
+                        <p class="timeType">on social events</p>                    
+                    </div>
+                    <div class="inline work tiles">
+                        <p class="timeNum">{this.state.work}<span>hours</span></p>
+                        <p class="timeType">on work events</p>                    
+                    </div>
+                    <div class="inline school tiles">
+                        <p class="timeNum">{this.state.school}<span>hours</span></p>
+                        <p class="timeType">on school events</p>                    
+                    </div>
+                    <div class="inline family tiles">
+                        <p class="timeNum">{this.state.family}<span>hours</span></p>
+                        <p class="timeType">on family events</p>                    
+                    </div>
+                    <div class="inline misc tiles">
+                        <p class="timeNum">{this.state.misc}<span>hours</span></p>
+                        <p class="timeType">on miscellaneous events</p>                    
+                    </div>
                     </DialogContentText>
                 </DialogContent>
             </Dialog>

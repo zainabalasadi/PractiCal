@@ -268,3 +268,40 @@ footer a:hover {
     color: #222328;
     border-radius: 6px;
 }
+
+/**** Time breakdowns ****/
+div.inline { 
+    float:left; 
+}
+
+.tiles {
+    width: 150px;
+    height: 175px;
+    border-radius: 10px;
+    margin: 10px 10px 40px 10px;
+    text-align: center;
+    color: white;
+    padding: 0px 11px 0px 11px;
+}
+
+.timeNum {
+    font-weight: 500;
+    padding-top: 40px;
+    margin-bottom: 2px;
+    font-size: 40px;
+}
+
+.timeNum span {
+    font-size: 16px;
+    margin-left: 8px;
+}
+
+.timeType {
+    font-size: 14px;
+}
+
+.social { background-color: #D53964; }
+.work { background-color: #F6C245; }
+.school { background-color: #99C05D; }
+.family { background-color: #4897EC; }
+.misc { background-color: #8E37AA; }
