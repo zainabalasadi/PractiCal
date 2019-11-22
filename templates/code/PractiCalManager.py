@@ -60,18 +60,15 @@ class PractiCalManager():
             return self._events[eid]
         return None
 
-    def getUserDetails(self, userID=None, userEmail=None):
-        if not userID and not userEmail: return None
-        _, fn, ln, email, _ = self.getUser(userID, userEmail)
-        return (fn, ln, email)
-
     # Returns tuple containing user information in the form
     # (first name, last name, email)
-    def getUserInfo(self, userID=None, email=None):
-        if userID and email: return None
-        user = self._db.getUser(userID=userID) if userID else \
-            self._db.getUser(email=email)
-        return tuple(user[1:]) if user else None
+    def getUserInfo(self, userID=None, userEmail=None):
+        if not userID and not userEmail: return None
+        try:
+            user = self._db.getUser(userID, userEmail)
+            return (user[1], user[2], user[3])
+        except:
+            return None
 
     # Returns true if new user is successfully created
     def createUser(self, firstName, lastName, email, password):
