@@ -269,10 +269,6 @@ footer a:hover {
     border-radius: 6px;
 }
 
-.MuiIconButton-root {
-    padding: 0px !important; 
-}
-
 /**** Time breakdowns ****/
 div.inline { 
     float:left; 

@@ -35,7 +35,7 @@ const styles = theme => ({
     addButton: {
         position: 'absolute',
         right: theme.spacing(5),
-        top: theme.spacing(18),
+        top: theme.spacing(17),
     },
     closeButton: {
         position: 'absolute',
@@ -180,7 +180,7 @@ class Sidebar extends Component {
                                 <ListItemText id={labelId} primary={`${item.name}`} />
                                     <ListItemSecondaryAction>
                                         <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick, this.handleDots.bind(this, `${item.name}`)}>
-                                            <MoreVertIcon />
+                                            <MoreVertIcon className="threeDots"/>
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                 </ListItem>
