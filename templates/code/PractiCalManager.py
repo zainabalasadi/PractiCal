@@ -427,7 +427,7 @@ class PractiCalManager():
                     self._db.setEvent(
                         eventID=updateObject.getID(),
                         newTitle=updateObject.getName(),
-                        newDecr=updateObject.getDescription(),
+                        newDescr=updateObject.getDescription(),
                         newStartDT=updateObject.getStartDateTime(),
                         newEndDT=updateObject.getEndDateTime(),
                         newCalendar=update.getCalendar().getName(),

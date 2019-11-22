@@ -94,6 +94,7 @@ def editEvent():
         if request.method == 'POST':
                 r = request.get_json()
                 event = PCM.getEventByID(r['eventId'])
+                print(event)
                 if event is not None:
                         if (event.getName() != r['name']):
                                 event.setName(r['name'])
@@ -101,6 +102,8 @@ def editEvent():
                                 event.setDescription(r['desc'])
                         if event.getStartDateTime() != r['startDate']:
                                 event.setStartDateTime(r['startDate'])
+                                print("time changed")
+                                print(event.getStartDateTime())
                         if event.getEndDateTime() != r['endDate']:
                                 event.setEndDateTime(r['endDate'])
                         if event.getCategory() != r['category']:
@@ -112,6 +115,7 @@ def editEvent():
                         PCM.sendNotification(event.getID(),
                                 current_user.getID(), event.getInvitees(),
                                 Notification.NOTIF_EVENTCHANGE)
+                        print("edited")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
