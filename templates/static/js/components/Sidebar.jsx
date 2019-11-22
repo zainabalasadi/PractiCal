@@ -182,7 +182,7 @@ class Sidebar extends Component {
                         open={Boolean(this.props.anchorEl)}
                         onClose={this.props.handleClose}>
                           <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                          <MenuItem onClick={this.delete_calendar(`${item.name}`)}>Delete</MenuItem>
+                          <MenuItem>Delete</MenuItem>
                       </Menu>
                       </div>
                     );

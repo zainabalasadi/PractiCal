@@ -181,10 +181,10 @@ class Cal extends Component {
 
     // Function to edit event in back-end
     edit_event(event) {
-        // console.log(JSON.stringify({"name": event.title, "desc": event.desc,
-        //                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-        //                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-        //                     "category": event.category}))
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc,
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category}))
         let response = fetch('/editEvent', {
             method: 'POST',
             headers: {
@@ -482,8 +482,10 @@ class Cal extends Component {
 
         var s = new Date(start)
         console.log(s)
+        console.log(start)
         var e = new Date(end)
         console.log(e)
+        console.log(end)
         console.log("HELLO WORLD")
 
         updatedEvent[index].title = title;
@@ -496,9 +498,21 @@ class Cal extends Component {
         updatedEvent[index].eventId = eventId;
         updatedEvent[index].category = category;
 
+        let eventFE = {
+            "title": title,
+            "desc": desc,
+            "start": start,
+            "end": end,
+            "invitees": invitees,
+            "groups": groups,
+            "calendar": calendar,
+            "eventId": eventId,
+            "category": category,
+        };
+
         this.setState({ events: updatedEvent });
         this.forceUpdate()
-        this.edit_event(updatedEvent[index])
+        this.edit_event(eventFE)
     }
 
     // Filters out specific event that is to be deleted and set that variable to state
