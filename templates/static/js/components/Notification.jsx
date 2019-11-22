@@ -28,7 +28,8 @@ class Notification extends React.Component {
         method: 'GET'
 
       }).then((data) => data.json()).then(data => {
-        this.setState({"notifs": data})
+        this.setState({notifs: data})
+        console.log("hello")
       });
       //   this.renderComponentsFromList(data)
       // }).then((render) => {
