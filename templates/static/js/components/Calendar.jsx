@@ -17,9 +17,7 @@ import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 
 import "!style-loader!css-loader!react-big-calendar/lib/css/react-big-calendar.css";
-import { withStyles } from "@material-ui/core/styles";
-
-
+import { withStyles } from "@material-ui/core/styles"
 
 // Initialise time localiser
 const localizer = momentLocalizer(moment)
@@ -30,9 +28,9 @@ const navHeight = 75;
 const styles = theme => ({
     calendar: {
         height: `calc(100% - ${navHeight}px - 40px)`, 
+        width: `calc(100% - ${drawerWidth}px + 1px)`,
         top: navHeight,
         position: "fixed", 
-        width: `calc(100% - ${drawerWidth}px + 1px)`,
         marginLeft: "15px"
     },
     root: {
@@ -408,12 +406,29 @@ class Cal extends Component {
     };
 
     setNewCalendar = () => {
-        const { name, colour } = this.props;
+        const { name, colour } = this.state;
         let newCal = { name, colour };
-        let calendars = this.props.calendars.slice();
+        let calendars = this.state.calendars.slice();
         calendars.push(newCal);
         this.setState({ calendars });
         this.create_calendar(newCal)
+    }
+
+    create_calendar(calendar) {
+        let response = fetch('/createCalendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
+        }).then((data) => data.json()).then(cal => {
+            if (cal.success) {
+                console.log("Created calendar successfully")
+                this.state.calendars.push(calendar)
+            } else {
+                console.log("Failed calendar creation")
+            }
+        });
     }
 
     handleClick = (event) => {
@@ -931,7 +946,8 @@ class Cal extends Component {
                     handleCreateOpen={this.handleCreateOpen} handleClose={this.handleClose}
                     handleDeleteCal={this.handleDeleteCal} setCalName={this.setCalName}
                     setCalColour={this.setCalColour} setNewCalendar={this.setNewCalendar}
-                    handleClick={this.handleClick} setNlpBarState={this.handleNlpTextbox}/>
+                    handleClick={this.handleClick} setNlpBarState={this.handleNlpTextbox}
+                    events={this.state.events}/>
             </div>
         );
     }

@@ -67,6 +67,10 @@ h3 {
 .MuiMenu-paper {
     border: 1px solid #F2F3F4;
 }
+
+.MuiListItemIcon-root, .Sidebar-check-148 {
+    min-width: 0px !important;
+}
   
 .calenderContainer {
     margin-top: 10vh;

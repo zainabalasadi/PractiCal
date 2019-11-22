@@ -283,6 +283,15 @@ class User(UserMixin):
 					listOfEvents.append(event)
 		return listOfEvents
 
+	def calculateHoursCategory(self):
+		l = [0, 0, 0, 0]
+		for calendar in self.getCalendars():
+			l[0] += calendar.calculateHoursCategory("Work", datetime.datetime.now())
+			l[1] += calendar.calculateHoursCategory("Social", datetime.datetime.now())
+			l[2] += calendar.calculateHoursCategory("School", datetime.datetime.now())
+			l[3] += calendar.calculateHoursCategory("Family", datetime.datetime.now())
+		return l
+
 	def getEventsByQuery(self, queryString):
 		return list(set(self.searchEventsByTitle(queryString)) | set(self.searchEventsByDescription(queryString)))
 		# + self.searchEventsByHost(queryString)
@@ -305,23 +314,3 @@ class User(UserMixin):
 	#
 	# Other
 	#
-	def calculateHoursCategory(self):
-		# l = {"Work":0,
-		#         "Social":0,
-		#         "School":0,
-		#         "Family":0
-		#         }
-
-		# for category in l.keys():
-		# 	time = 0
-		# 	for calendar in self.getCalendars():
-		# 		time += calendar.calculateHoursCategory(category, datetime.datetime.now())
-		# 	l[category] = time
-        l = [0, 0, 0, 0]
-        for calendar in getCalendars():
-            l[0] += calendar.calculateHoursCategory("Work", datetime.datetime.now())
-            l[1] += calendar.calculateHoursCategory("Social", datetime.datetime.now())
-            l[2] += calendar.calculateHoursCategory("School", datetime.datetime.now())
-            l[3] += calendar.calculateHoursCategory("Family", datetime.datetime.now())
-		return l
-

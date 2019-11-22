@@ -258,7 +258,7 @@ class Navbar extends Component {
                     </div>
                     
                     <div className={classes.grow} />
-                    <Notification data={this.get_notifs()}/>
+                    <Notification /*data={this.get_notifs()}*//>
                     <TimeBreakdown/>
                     <div>
                         <IconButton color="inherit" onClick={this.handleContactOpen}>

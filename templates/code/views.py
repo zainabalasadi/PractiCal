@@ -318,8 +318,10 @@ def getNotifs():
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
 def getCategoryHours():
+        print(current_user.calculateHoursCategory())
         if request.method == 'GET':
-                return current_user.calculateHoursCategory()
+                
+                return jsonify(current_user.calculateHoursCategory())
 
 
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
@@ -331,30 +333,28 @@ def getName():
 @index_blueprint.route('/createCalendar', methods=['POST'])
 @login_required
 def createCalendar():
-        if request.method == 'POST':
-                r = request.get_json()
-                userId = current_user.getID()
-                name = r['name']
-                colour = r['colour']
-                if (current_user.getCalendarByName(name) == None):
-                        newCalendar = Calendar(name, colour)
-                        current_user.addCalendar(newCalendar)
-                        PCM.addToUpdateQueue(userId, current_user,
-                            PCM.DBUpdate.DB_UPDATE_USER)
-                        return jsonify({"success": "True"})
-                return jsonify({"success": "False"})
+    if request.method == 'POST':
+        r = request.get_json()
+        userId = current_user.getID()
+        name = r['name']
+        colour = r['colour']
+        if (current_user.getCalendarByName(name) == None):
+            newCalendar = Calendar(name, colour)
+            current_user.addCalendar(newCalendar)
+            PCM.addToUpdateQueue(userId, current_user, PCM.DBUpdate.DB_UPDATE_USER)
+            return jsonify({"success": "True"})
+        return jsonify({"success": "False"})
+
 
 @index_blueprint.route('/deleteCalendar', methods=['POST'])
 @login_required
 def deleteCalendar():
-        if request.method == 'POST':
-                r = request.get_json()
-                userId = current_user.getID()
-                name = r['name']
-                calendar = current_user.getCalendarByName(name)
-                if current_user.getCalendarByName(name) is not None:
-                        current_user.deleteCalendar(calendar)
-                        PCM.addToUpdateQueue(userId, current_user,
-                            PCM.DBUpdate.DB_UPDATE_USER)
-                        return jsonify({"success": "True"})
-                return jsonify({"success": "False"})
+    if request.method == 'POST':
+        r = request.get_json()
+        name = r['name']
+        calendar = current_user.getCalendarByName(name)
+        if calendar is not None:
+            current_user.deleteCalendar(calendar)
+            # PCM??
+            return jsonify({"success": "True"})
+    return jsonify({"success": "False"})

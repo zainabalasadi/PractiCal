@@ -27,8 +27,10 @@ class TimeBreakdown extends Component {
             open: false,
             setOpen: false,
             userName: "",
+            breakdown: [],
         };
         this.handleClose = this.handleClose.bind(this);
+        this.getHours = this.getHours.bind(this);
         this.handleClickOpen = this.handleClickOpen.bind(this);
     };
 
@@ -51,6 +53,7 @@ class TimeBreakdown extends Component {
 
     handleClickOpen() {
         this.setState({ setOpen: true });
+        this.getHours()
     }
 
     // Closes modal
@@ -62,7 +65,7 @@ class TimeBreakdown extends Component {
         let response = fetch('/getCategoryHours', {
             method: 'GET'
 
-        }).then((data) => data.json());
+        }).then((data) => data.json()).then(data => this.setState({ breakdown: data }));
     }
 
     render() {
@@ -85,14 +88,13 @@ class TimeBreakdown extends Component {
                 <DialogContent>
                     <DialogContentText>
                         Last week, you spent:
-                        {
-                            this.getHours().map(([name, time]) => {
-                            return (
-                                <h1>`${name} ${time}`</h1>
-                            );
-                        })}
                     </DialogContentText>
                 </DialogContent>
+                {this.state.breakdown.map(item => {
+                            return (
+                                <h1>{item}</h1>
+                            );
+                            })}
             </Dialog>
         </div>
         );
