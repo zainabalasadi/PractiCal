@@ -29,9 +29,9 @@ const navHeight = 75;
 
 const styles = theme => ({
     calendar: {
-        height: `calc(100% - ${navHeight}px - 40px)`, 
+        height: `calc(100% - ${navHeight}px - 40px)`,
         top: navHeight,
-        position: "fixed", 
+        position: "fixed",
         width: `calc(100% - ${drawerWidth}px + 1px)`,
         marginLeft: "15px"
     },
@@ -82,13 +82,13 @@ const styles = theme => ({
         top: theme.spacing(1),
     },
     iconDiv: {
-        position: 'relative', 
+        position: 'relative',
         display: 'inline-block'
     },
     icon: {
-        position: 'absolute', 
-        left: 4, 
-        top: 10, 
+        position: 'absolute',
+        left: 4,
+        top: 10,
         width: 20, height: 20,
         marginRight: 50,
     },
@@ -96,7 +96,7 @@ const styles = theme => ({
 
 
 // Load events
-class Cal extends Component {  
+class Cal extends Component {
     constructor() {
         super();
         this.state = {
@@ -131,9 +131,9 @@ class Cal extends Component {
     renderSearchList(list) {
         return (
         <table>
-        <tr> 
-            <th>Title</th> 
-            <th>Description</th> 
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
             <th>Start Time</th>
             <th>End Time:</th>
         </tr>
@@ -141,7 +141,7 @@ class Cal extends Component {
             return (
                 <tr>
                     <td>{e.title}</td>
-                    <td>{e.desc}</td>  
+                    <td>{e.desc}</td>
                     <td>{e.start}</td>
                     <td>{e.end}</td>
                 </tr>
@@ -150,23 +150,23 @@ class Cal extends Component {
 
         )
 
-        
+
     }
 
     // Function to create event and send to back-end
     create_event(event) {
         //console.log(event)
         // console.log(event.state)
-        console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
-                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category}))
+        // console.log(JSON.stringify({"name": event.title, "desc": event.desc,
+        //                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+        //                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+        //                     "category": event.category}))
         let response = fetch('/createEvent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-        body: JSON.stringify({"name": event.title, "desc": event.desc, 
+        body: JSON.stringify({"name": event.title, "desc": event.desc,
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
                             "category": event.category})}).then((data) => data.json()).then(event => {
@@ -189,26 +189,26 @@ class Cal extends Component {
 
     // Function to edit event in back-end
     edit_event(event) {
-        console.log(JSON.stringify({"name": event.title, "desc": event.desc, 
-                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category}))
+        // console.log(JSON.stringify({"name": event.title, "desc": event.desc,
+        //                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+        //                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+        //                     "category": event.category}))
         let response = fetch('/editEvent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-        body: JSON.stringify({"name": event.title, "desc": event.desc, 
+        body: JSON.stringify({"name": event.title, "desc": event.desc,
                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
                             "category": event.category})}).then((data) => data.json()).then(data => this.forceUpdate());
     }
 
     delete_event(event) {
-        console.log(JSON.stringify({"name": event.title, "desc": event.desc,
-                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-                            "category": event.category}))
+        // console.log(JSON.stringify({"name": event.title, "desc": event.desc,
+        //                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+        //                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+        //                     "category": event.category}))
         let response = fetch('/deleteEvent', {
             method: 'POST',
             headers: {
@@ -232,14 +232,14 @@ class Cal extends Component {
             this.state.calendars.push(calendarList.calendars[i])
             for (var j = 0 ; j < calendarList.calendars[i].events.length; j++) {
                 //var startStr = JSON.parse(calendarList.calendars[i].events[j].start)
-                console.log(calendarList.calendars[i].events[j].start)
+                // console.log(calendarList.calendars[i].events[j].start)
                 var start = new Date(calendarList.calendars[i].events[j].start)
                 calendarList.calendars[i].events[j].start = start
 
                 var end = new Date(calendarList.calendars[i].events[j].end)
                 calendarList.calendars[i].events[j].end = end
-                console.log(calendarList.calendars[i].events[j].start)
-                
+                // console.log(calendarList.calendars[i].events[j].start)
+
                 // Add colour as attribute
                 calendarList.calendars[i].events[j].colour = calendarList.calendars[i].colour;
                 this.state.events.push(calendarList.calendars[i].events[j])
@@ -262,7 +262,7 @@ class Cal extends Component {
     // }
 
     formatDateStart(date) {
-        
+
         var today = new Date();
 
         var d = new Date(date),
@@ -271,18 +271,18 @@ class Cal extends Component {
             year = d.getFullYear(),
             hour = '' + d.getHours(),
             min = '' + d.getMinutes();
-        
+
         // console.log(d)
-    
-        if (month.length < 2) 
+
+        if (month.length < 2)
             month = '0' + month;
-        if (day.length < 2) 
+        if (day.length < 2)
             day = '0' + day;
-        if (hour.length < 2) 
+        if (hour.length < 2)
             hour = '0' + hour;
-        if (min.length < 2) 
+        if (min.length < 2)
             min = '0' + min;
-    
+
         return [year, month, day].join('-') + "T" + hour + ":" + '00';
     }
 
@@ -296,18 +296,18 @@ class Cal extends Component {
             year = d.getFullYear(),
             hour = '' + (d.getHours()),
             min = '' + d.getMinutes();
-        
+
         // console.log(d)
-    
-        if (month.length < 2) 
+
+        if (month.length < 2)
             month = '0' + month;
-        if (day.length < 2) 
+        if (day.length < 2)
             day = '0' + day;
-        if (hour.length < 2) 
+        if (hour.length < 2)
             hour = '0' + hour;
-        if (min.length < 2) 
+        if (min.length < 2)
             min = '0' + min;
-    
+
         return [year, month, day].join('-') + "T" + hour + ":" + '00';
     }
 
@@ -318,21 +318,21 @@ class Cal extends Component {
             year = d.getFullYear(),
             hour = '' + d.getHours(),
             min = '' + d.getMinutes();
-        
+
         // console.log(d)
-    
-        if (month.length < 2) 
+
+        if (month.length < 2)
             month = '0' + month;
-        if (day.length < 2) 
+        if (day.length < 2)
             day = '0' + day;
-        if (hour.length < 2) 
+        if (hour.length < 2)
             hour = '0' + hour;
-        if (min.length < 2) 
+        if (min.length < 2)
             min = '0' + min;
-    
+
         return [year, month, day].join('-') + "T" + hour + ":" + min;
     }
-        
+
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
         console.log(eventToEdit.start);
@@ -349,7 +349,7 @@ class Cal extends Component {
             category: eventToEdit.category,
         });
     }
-        
+
     //  Allows user to click on existing event
     handleEventSelected(event) {
         // console.log("event", event);
@@ -367,7 +367,7 @@ class Cal extends Component {
             category: event.category,
         });
     }
-        
+
     // Sets the state of events
     setTitle(e) { this.setState({ title: e }); }
     setDescription(e) { this.setState({ desc: e }); }
@@ -377,17 +377,17 @@ class Cal extends Component {
     setStart(e) { this.setState({ start: e }); }
     setEnd(e) { this.setState({ end: e }); }
     setCategory(e) { this.setState({ category: e }); }
-        
+
     // Handle's start time select
     handleStartTime = (event, date) => {
         this.setState({ start: date });
     };
-     
+
     // Handle's end time select
     handleEndTime = (event, date) => {
         this.setState({ end: date });
     };
-        
+
     // Onclick callback function that pushes new event into events array.
     setNewEvent() {
         const { title, desc, start, end, invitees, groups, calendar, eventId, category } = this.state;
@@ -399,7 +399,7 @@ class Cal extends Component {
         var e = new Date(end)
         console.log(e)
 
-        let eventFE = { 
+        let eventFE = {
             "title": title,
             "desc": desc,
             "start": s,
@@ -415,10 +415,10 @@ class Cal extends Component {
         this.setState({ events });
         this.create_event(event)
     }
-        
+
     // Updates Existing Event Title and/or Description
     updateEvent() {
-        const { title, desc, start, end, events, invitees, groups, calendar, 
+        const { title, desc, start, end, events, invitees, groups, calendar,
                 clickedEvent, eventId, category } = this.state;
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
@@ -446,7 +446,7 @@ class Cal extends Component {
         this.forceUpdate()
         this.edit_event(updatedEvent[index])
     }
-        
+
     // Filters out specific event that is to be deleted and set that variable to state
     deleteEvent() {
         let updatedEvents = this.state.events.filter (
@@ -463,7 +463,7 @@ class Cal extends Component {
     }
 
     eventStyleGetter(event) {
-        console.log(event);
+        // console.log(event);
         var backgroundColor = event.colour;
         var style = {
             backgroundColor: backgroundColor,
@@ -498,7 +498,7 @@ class Cal extends Component {
                   onSelectSlot = {slotInfo => this.handleSlotSelected(slotInfo)}
                   onSelectEvent = {event => this.handleEventSelected(event)}
                   eventPropGetter={(this.eventStyleGetter)}
-                
+
                 />
                 {/* Modal for booking new event */}
                 <Dialog contentStyle={{width: "100%", maxWidth: "none"}} open={this.state.openSlot} onClose={this.handleClose} onEntered={this.handleOpenDialog}>
@@ -508,7 +508,7 @@ class Cal extends Component {
                   <DialogContent>
                     <TextField className={classes.title}
                     inputProps={{
-                        style: {fontSize: 23} 
+                        style: {fontSize: 23}
                     }}
                     placeholder="Add title"
                     autoFocus
@@ -519,7 +519,7 @@ class Cal extends Component {
                     />
                     <div className={classes.iconDiv}>
                         <ScheduleIcon className={classes.icon}/>
-                        <TextField 
+                        <TextField
                           className={classes.inputMargin}
                           InputProps={{disableUnderline: true}}
                           type="datetime-local"
@@ -529,7 +529,7 @@ class Cal extends Component {
                             this.setStart(e.target.value), this.handleStartTime;
                           }}
                         />
-                        <TextField 
+                        <TextField
                           className={classes.inputMargin}
                           type="datetime-local"
                           defaultValue={this.formatDateEnd(this.state.end)}
@@ -542,7 +542,7 @@ class Cal extends Component {
                     </div>
                     <div className={classes.iconDiv}>
                         <NotesIcon className={classes.icon}/>
-                        <TextField 
+                        <TextField
                           className={classes.inputMargin}
                           placeholder="Add description"
                           margin="dense"
@@ -555,7 +555,7 @@ class Cal extends Component {
 
                     <div className={classes.iconDiv}>
                         <GroupIcon className={classes.icon}/>
-                        <TextField 
+                        <TextField
                           className={classes.inputMargin}
                           placeholder="Add invitees"
                           margin="dense"
@@ -565,7 +565,7 @@ class Cal extends Component {
                           }}
                         />
 
-                        <TextField 
+                        <TextField
                           className={classes.inputMargin}
                           placeholder="Add group invitees"
                           margin="dense"
@@ -573,7 +573,7 @@ class Cal extends Component {
                           onChange={e => {
                             this.setGroups(e.target.value);
                           }}
-                        /> 
+                        />
                     </div>
                     <div className={classes.iconDiv}>
                         <CalendarTodayIcon className={classes.icon}/>
@@ -593,7 +593,7 @@ class Cal extends Component {
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
                             );
                         })}
-                        </Select> 
+                        </Select>
                     </div><br />
                     <div className={classes.iconDiv}>
                         <CategoryIcon className={classes.icon}/>
@@ -611,14 +611,14 @@ class Cal extends Component {
                         <option value="Social">Social</option>
                         <option value="School">School</option>
                         <option value="Family">Family</option>
-                        
-                        </Select> 
-                    </div>                 
+
+                        </Select>
+                    </div>
                   </DialogContent>
                   <DialogActions>
                     <Button
                     label="Submit"
-                    variant="contained" 
+                    variant="contained"
                     color="primary"
                     onClick={() => {
                         console.log(this.state.start)
@@ -641,10 +641,10 @@ class Cal extends Component {
                     <CloseIcon />
                 </IconButton>
                   <DialogContent>
-                    <TextField 
+                    <TextField
                     className={classes.title}
                     inputProps={{
-                        style: {fontSize: 23} 
+                        style: {fontSize: 23}
                     }}
                     placeholder="Add title"
                     autoFocus
@@ -711,7 +711,7 @@ class Cal extends Component {
                           onChange={e => {
                             this.setGroup(e.target.value);
                           }}
-                        /> 
+                        />
                     </div>
                     <div className={classes.iconDiv}>
                         <CalendarTodayIcon className={classes.icon}/>
@@ -730,7 +730,7 @@ class Cal extends Component {
                                 <option value={`${item.name}`}>{`${item.name}`}</option>
                             );
                         })}
-                        </Select> 
+                        </Select>
                     </div><br />
                     <div className={classes.iconDiv}>
                         <CategoryIcon className={classes.icon}/>
@@ -747,14 +747,14 @@ class Cal extends Component {
                         <option value="Social">Social</option>
                         <option value="School">School</option>
                         <option value="Family">Family</option>
-                        
-                        </Select> 
-                    </div> 
+
+                        </Select>
+                    </div>
                   </DialogContent>
                   <DialogActions>
                     <Button
                     label="Delete"
-                    variant="contained" 
+                    variant="contained"
                     color="primary"
                     onClick={() => {
                       this.deleteEvent(), this.handleClose();
@@ -764,7 +764,7 @@ class Cal extends Component {
                     </Button>
                     <Button
                     label="Edit"
-                    variant="contained" 
+                    variant="contained"
                     color="primary"
                     onClick={() => {
                         if (new Date(this.state.start) >= new Date(this.state.end)) {
@@ -783,7 +783,7 @@ class Cal extends Component {
                   </DialogActions>
                 </Dialog>
 
-                <Dialog 
+                <Dialog
                 open={this.state.searchOpen}
                 onClose={this.handleSearchClose}
                 aria-labelledby="alert-dialog-title"
@@ -797,10 +797,10 @@ class Cal extends Component {
                         {this.renderSearchList(this.state.searchResult)}
                     </DialogContentText>
                 </DialogContent>
-                    
+
                 </Dialog>
 
-                
+
             </main>
             <Sidebar />
             </div>
@@ -863,4 +863,3 @@ export let navigate = {
 }
 
 export default withStyles(styles)(Cal);
-
