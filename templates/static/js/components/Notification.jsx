@@ -12,15 +12,48 @@ const styles = theme => ({
 });
 
 class Notification extends React.Component {
-  	state = {
-    	anchorEl: null,
-  	};
+    constructor() {
+      super()
+      this.state = {
+        notifs: [],
+        anchorEl: null
+      }
+    };
+  	// state = {
+    //   notifs: [],
+    // 	anchorEl: null,
+  	// };
+    get_notifs() {
+      let response = fetch('/getNotifs', {
+        method: 'GET'
+
+      }).then((data) => data.json()).then(data => {
+        this.setState({"notifs": data})
+      });
+      //   this.renderComponentsFromList(data)
+      // }).then((render) => {
+      //   console.log("render:")
+      //   console.log(render)
+      //   return render
+      // });
+    }
+
+    renderComponentsFromList(list) {
+      return (
+        <div>
+        {list.map((notif) => {
+          return (
+            <MenuItem key={notif.id} onClick={this.handleClose}>{notif.message}</MenuItem>
+        )})}
+        </div>
+      )
+    }
 
   	handleClick = event => {
     	this.setState({ anchorEl: event.currentTarget });
   	};
 
-  	handleClose = () => {
+  	handleClose = (notif) => {
     	this.setState({ anchorEl: null });
   	};
 
@@ -40,9 +73,9 @@ class Notification extends React.Component {
 				open={Boolean(this.state.anchorEl)}
 				onClose={this.handleClose}
 			>
-				<MenuItem onClick={this.handleClose}>Notification</MenuItem>
-				<MenuItem onClick={this.handleClose}>Notification</MenuItem>
-				<MenuItem onClick={this.handleClose}>Notification</MenuItem>
+        <MenuItem onClick={this.handleClose}>Notification 1</MenuItem>
+        <MenuItem onClick={this.handleClose}>Notification 2</MenuItem>
+        <MenuItem onClick={this.handleClose}>Notification 3</MenuItem>
 			</Menu>
 			</div>
 		);
