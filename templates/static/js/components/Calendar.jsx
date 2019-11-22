@@ -332,6 +332,8 @@ class Cal extends Component {
     //  Allows user to click on existing event
     handleEventSelected(event) {
         // console.log("event", event);
+        console.log(event.start)
+        console.log(event.end)
         this.setState ({
             openEvent: true,
             clickedEvent: event,
@@ -480,18 +482,22 @@ class Cal extends Component {
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
 
+         console.log("for FE")
         var s = new Date(start)
         console.log(s)
-        console.log(start)
         var e = new Date(end)
         console.log(e)
+        console.log("for BE")
+        console.log(start)
         console.log(end)
+
+
         console.log("HELLO WORLD")
 
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
-        updatedEvent[index].start = s;
-        updatedEvent[index].end = e;
+        updatedEvent[index].start = start;
+        updatedEvent[index].end = end;
         updatedEvent[index].invitees = invitees;
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
@@ -501,8 +507,8 @@ class Cal extends Component {
         let eventFE = {
             "title": title,
             "desc": desc,
-            "start": start,
-            "end": end,
+            "start": this.formatActualDate(start),
+            "end": this.formatActualDate(end),
             "invitees": invitees,
             "groups": groups,
             "calendar": calendar,
