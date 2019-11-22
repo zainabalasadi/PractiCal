@@ -100,9 +100,19 @@ def editEvent():
                         if event.getDescription() != r['desc']:
                                 event.setDescription(r['desc'])
                         if event.getStartDateTime() != r['startDate']:
-                                event.setStartDateTime(r['startDate'])
+                                if (len(r['startDate']) == 16):
+                                    event.setStartDateTime(r['startDate'])
+                                    print(event.getStartDateTime())
+                                elif (len(r['startDate']) == 24):
+                                    event.setStartDateTime(r['startDate'][:-8])
+                                    print(event.getStartDateTime())
                         if event.getEndDateTime() != r['endDate']:
-                                event.setEndDateTime(r['endDate'])
+                                if (len(r['endDate']) == 16):
+                                    event.setEndDateTime(r['endDate'])
+                                    print(event.getEndDateTime())
+                                elif (len(r['endDate']) == 24):
+                                    event.setEndDateTime(r['endDate'][:-8])
+                                    print(event.getEndDateTime())
                         if event.getCategory() != r['category']:
                                 event.setCategory(r['category'])
                         current_user.moveEvent(event, r['calendar'])
@@ -112,6 +122,7 @@ def editEvent():
                         PCM.sendNotification(event.getID(),
                                 current_user.getID(), event.getInvitees(),
                                 Notification.NOTIF_EVENTCHANGE)
+                        print("edited")
                         return jsonify({"success": "True"})
 
                 return jsonify({"success": "False"})
@@ -318,10 +329,16 @@ def getNotifs():
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
 def getCategoryHours():
-        print(current_user.calculateHoursCategory())
-        if request.method == 'GET':
-                
-                return jsonify(current_user.calculateHoursCategory())
+        # return "HI"
+        item = (current_user.calculateHoursCategory())
+        print(item['Family'])
+        print(item["Work"])
+        print(item['School'])
+        print(item['Social'])
+        print(item['Miscellaneous'])
+
+        # if request.method == 'GET':
+        return jsonify(item)
 
 
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
@@ -358,3 +375,14 @@ def deleteCalendar():
             # PCM??
             return jsonify({"success": "True"})
     return jsonify({"success": "False"})
+
+
+@index_blueprint.route('/addContact', methods=['POST'])
+@login_required
+def addContact():
+    if request.method == 'POST':
+        r = request.get_json()
+        email = r['email']
+        current_user.addContact('email')
+        return jsonify({"success": "True"})
+

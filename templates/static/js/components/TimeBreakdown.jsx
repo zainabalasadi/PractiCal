@@ -14,7 +14,7 @@ const styles = theme => ({
     },
     heading: {
         fontSize: 100,
-        margin: '20px 0 20px 0',
+        margin: '20px 0 10px 0',
     }
 });
 
@@ -28,6 +28,10 @@ class TimeBreakdown extends Component {
             setOpen: false,
             userName: "",
             breakdown: [],
+            family:"",
+            social:"",
+            school:"",
+            work:"",
         };
         this.handleClose = this.handleClose.bind(this);
         this.getHours = this.getHours.bind(this);
@@ -65,7 +69,16 @@ class TimeBreakdown extends Component {
         let response = fetch('/getCategoryHours', {
             method: 'GET'
 
-        }).then((data) => data.json()).then(data => this.setState({ breakdown: data }));
+        }).then((data) => data.json()).then(data => this.renderHours(data));//then(data => this.setState({ breakdown: data }));
+    }
+
+    renderHours(data) {
+        this.setState({ social: data['Social'] });
+        this.setState({ family: data['Family'] });
+        this.setState({ school: data['School'] });
+        this.setState({ work: data['Work'] });
+        this.setState({ misc: data['Miscellaneous'] });
+        console.log(this.state.social)
     }
 
     render() {
@@ -76,6 +89,7 @@ class TimeBreakdown extends Component {
                 <TimelineIcon />
             </IconButton>
             <Dialog
+            maxWidth = {'md'}
             open={this.state.setOpen}
             onClose={this.handleClose}
             aria-labelledby="alert-dialog-title"
@@ -87,14 +101,29 @@ class TimeBreakdown extends Component {
                 <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Last week, you spent:
+                    <p className="timeIntro">Last week, you spent:</p>
+                    <div class="inline social tiles">
+                        <p class="timeNum">{this.state.social}<span>hours</span></p>
+                        <p class="timeType">on social events</p>                    
+                    </div>
+                    <div class="inline work tiles">
+                        <p class="timeNum">{this.state.work}<span>hours</span></p>
+                        <p class="timeType">on work events</p>                    
+                    </div>
+                    <div class="inline school tiles">
+                        <p class="timeNum">{this.state.school}<span>hours</span></p>
+                        <p class="timeType">on school events</p>                    
+                    </div>
+                    <div class="inline family tiles">
+                        <p class="timeNum">{this.state.family}<span>hours</span></p>
+                        <p class="timeType">on family events</p>                    
+                    </div>
+                    <div class="inline misc tiles">
+                        <p class="timeNum">{this.state.misc}<span>hours</span></p>
+                        <p class="timeType">on miscellaneous events</p>                    
+                    </div>
                     </DialogContentText>
                 </DialogContent>
-                {this.state.breakdown.map(item => {
-                            return (
-                                <h1>{item}</h1>
-                            );
-                            })}
             </Dialog>
         </div>
         );

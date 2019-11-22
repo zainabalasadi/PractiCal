@@ -287,6 +287,20 @@ class User(UserMixin):
         return list(set(self.searchEventsByTitle(queryString)) | set(self.searchEventsByDescription(queryString)))
         # + self.searchEventsByHost(queryString)
 
+    def calculateHoursCategory(self):
+        l = {"Work": 0,
+             "Social": 0,
+             "School": 0,
+             "Family": 0,
+             "Miscellaneous": 0,
+             }
+        for category in l.keys():
+            time = 0
+            for calendar in self.getCalendars():
+                time += calendar.calculateHoursCategory(category, datetime.datetime.now())
+            l[category] = time
+        return l
+
     # MOVED TO views.py because PCM needed
     # search through events by host
     # def searchEventsByHost(self, host):

@@ -9,10 +9,11 @@ creation, event creation and database setup as these are the basis of other feat
 was assigned to work on user facing features with Michael.
 
 What did I do yesterday? Yesterday, I worked on adding all the user stories we have 
-decided to complete to the icebox on pivotal tracker.
+decided to complete to the icebox on pivotal tracker. 
 
 What will I do today? Today, I will continue to add tasks and user acceptance criteria
-to the pivotal tracker so that we are aware of exactly what we need to complete
+to the pivotal tracker so that we are aware of exactly what we need to complete. I am
+also going to work with Michael on completing a user story: Creating an account
 
 Is anything in my way? Some features that are allocated to me rely on interface 
 components, since this is the first week of development and we are focusing more on
@@ -25,8 +26,8 @@ Today, we held another weekly meeting for Sprint #1 to discuss the progress of e
 and bring up any concerns we have. We decided to modify some architecture and enforce
 some code styling techniques. 
 
-What did I do yesterday? Yesterday, I worked on planning how I will tackle my assigned
-user stories and began scoping what attributes the user class will require
+What did I do yesterday? Yesterday, I worked on account creation and worked on scoping 
+what attributes the user class will require for account creation
 
 What will I do today? Today, I will complete the user class, with appropriate functions
 as well as implement test cases to ensure that the code works accordingly
@@ -46,7 +47,8 @@ the interface and created some additional screens to share with the team. I atta
 these designs to the corresponding user story.
 
 What will I do today? Today, I will add acceptance criteria to the stories in Sprint #2
-and research DialogFlow so that I can complete the NLP user story for this sprint
+and research DialogFlow so that I can complete the NLP user story for this sprint. I also
+plan to work on the invitees user story with Michael.
 
 Is anything in my way? Learning NLP before beginning to work on the user story might 
 slow down my progress slightly. 
@@ -57,7 +59,7 @@ Today, we held a meeting to discuss the end of Sprint #2 as well as planning for
 following sprint. The team again, worked on assigning the user stories.
 
 What did I do yesterday? Yesterday, I worked on setting up the Flask and React file
-structure with Morgan.
+structure with Morgan. 
 
 What will I do today? Today, I will continue to work on setting up the Flask and React
 so that the team and I are able to start creating the front end.
@@ -74,7 +76,9 @@ of the database so that everyone is on the same page, especially those working o
 back0end of the application.
 
 What did I do yesterday? Yesterday, I began setting up the calendar UI so that we have
-a interface to play around with.
+a interface to play around with. This involved setting up a basic calendar view and adding
+stub events that we can play around. I also added navigation elements so that we can flip
+between the months in the calendar.
 
 What will I do today? I will continue setting up the basic calendar UI and create acceptance
 criteria for the user stories.
@@ -94,7 +98,8 @@ What did I do yesterday? Yesterday, I continued working on the monthly view and 
 up buttons to use when the other calendar views are finished.
 
 What will I do today? I will work on adding acceptance criteria and more tasks to 
-Pivotal Tracker for the next sprint that will start tomorrow.
+Pivotal Tracker for the next sprint that will start tomorrow. I will also work on refining
+the monthly view so that once real events are loaded in, we can test the front-end.
 
 Is anything in my way? No.
 
@@ -108,8 +113,10 @@ What did I do yesterday? Yesterday, I worked on creating a universal stylesheet 
 I also imported the font styles and defined basic colours and headings so that the interface
 is consistent. I also worked on the group contact back-end feature with Derrick.
 
-What will I do today? Today, I will work onn organising the interface files as more team
-members are going to jump on the front end portion of the application soon.
+What will I do today? Today, I will work on organising the interface files as more team
+members are going to jump on the front end portion of the application soon. I will also
+begin the schedule view of the calendar and work on the adding calendars mechanism (both
+of which are user stories I am assigned to)
 
 Is anything in my way? Today, we found a bug within the system. The interface was not 
 rendering on other teammates computers. I suspect this is because some dependencies have
@@ -123,51 +130,70 @@ charge of. We also discussed other questions team mates have regarding their ass
 user stories.
 
 What did I do yesterday? Yesterday, I worked on creating tasks and user acceptance criteria
-to the user stories that are upcoming in the next iteration.
+to the user stories that are upcoming in the next iteration. I worked on attempting to change
+the date formats that are rendered in the schedule overview of events but I am finding this 
+difficult given I have little experience with Javascript.
 
 What will I do today? Today, I will work on the schedule overview of events. The basic
 structure of the interface for the schedule view is already created but requires some 
-modifications that require some time.
+modifications that require some time. Additionally, I will be working on a method to wire
+the schedule view to other components of the system.
 
 Is anything in my way? No.
 
 
 
 ## Meeting 9 (Sprint #5) - 6/11/19
-Today, 
+What did I do yesterday? Yesterday, I worked on setting up the user stories and details for
+chores and bugs that we are experiencing on Pivotal Tracker so that everyone is aware of what
+needs to be done.
 
-What did I do yesterday? 
+What will I do today? Today, I will work on understanding a bit more of the database so that
+I can better route the backend to the frontend and store any changes that are made by the user
+on the front-end
 
-What will I do today? 
-
-Is anything in my way?  
+Is anything in my way? No
 
 
 ## Meeting 10 (Sprint #5) - 11/11/19
-Today, 
+What did I do yesterday? Yesterday, I worked on refining the navigation bar component in react
+and converted all of our functional components to general components as they were giving errors
+when rendering the front end.
 
-What did I do yesterday? 
+What will I do today? Today, I will work on creating a calendar field when creating and editing
+events and refine the design of the creating and editing event modals.
 
-What will I do today? 
-
-Is anything in my way? 
+Is anything in my way? No
 
 
 ## Meeting 11 (Sprint #6) - 13/11/19
-Today, 
+What did I do yesterday? Yesterday, I worked on completing my assigned chores:
+- Displaying current date and time on all calendar views (month, week, day, schedule)
+- Create favicon and add logo's to the site 
+I also began preparing for the next user stories (added acceptance criteria and chores
+to pivotal tracker)
 
-What did I do yesterday? 
+What will I do today? Yesterday, I worked on
+- I added a calendar field when making new events
+- I created a basic modal to create new contacts and groups and added this to the front end
 
-What will I do today? 
-
-Is anything in my way? 
+Is anything in my way? I'm having some difficulty figuring out the routing functions we
+are using (as I am assigned to rendering calendars to the front end and that requires this
+function) but I will check with other team members for help with that
 
 
 ## Meeting 12 (Sprint #6) - 18/11/19
-Today, 
+What did I do yesterday? Yesterday, I worked on
+- I created a basic time breakdowns pop-up so that Derrick can paste the time breakdown 
+contents there
+- I fixed an issue regarding calendar fitting (the calendar viewed differently on different
+devices which squished other components)
+- I styled the date-pickers so that they view similarly on all devices
+- I created a custom event wrapper so that event UI's show time, title and are rendered in
+their calendar colours
 
-What did I do yesterday? 
+What will I do today? Today, I will work on rendering error messages for login and registering
+as well as create a method to render all a user's calendars onto the front end. I will also
+create routes to edit and delete such calendars. 
 
-What will I do today? 
-
-Is anything in my way? 
+Is anything in my way? Nothing in particular, mainly deadlines with other assignments.

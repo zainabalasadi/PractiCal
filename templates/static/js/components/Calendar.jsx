@@ -181,10 +181,10 @@ class Cal extends Component {
 
     // Function to edit event in back-end
     edit_event(event) {
-        // console.log(JSON.stringify({"name": event.title, "desc": event.desc,
-        //                             "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
-        //                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
-        //                     "category": event.category}))
+        console.log(JSON.stringify({"name": event.title, "desc": event.desc,
+                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
+                            "category": event.category}))
         let response = fetch('/editEvent', {
             method: 'POST',
             headers: {
@@ -332,6 +332,8 @@ class Cal extends Component {
     //  Allows user to click on existing event
     handleEventSelected(event) {
         // console.log("event", event);
+        console.log(event.start)
+        console.log(event.end)
         this.setState ({
             openEvent: true,
             clickedEvent: event,
@@ -480,25 +482,43 @@ class Cal extends Component {
         const index = events.findIndex(event => event === clickedEvent);
         const updatedEvent = events.slice();
 
+         console.log("for FE")
         var s = new Date(start)
         console.log(s)
         var e = new Date(end)
         console.log(e)
+        console.log("for BE")
+        console.log(start)
+        console.log(end)
+
+
         console.log("HELLO WORLD")
 
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
-        updatedEvent[index].start = s;
-        updatedEvent[index].end = e;
+        updatedEvent[index].start = start;
+        updatedEvent[index].end = end;
         updatedEvent[index].invitees = invitees;
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
         updatedEvent[index].eventId = eventId;
         updatedEvent[index].category = category;
 
+        let eventFE = {
+            "title": title,
+            "desc": desc,
+            "start": this.formatActualDate(start),
+            "end": this.formatActualDate(end),
+            "invitees": invitees,
+            "groups": groups,
+            "calendar": calendar,
+            "eventId": eventId,
+            "category": category,
+        };
+
         this.setState({ events: updatedEvent });
         this.forceUpdate()
-        this.edit_event(updatedEvent[index])
+        this.edit_event(eventFE)
     }
 
     // Filters out specific event that is to be deleted and set that variable to state
