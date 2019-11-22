@@ -323,9 +323,14 @@ def getNotifs():
 @login_required
 def getCategoryHours():
         # return "HI"
-        print(current_user.calculateHoursCategory())
+        item = (current_user.calculateHoursCategory())
+        print(item['Family'])
+        print(item["Work"])
+        print(item['School'])
+        print(item['Social'])
+
         # if request.method == 'GET':
-        return "True"
+        return jsonify(item)
 
 
 @index_blueprint.route('/getName', methods=['GET', 'POST'])

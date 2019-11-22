@@ -28,6 +28,10 @@ class TimeBreakdown extends Component {
             setOpen: false,
             userName: "",
             breakdown: [],
+            family:"",
+            social:"",
+            school:"",
+            work:"",
         };
         this.handleClose = this.handleClose.bind(this);
         this.getHours = this.getHours.bind(this);
@@ -65,7 +69,15 @@ class TimeBreakdown extends Component {
         let response = fetch('/getCategoryHours', {
             method: 'GET'
 
-        }).then((data) => data.json()).then(data => this.setState({ breakdown: data }));
+        }).then((data) => data.json()).then(data => this.renderHours(data));//then(data => this.setState({ breakdown: data }));
+    }
+
+    renderHours(data) {
+        this.setState({ social: data['Social'] });
+        this.setState({ family: data['Family'] });
+        this.setState({ school: data['School'] });
+        this.setState({ work: data['Work'] });
+        console.log(this.state.social)
     }
 
     render() {
@@ -87,14 +99,13 @@ class TimeBreakdown extends Component {
                 <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Last week, you spent:
+                        <b>Last week, you spent:<br></br></b>
+                        {this.state.social} hours on your Social Life<br></br>
+                        {this.state.work} hours on your Work Life<br></br>
+                        {this.state.school} hours on your School Life<br></br>
+                        {this.state.family} hours on your Family Life
                     </DialogContentText>
                 </DialogContent>
-                {this.state.breakdown.map(item => {
-                            return (
-                                <h1>{item}</h1>
-                            );
-                            })}
             </Dialog>
         </div>
         );
