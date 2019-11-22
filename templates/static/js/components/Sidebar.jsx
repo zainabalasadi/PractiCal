@@ -52,7 +52,7 @@ const styles = theme => ({
 });
 
 
-class Sidebar extends Component {  
+class Sidebar extends Component {
     constructor() {
         super()
         this.state = {
@@ -85,7 +85,7 @@ class Sidebar extends Component {
             'Content-Type': 'application/json;charset=utf-8'
           }
         }).then(response => response.json()).then(data => console.log(data))
-        // TODO Insert code to reflect changes in back end on the front end given the 
+        // TODO Insert code to reflect changes in back end on the front end given the
         // response from the fetch request
     }
 
@@ -118,7 +118,7 @@ class Sidebar extends Component {
                 let updatedCalendars = this.state.events.filter (
                     cal => cal["name"] !== calendar.name
                 );
-        
+
                 this.setState({ calendar: updatedCalendars });
             } else {
                 console.log("Failed calendar deleted")
@@ -201,15 +201,15 @@ class Sidebar extends Component {
 
     handleDeleteCal(calendarName) {
         var string = 'deleting' + calendarName
-        console.log(string)
+        // console.log(string)
     }
 
-    setCalName = e => { 
-        this.setState({ name: e }); 
+    setCalName = e => {
+        this.setState({ name: e });
     };
 
-    setCalColour = e => { 
-        this.setState({ colour: e.hex }); 
+    setCalColour = e => {
+        this.setState({ colour: e.hex });
     };
 
     setNewCalendar() {
@@ -282,7 +282,7 @@ class Sidebar extends Component {
                                         </IconButton>
                                     </ListItemSecondaryAction>
                             </ListItem>
-                            
+
                             {/* Menu for each calendar */}
                             <Menu
                               anchorEl={this.state.anchorEl}
@@ -307,7 +307,7 @@ class Sidebar extends Component {
                 NO CLICK ME
                 </Button>
                 {this.renderObject()}
-                
+
                 {/* Modal to create new calendar */}
                 <Dialog open={this.state.createPopUp} onClose={this.handleClose}>
                     <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
@@ -317,20 +317,20 @@ class Sidebar extends Component {
                         Create a new calendar
                     </DialogTitle>
                     <DialogContent>
-                        <TextField 
+                        <TextField
                           placeholder="Calendar Name"
                           margin="dense"
                           onChange={e => {
                             this.setCalName(e.target.value);
                           }}
                         />
-                        <CirclePicker 
+                        <CirclePicker
                           color={ this.state.colour }
                           onChangeComplete={ this.setCalColour }
                         />
                         <Button
                           label="Create Contact"
-                          variant="contained" 
+                          variant="contained"
                           color="primary"
                           onClick={() => {
                             this.setNewCalendar(), this.handleClose();
