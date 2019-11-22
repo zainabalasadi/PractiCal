@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@material
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from "@material-ui/core/styles";
+import TimelineIcon from '@material-ui/icons/Timeline';
 
 const styles = theme => ({
     closeButton: {
@@ -26,8 +27,10 @@ class TimeBreakdown extends Component {
             open: false,
             setOpen: false,
             userName: "",
+            breakdown: [],
         };
         this.handleClose = this.handleClose.bind(this);
+        this.getHours = this.getHours.bind(this);
         this.handleClickOpen = this.handleClickOpen.bind(this);
     };
 
@@ -50,6 +53,7 @@ class TimeBreakdown extends Component {
 
     handleClickOpen() {
         this.setState({ setOpen: true });
+        this.getHours()
     }
 
     // Closes modal
@@ -57,13 +61,20 @@ class TimeBreakdown extends Component {
         this.setState({ setOpen: false });
     }
 
+    getHours() {
+        let response = fetch('/getCategoryHours', {
+            method: 'GET'
+
+        }).then((data) => data.json()).then(data => this.setState({ breakdown: data }));
+    }
+
     render() {
         const { classes } = this.props;
         return (
         <div>
-            <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
-                TimeBreakdowns test button
-            </Button>
+            <IconButton color="inherit" onClick={this.handleClickOpen}>
+                <TimelineIcon />
+            </IconButton>
             <Dialog
             open={this.state.setOpen}
             onClose={this.handleClose}
@@ -76,9 +87,14 @@ class TimeBreakdown extends Component {
                 <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Last week, you spent
+                        Last week, you spent:
                     </DialogContentText>
                 </DialogContent>
+                {this.state.breakdown.map(item => {
+                            return (
+                                <h1>{item}</h1>
+                            );
+                            })}
             </Dialog>
         </div>
         );

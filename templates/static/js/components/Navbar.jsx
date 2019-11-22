@@ -5,7 +5,6 @@ import { Dialog, DialogTitle, DialogContent, Button, TextField, Typography } fro
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import PeopleIcon from '@material-ui/icons/People';
 import logo from '../../../public/logo.svg';
 import { withStyles } from "@material-ui/core/styles";
@@ -238,7 +237,7 @@ class Navbar extends Component {
                             <SearchIcon />
                         </div>
                         <InputBase
-                        fullWidth='true'
+                        fullWidth={true}
                         placeholder="Search"
                         classes={{
                             root: classes.inputRoot,
@@ -258,30 +257,19 @@ class Navbar extends Component {
                         }}
                         />
                     </div>
-                    <TimeBreakdown/>
+
                     <div className={classes.grow} />
-                    <Notification/>
+                    <Notification /*data={this.get_notifs()}*//>
+                    <TimeBreakdown/>
                     <div>
                         <IconButton color="inherit" onClick={this.handleContactOpen}>
                             <PeopleIcon />
                         </IconButton>
-{/*                         <IconButton color="inherit"> */}
-{/*                             <AccountCircle/> */}
-
-                            <a href="/index">
-                              <Button
-                                label="Logout"
-                                onClick={() => {
-                                    this.logout();
-                                }}
-                              >
+                            <a href="/">
+                              <Button label="Logout" onClick={() => { this.logout(); }}>
                                 LOGOUT
                               </Button>
                             </a>
-
-
-
-{/*                         </IconButton> */}
                     </div>
                 </Toolbar>
             </AppBar>

@@ -65,11 +65,12 @@ def createEvent():
                 userId = current_user.getID()
                 name = r['name']
                 desc = r['desc'] if 'desc' in r.keys() else ''
-                startDate = r['startDate'].replace('T', ' ')
-                endDate = r['endDate'].replace('T', ' ')
+                startDate = r['startDate']
+                endDate = r['endDate']
                 cal = current_user.getCalendarByName(r['calendar'])
                 category = r['category']
                 invitees = None
+                category = r['category']
                 if 'invitees' in r:
                         invitees = r['invitees']
                 groups = None
@@ -99,9 +100,9 @@ def editEvent():
                         if event.getDescription() != r['desc']:
                                 event.setDescription(r['desc'])
                         if event.getStartDateTime() != r['startDate']:
-                                event.setStartDateTime(r['startDate'].replace('T', ' '))
+                                event.setStartDateTime(r['startDate'])
                         if event.getEndDateTime() != r['endDate']:
-                                event.setEndDateTime(r['endDate'].replace('T', ' '))
+                                event.setEndDateTime(r['endDate'])
                         if event.getCategory() != r['category']:
                                 event.setCategory(r['category'])
                         current_user.moveEvent(event, r['calendar'])
@@ -143,8 +144,8 @@ def getEvents():
                         eventDict['title'] = event.getName()
                         eventDict['eventId'] = event.getID()
                         eventDict['desc'] = event.getDescription()
-                        eventDict['start'] = str(event.getStartDateTime()).replace(' ', 'T')
-                        eventDict['end'] = str(event.getEndDateTime()).replace(' ', 'T')
+                        eventDict['start'] = str(event.getStartDateTime())
+                        eventDict['end'] = str(event.getEndDateTime())
                         eventDict['category'] = event.getCategory()
                         eventDict['comments'] = event.getComments()
                         eventDict['invitees'] = event.getInvitees()
@@ -258,7 +259,8 @@ def getIntent():
 
                 return jsonify({"date": response.query_result.parameters.fields["date"].string_value,
                                                 "timeStart": response.query_result.parameters.fields["timeStart"].string_value,
-                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value
+                                                "timeEnd": response.query_result.parameters.fields["timeEnd"].string_value,
+                                                "eventName": response.query_result.parameters.fields["eventName"].string_value
                                                 })
 
 
@@ -316,11 +318,11 @@ def getNotifs():
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
 def getCategoryHours():
-        if request.method == 'POST':
-                category = request.form.get('category')
-                week = request.form.get('week')
+        print(current_user.calculateHoursCategory())
+        if request.method == 'GET':
+                
+                return jsonify(current_user.calculateHoursCategory())
 
-                return current_user.calculateHoursCategory(category, week)
 
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
 @login_required
@@ -331,15 +333,28 @@ def getName():
 @index_blueprint.route('/createCalendar', methods=['POST'])
 @login_required
 def createCalendar():
-        if request.method == 'POST':
-                r = request.get_json()
-                userId = current_user.getID()
-                name = r['name']
-                colour = r['colour']
-                if (current_user.getCalendarByName(name) == None):
-                        newCalendar = Calendar(name, colour)
-                        current_user.addCalendar(newCalendar)
-                        PCM.addToUpdateQueue(userId, current_user,
-                            PCM.DBUpdate.DB_UPDATE_USER)
-                        return jsonify({"success": "True"})
-                return jsonify({"success": "False"})
+    if request.method == 'POST':
+        r = request.get_json()
+        userId = current_user.getID()
+        name = r['name']
+        colour = r['colour']
+        if (current_user.getCalendarByName(name) == None):
+            newCalendar = Calendar(name, colour)
+            current_user.addCalendar(newCalendar)
+            PCM.addToUpdateQueue(userId, current_user, PCM.DBUpdate.DB_UPDATE_USER)
+            return jsonify({"success": "True"})
+        return jsonify({"success": "False"})
+
+
+@index_blueprint.route('/deleteCalendar', methods=['POST'])
+@login_required
+def deleteCalendar():
+    if request.method == 'POST':
+        r = request.get_json()
+        name = r['name']
+        calendar = current_user.getCalendarByName(name)
+        if calendar is not None:
+            current_user.deleteCalendar(calendar)
+            # PCM??
+            return jsonify({"success": "True"})
+    return jsonify({"success": "False"})

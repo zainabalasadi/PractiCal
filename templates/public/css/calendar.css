@@ -3,8 +3,16 @@ html, body {
     height: 100%;
 }
 
-td, tr, th {
-    border: 1px black solid !important;
+/* td, tr, th  */
+.searchTable td, 
+.searchTable tr, 
+.searchTable th {
+    border: 1px #DADCE0 solid !important;
+    padding: 5px 10px 5px 10px;
+}
+
+.searchTable th {
+    margin-left: 5px;
 }
 
 body {
@@ -58,6 +66,10 @@ h3 {
 
 .MuiMenu-paper {
     border: 1px solid #F2F3F4;
+}
+
+.MuiListItemIcon-root, .Sidebar-check-148 {
+    min-width: 0px !important;
 }
   
 .calenderContainer {
