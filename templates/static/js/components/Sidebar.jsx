@@ -57,7 +57,13 @@ const styles = theme => ({
 
     colourPicker: {
         marginBottom: 30,
-    }
+    },
+    colourPreview: {
+        width: 16,
+        height: 16,
+        borderRadius: 4,
+        marginRight: 13,
+    },
 });
 
 class Sidebar extends Component {  
@@ -91,7 +97,7 @@ class Sidebar extends Component {
             cal => cal["name"] === calendar.name
         );
         //this.setState({ events: updatedEvents });
-        //this.delete_calendar(deletedCalendar[0])
+        this.delete_calendar(deletedCalendar[0])
     }
 
     delete_calendar(calendar) {
@@ -117,6 +123,10 @@ class Sidebar extends Component {
         let response = fetch('/getEvents', {
             method: 'GET'
         }).then((data) => data.json()).then(data => this.renderCalList(data));
+    }
+
+    handleDots(name) {
+        console.log(name)
     }
 
     renderCalList(calList) {
@@ -165,25 +175,24 @@ class Sidebar extends Component {
                     const labelId = `cal-${item.name}`;
                     return (
                         <div>
-                    <ListItem className={classes.listItem} key={item.name} dense button>
-                        <ListItemIcon className={classes.check}>
-                        </ListItemIcon>
-                        <ListItemText id={labelId} primary={`${item.name}`} />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        {/* Menu for each calendar */}
-                        <Menu
-                        anchorEl={this.props.anchorEl}
-                        keepMounted
-                        open={Boolean(this.props.anchorEl)}
-                        onClose={this.props.handleClose}>
-                          <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                          <MenuItem>Delete</MenuItem>
-                      </Menu>
+                            <ListItem className={classes.listItem} key={item.name} dense button>
+                                <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
+                                <ListItemText id={labelId} primary={`${item.name}`} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick, this.handleDots.bind(this, `${item.name}`)}>
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                {/* Menu for each calendar */}
+                                <Menu
+                                anchorEl={this.props.anchorEl}
+                                keepMounted
+                                open={Boolean(this.props.anchorEl)}
+                                onClose={this.props.handleClose}>
+                                <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
+                                <MenuItem>Delete</MenuItem>
+                            </Menu>
                       </div>
                     );
                     })}
