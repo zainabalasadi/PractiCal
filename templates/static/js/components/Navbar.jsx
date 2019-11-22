@@ -145,7 +145,15 @@ class Navbar extends Component {
 
     // Function to create contact and send to back-end
     create_contact(contact) {
-        //.log(contact)
+        console.log(contact)
+        let response = fetch('/addContact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"email": contact.contactName, "name": contact.ContactEmail})
+        })
+	
 
     }
 
@@ -160,30 +168,30 @@ class Navbar extends Component {
         let newContact = { contactName, contactEmail };
         let contacts = this.state.contacts.slice();
         contacts.push(newContact);
-        this.setState({ contacts });
+        this.setState({ contacts: contacts });
         this.create_contact(newContact)
     }
 
-    setNewContact() {
+    setNewGroup() {
         const { groupName, groupEmail } = this.state;
         let newGroup = { groupName, groupEmail };
         let groups = this.state.groups.slice();
         groups.push(newGroup);
-        this.setState({ groups });
+        this.setState({ groups: groups });
         this.create_group(newGroup)
     }
 
     // Sets the state of input
-    setContactEmail = e => {
+    setContactEmail(e) {
         this.setState({ contactEmail: e });
     };
-    setContactName = e => {
+    setContactName(e) {
         this.setState({ contactName: e });
     };
-    setGroupEmail = e => {
+    setGroupEmail(e) {
         this.setState({ groupEmail: e });
     };
-    setGroupName = e => {
+    setGroupName(e) {
         this.setState({ groupName: e });
     };
 
@@ -287,12 +295,12 @@ class Navbar extends Component {
                     <TextField
                         placeholder="Group name"
                         margin="dense"
-                        onChange={this.setGroupName}
+                        onChange={e => {this.setGroupName(e.target.value)}}
                     />
                     <TextField
                         placeholder="Emails"
                         margin="dense"
-                        onChange={this.setGroupEmail}
+                        onChange={e => {this.setGroupEmail(e.target.value)}}
                     />
                     <Button
                         label="Create Group"
@@ -310,12 +318,12 @@ class Navbar extends Component {
                         <TextField
                         placeholder="Contact name"
                         margin="dense"
-                        onChange={this.setContactName}
+                        onChange={e => {this.setContactName(e.target.value)}}
                     />
                     <TextField
                         placeholder="Email"
                         margin="dense"
-                        onChange={this.setContactEmail}
+                        onChange={e => {this.setContactEmail(e.target.value)}}
                     />
                     <Button
                         label="Create Contact"
@@ -327,7 +335,11 @@ class Navbar extends Component {
                         >
                         Create Contact
                         </Button>
-
+                    <ul>
+                    {this.state.contacts.map(function(item, idx) {
+                        return (<li>{item.contactEmail} {item.contactName}</li>)
+                    })}
+                    </ul>
                 </DialogContent>
             </Dialog>
         </div>

@@ -358,3 +358,13 @@ def deleteCalendar():
             # PCM??
             return jsonify({"success": "True"})
     return jsonify({"success": "False"})
+
+
+@index_blueprint.route('/addContact', methods=['POST'])
+@login_required
+def addContact():
+    if request.method == 'POST':
+        r = request.get_json()
+        email = r['email']
+        current_user.addContact('email')
+	return jsonify({"success": "True"})
