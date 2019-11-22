@@ -129,7 +129,8 @@ class DatabaseManager():
             otherFields = ", contacts, preferences" if userID else ""
             sql = ("SELECT uid, first_name, last_name, email {} FROM users "
                    "WHERE {}".format(otherFields, condition))
-            val = (userID, )
+            val = userID if userID else email
+            val = (val, )
             cursor.execute(sql, val)
             user = cursor.fetchone()
             cursor.close()
@@ -814,5 +815,10 @@ if __name__ == "__main__":
                         "09:30:00.000Z', '2019-11-07 17:00:00.000Z', 'Default'), "
                         "(3, 'Event 13 title', 'Event 13 description', '2019-11-08 "
                         "09:30:00.000Z', '2019-11-08 17:00:00.000Z', 'Default')"))
+
+        cursor.execute(("INSERT INTO notifications "
+                        "(eid, sender_id, receiver_id, notif_type) "
+                        "VALUES "
+                        "(6, 2, 1, 0), (7, 2, 1, 0), (6, 2, 1, 1)"))
     db.commit()
     cursor.close()
