@@ -322,10 +322,10 @@ def getNotifs():
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
 def getCategoryHours():
+        # return "HI"
         print(current_user.calculateHoursCategory())
-        if request.method == 'GET':
-                
-                return jsonify(current_user.calculateHoursCategory())
+        # if request.method == 'GET':
+        return "True"
 
 
 @index_blueprint.route('/getName', methods=['GET', 'POST'])
@@ -371,4 +371,5 @@ def addContact():
         r = request.get_json()
         email = r['email']
         current_user.addContact('email')
-	return jsonify({"success": "True"})
+        return jsonify({"success": "True"})
+
