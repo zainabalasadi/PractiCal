@@ -281,7 +281,7 @@ def getNotifs():
         notifList = []
         # for notif in current_user.getNotifications():
         for notif in current_user.getNotifications():
-            sender = PCM.getUserDetails(userEmail=notif.getSenderEmail())
+            sender = PCM.getUserInfo(userEmail=notif.getSenderEmail())
             notifType = notif.getNotifType()
             status = ""
             if notifType == Notification.NOTIF_EVENTCHANGE:
@@ -310,7 +310,9 @@ def getNotifs():
                 'id': notif.getID(),
                 'message': message
             }
-            notifList.append(notifObj)
+            notifList.append(notifObject)
+
+        print(notifList)
         return jsonify(notifList)
 
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
