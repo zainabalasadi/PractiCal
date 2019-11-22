@@ -311,8 +311,6 @@ def getNotifs():
                 'message': message
             }
             notifList.append(notifObject)
-
-        print(notifList)
         return jsonify(notifList)
 
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
