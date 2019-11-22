@@ -35,7 +35,7 @@ const styles = theme => ({
     addButton: {
         position: 'absolute',
         right: theme.spacing(5),
-        top: theme.spacing(17),
+        top: theme.spacing(20),
     },
     closeButton: {
         position: 'absolute',
