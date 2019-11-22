@@ -101,11 +101,17 @@ def editEvent():
                         if event.getDescription() != r['desc']:
                                 event.setDescription(r['desc'])
                         if event.getStartDateTime() != r['startDate']:
-                                event.setStartDateTime(r['startDate'])
+                                if (len(r['startDate']) == 16):
+                                    event.setStartDateTime(r['startDate'])
+                                elif (len(r['startDate']) == 24):
+                                    event.setStartDateTime(r['startDate'][:-8])
                                 print("time changed")
                                 print(event.getStartDateTime())
                         if event.getEndDateTime() != r['endDate']:
-                                event.setEndDateTime(r['endDate'])
+                                if (len(r['endDate']) == 16):
+                                    event.setEndDateTime(r['endDate'])
+                                elif (len(r['endDate']) == 24):
+                                    event.setEndDateTime(r['endDate'][:-8])
                         if event.getCategory() != r['category']:
                                 event.setCategory(r['category'])
                         current_user.moveEvent(event, r['calendar'])
@@ -328,6 +334,7 @@ def getCategoryHours():
         print(item["Work"])
         print(item['School'])
         print(item['Social'])
+        print(item['Miscellaneous'])
 
         # if request.method == 'GET':
         return jsonify(item)

@@ -77,6 +77,7 @@ class TimeBreakdown extends Component {
         this.setState({ family: data['Family'] });
         this.setState({ school: data['School'] });
         this.setState({ work: data['Work'] });
+        this.setState({ misc: data['Miscellaneous'] });
         console.log(this.state.social)
     }
 
@@ -103,7 +104,8 @@ class TimeBreakdown extends Component {
                         {this.state.social} hours on your Social Life<br></br>
                         {this.state.work} hours on your Work Life<br></br>
                         {this.state.school} hours on your School Life<br></br>
-                        {this.state.family} hours on your Family Life
+                        {this.state.family} hours on your Family Life<br></br>
+                        {this.state.misc} hours on your Miscellaneous Life
                     </DialogContentText>
                 </DialogContent>
             </Dialog>

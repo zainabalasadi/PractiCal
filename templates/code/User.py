@@ -291,7 +291,8 @@ class User(UserMixin):
         l = {"Work": 0,
              "Social": 0,
              "School": 0,
-             "Family": 0
+             "Family": 0,
+             "Miscellaneous": 0,
              }
         for category in l.keys():
             time = 0
