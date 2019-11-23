@@ -403,7 +403,7 @@ def deleteCalendar():
         calendar = current_user.getCalendarByName(name)
         if calendar is not None:
             current_user.deleteCalendar(calendar)
-            # PCM??
+            PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
             return jsonify({"success": "True"})
     return jsonify({"success": "False"})
 
@@ -415,4 +415,5 @@ def addContact():
         r = request.get_json()
         email = r['email']
         current_user.addContact('email')
+        PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
         return jsonify({"success": "True"})
