@@ -362,7 +362,7 @@ class Navbar extends Component {
                             <List>
                                 {this.state.contacts.map(function(item, idx) {
                                     return (
-                                        <ListItem dense button>
+                                        <ListItem key={idx} dense button>
                                             <ListItemText primary={`${item.contactName}, ${item.contactEmail}`} />
                                         </ListItem>
                                     )

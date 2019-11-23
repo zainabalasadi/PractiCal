@@ -172,7 +172,7 @@ class Sidebar extends Component {
                 {this.props.calendars.map(item => {
                     const labelId = `cal-${item.name}`;
                     return (
-                        <div>
+                        <div>    
                             <ListItem className={classes.listItem} key={item.name} dense>
                                 <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
                                 <ListItemText id={labelId} primary={`${item.name}`} />
@@ -192,7 +192,7 @@ class Sidebar extends Component {
                                 <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
                                 <MenuItem onClick={this.deleteCal}>Delete</MenuItem>
                             </Menu>
-                      </div>
+                        </div>         
                     );
                     })}
                     </List>
