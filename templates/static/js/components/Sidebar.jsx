@@ -182,7 +182,7 @@ class Sidebar extends Component {
                         open={Boolean(this.props.anchorEl)}
                         onClose={this.props.handleClose}>
                           <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                          <MenuItem>Delete</MenuItem>
+                          <MenuItem onClick={this.delete_calendar}>Delete</MenuItem>
                       </Menu>
                       </div>
                     );
@@ -212,7 +212,7 @@ class Sidebar extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button
-                          label="Create Contact"
+                          label="Create Calendar"
                           variant="contained"
                           color="primary"
                           onClick={() => {
