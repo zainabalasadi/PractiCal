@@ -256,7 +256,9 @@ class Cal extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + d.getHours();
+            hour = '' + d.getHours(),
+            min = '' + d.getMinutes();
+
 
         if (month.length < 2)
             month = '0' + month;
@@ -264,8 +266,10 @@ class Cal extends Component {
             day = '0' + day;
         if (hour.length < 2)
             hour = '0' + hour;
+        if (min.length < 2)
+            min = '0' + min
 
-        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+        return [year, month, day].join('-') + "T" + hour + ":" + min;
     }
 
     formatDateEnd(date) {
@@ -274,7 +278,8 @@ class Cal extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + (d.getHours());
+            hour = '' + (d.getHours()),
+            min = '' + d.getMinutes();
 
         if (month.length < 2)
             month = '0' + month;
@@ -282,8 +287,10 @@ class Cal extends Component {
             day = '0' + day;
         if (hour.length < 2)
             hour = '0' + hour;
+        if (min.length < 2)
+            min = '0' + min
 
-        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+        return [year, month, day].join('-') + "T" + hour + ":" + min;
     }
 
     formatActualDate(date) {
