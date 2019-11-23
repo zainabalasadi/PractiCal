@@ -10,31 +10,32 @@ import logo from '../../../public/logo.svg';
 import { withStyles } from "@material-ui/core/styles";
 import TimeBreakdown from './TimeBreakdown'
 import Notification from './Notification'
+import { ListItem , ListItemText, List, Paper} from '@material-ui/core';
+import FaceIcon from '@material-ui/icons/Face';
+import EmailIcon from '@material-ui/icons/Email';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+
 
 const navHeight = 64;
 
 const styles = theme => ({
     nav: {
-        // zIndex: '1400',
         backgroundColor: theme.palette.common.white,
         color: fade(theme.palette.common.black, 0.7),
         height: navHeight,
     },
-
     grow: {
         flexGrow: 1,
     },
     menuButton: {
         marginRight: theme.spacing(2),
     },
-
     title: {
-        width: '100px',
+        margin: '20px 0 10px 0',
         [theme.breakpoints.up('sm')]: {
             display: 'block',
         },
     },
-
     search: {
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
@@ -44,14 +45,11 @@ const styles = theme => ({
             backgroundColor: fade('#F2F3F4', 0.8),
         },
         marginRight: theme.spacing(2),
-        marginLeft: 0,
-        width: '100%',
+        width: 400,
         [theme.breakpoints.up('sm')]: {
             marginLeft: theme.spacing(3),
-        width: 'auto',
         },
     },
-
     searchIcon: {
         width: theme.spacing(7),
         height: '100%',
@@ -61,31 +59,55 @@ const styles = theme => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
-
-    inputRoot: {
-        color: 'inherit',
-    },
-
-    inputInput: {
+    input: {
         padding: theme.spacing(1, 1, 1, 7),
         transition: theme.transitions.create('width'),
-        width: '100%',
+        width: 400,
         [theme.breakpoints.up('md')]: {
             width: 200,
         },
     },
-
     root: {
         margin: 0,
         padding: theme.spacing(2),
     },
-
     closeButton: {
         position: 'absolute',
         right: theme.spacing(1),
         top: theme.spacing(1),
     },
-
+    contactList: {
+        maxHeight: 200, 
+        width: '100%',
+        overflow: 'auto',
+        margin: theme.spacing(8, 0, 2, 0),
+    },
+    inputMargin: {
+        margin: '4px 0 5px 0',
+        marginLeft: 50,
+        maxWidth: 500,
+        width: 500,
+        borderRadius: theme.shape.borderRadius,
+        borderWidth: '50',
+        '&:hover': {
+            backgroundColor: '#F2F3F4',
+        },
+    },
+    iconDiv: {
+        position: 'relative',
+        display: 'inline-block'
+    },
+    icon: {
+        position: 'absolute',
+        left: 4,
+        top: 10,
+        width: 20, height: 20,
+        marginRight: 50,
+    },
+    submitButton: {
+        margin: theme.spacing(2, 0, 2, 0),
+        float: 'right',
+    },
 });
 
 class Navbar extends Component {
@@ -239,7 +261,7 @@ class Navbar extends Component {
         <div className={classes.grow}>
             <AppBar position="fixed" elevation={0} className={classes.nav}>
                 <Toolbar>
-                    <img className={classes.title} src={logo} alt="logo" />
+                    <img src={logo} alt="logo" />
                     <div className={classes.search}>
                         <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -247,10 +269,7 @@ class Navbar extends Component {
                         <InputBase
                         fullWidth={true}
                         placeholder="Search"
-                        classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput,
-                        }}
+                        classes={{ input: classes.input }}
                         inputProps={{ 'aria-label': 'search' }}
                         name="search"
                         value={this.state.searchText}
@@ -262,8 +281,7 @@ class Navbar extends Component {
                                 this.search()
                                 this.setState({ searchText: ""})
                             }
-                        }}
-                        />
+                        }}/>
                     </div>
 
                     <div className={classes.grow} />
@@ -283,63 +301,74 @@ class Navbar extends Component {
             </AppBar>
 
             {/* Modal for contacts */}
-            <Dialog open={this.state.openContacts} onClose={this.handleClose}>
+            <Dialog maxWidth={'sm'} open={this.state.openContacts} onClose={this.handleClose}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
-                <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
+                <DialogTitle className={classes.title} id="customized-dialog-title" onClose={this.handleClose}>
                     My Contacts
                 </DialogTitle>
 
                 <DialogContent>
-                    <TextField
-                        placeholder="Group name"
-                        margin="dense"
-                        onChange={e => {this.setGroupName(e.target.value)}}
-                    />
-                    <TextField
-                        placeholder="Emails"
-                        margin="dense"
-                        onChange={e => {this.setGroupEmail(e.target.value)}}
-                    />
+                    <div className={classes.iconDiv}>
+                        <GroupAddIcon className={classes.icon}/>
+                        <TextField
+                            placeholder="Group name"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setGroupName(e.target.value)}}/>
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <EmailIcon className={classes.icon}/>
+                        <TextField
+                            placeholder="Emails"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setGroupEmail(e.target.value)}}/>
+                    </div>
                     <Button
                         label="Create Group"
+                        className={classes.submitButton}
                         variant="contained"
                         color="primary"
                         onClick={() => {
                             this.setNewGroup();
-                        }}
-                        >
+                        }}>
                         Create Group
                         </Button>
-
-
-
+                    <div className={classes.iconDiv}>
+                        <FaceIcon className={classes.icon}/>
+                        <TextField 
+                            placeholder="Contact name"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setContactName(e.target.value)}}/>
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <EmailIcon className={classes.icon}/>
                         <TextField
-                        placeholder="Contact name"
-                        margin="dense"
-                        onChange={e => {this.setContactName(e.target.value)}}
-                    />
-                    <TextField
-                        placeholder="Email"
-                        margin="dense"
-                        onChange={e => {this.setContactEmail(e.target.value)}}
-                    />
+                            placeholder="Email"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setContactEmail(e.target.value)}}/>
+                    </div>
                     <Button
                         label="Create Contact"
+                        className={classes.submitButton}
                         variant="contained"
                         color="primary"
                         onClick={() => {
                             this.setNewContact();
-                        }}
-                        >
+                        }}>
                         Create Contact
                         </Button>
-                    <ul>
-                    {this.state.contacts.map(function(item, idx) {
-                        return (<li>{item.contactEmail} {item.contactName}</li>)
-                    })}
-                    </ul>
+                        <Paper className="contactList" elevation={0} className={classes.contactList}>
+                            <List>
+                                {this.state.contacts.map(function(item, idx) {
+                                    return (
+                                        <ListItem dense button>
+                                            <ListItemText primary={`${item.contactName}, ${item.contactEmail}`} />
+                                        </ListItem>
+                                    )
+                                })}
+                            </List>
+                        </Paper>
                 </DialogContent>
             </Dialog>
         </div>

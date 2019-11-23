@@ -29,9 +29,6 @@ const styles = theme => ({
     input: {
         marginBottom: theme.spacing(8),
     },
-    check: {
-        minWidth: 10,
-    },
     addButton: {
         position: 'absolute',
         right: theme.spacing(5),
@@ -42,7 +39,6 @@ const styles = theme => ({
         right: theme.spacing(1),
         top: theme.spacing(1),
     },
-
     listItem: {
         height: 40,
         width: '100%',
@@ -50,14 +46,19 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         paddingLeft: 0,
     },
-
     textBox: {
         marginBottom: 30,
+        width: '100%',
     },
-
     colourPicker: {
         marginBottom: 30,
-    }
+    },
+    colourPreview: {
+        width: 16,
+        height: 16,
+        borderRadius: 4,
+        marginRight: 13,
+    },
 });
 
 class Sidebar extends Component {  
@@ -91,7 +92,7 @@ class Sidebar extends Component {
             cal => cal["name"] === calendar.name
         );
         //this.setState({ events: updatedEvents });
-        //this.delete_calendar(deletedCalendar[0])
+        this.delete_calendar(deletedCalendar[0])
     }
 
     delete_calendar(calendar) {
@@ -117,6 +118,10 @@ class Sidebar extends Component {
         let response = fetch('/getEvents', {
             method: 'GET'
         }).then((data) => data.json()).then(data => this.renderCalList(data));
+    }
+
+    handleDots(name) {
+        console.log(name)
     }
 
     renderCalList(calList) {
@@ -165,32 +170,31 @@ class Sidebar extends Component {
                     const labelId = `cal-${item.name}`;
                     return (
                         <div>
-                    <ListItem className={classes.listItem} key={item.name} dense button>
-                        <ListItemIcon className={classes.check}>
-                        </ListItemIcon>
-                        <ListItemText id={labelId} primary={`${item.name}`} />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        {/* Menu for each calendar */}
-                        <Menu
-                        anchorEl={this.props.anchorEl}
-                        keepMounted
-                        open={Boolean(this.props.anchorEl)}
-                        onClose={this.props.handleClose}>
-                          <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                          <MenuItem onClick={this.delete_calendar}>Delete</MenuItem>
-                      </Menu>
+                            <ListItem className={classes.listItem} key={item.name} dense>
+                                <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
+                                <ListItemText id={labelId} primary={`${item.name}`} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick, this.handleDots.bind(this, `${item.name}`)}>
+                                            <MoreVertIcon className="threeDots"/>
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                {/* Menu for each calendar */}
+                                <Menu
+                                anchorEl={this.props.anchorEl}
+                                keepMounted
+                                open={Boolean(this.props.anchorEl)}
+                                onClose={this.props.handleClose}>
+                                <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
+                                <MenuItem>Delete</MenuItem>
+                            </Menu>
                       </div>
                     );
                     })}
                     </List>
 
                 {/* Modal to create new calendar */}
-                <Dialog maxWidth = {'md'} open={this.props.createPopUp} onClose={this.props.handleClose}>
+                <Dialog maxWidth = {'xs'} open={this.props.createPopUp} onClose={this.props.handleClose}>
                     <IconButton aria-label="close" className={classes.closeButton} onClick={this.props.handleClose}>
                         <CloseIcon />
                     </IconButton>
@@ -200,15 +204,16 @@ class Sidebar extends Component {
                     <DialogContent>
                         <TextField
                           className={classes.textBox}
-                          placeholder="Calendar Name"
+                          placeholder="Calendar name"
                           margin="dense"
                           onChange={e => {
                             this.props.setCalName(e.target.value);
                           }}/>
+                        <h3>Select a calendar colour</h3><br/>
                         <CirclePicker
                           className={classes.colourPicker}
                           color={ this.props.colour }
-                          onChangeComplete={ this.props.setCalColour }/>
+                          onChangeComplete={ this.props.setCalColour }/><br/>
                     </DialogContent>
                     <DialogActions>
                         <Button

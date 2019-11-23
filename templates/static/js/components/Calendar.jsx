@@ -136,20 +136,30 @@ class Cal extends Component {
                 <th>Title</th>
                 <th>Description</th>
                 <th>Start Time</th>
-                <th>End Time:</th>
+                <th>End Time</th>
             </tr>
         { list.map((e) => {
                 return (
                     <tr>
                         <td>{e.title}</td>
                         <td>{e.desc}</td>
-                        <td>{e.start}</td>
-                        <td>{e.end}</td>
+                        <td>{new Date(e.start).getDate()}/{new Date(e.start).getMonth()}/{new Date(e.start).getFullYear()}  {new Date(e.start).getHours()}:{this.getMins(new Date(e.start).getMinutes())}</td>
+                        <td>{new Date(e.end).getDate()}/{new Date(e.end).getMonth()}/{new Date(e.end).getFullYear()}  {new Date(e.end).getHours()}:{this.getMins(new Date(e.end).getMinutes())}</td>
                     </tr>
             )})}
             </table>
         )
     }
+
+    getMins(mins) {
+    var s = String(mins)
+        if (s.length < 2) {
+            return '0' + s
+        } else {
+            return s
+        }
+    }
+
 
     // Function to create event and send to back-end
     create_event(event) {
@@ -259,6 +269,7 @@ class Cal extends Component {
             hour = '' + d.getHours(),
             min = '' + d.getMinutes();
 
+
         if (month.length < 2)
             month = '0' + month;
         if (day.length < 2)
@@ -266,9 +277,9 @@ class Cal extends Component {
         if (hour.length < 2)
             hour = '0' + hour;
         if (min.length < 2)
-            min = '0' + min;
+            min = '0' + min
 
-        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+        return [year, month, day].join('-') + "T" + hour + ":" + min;
     }
 
     formatDateEnd(date) {
@@ -287,9 +298,9 @@ class Cal extends Component {
         if (hour.length < 2)
             hour = '0' + hour;
         if (min.length < 2)
-            min = '0' + min;
+            min = '0' + min
 
-        return [year, month, day].join('-') + "T" + hour + ":" + '00';
+        return [year, month, day].join('-') + "T" + hour + ":" + min;
     }
 
     formatActualDate(date) {
@@ -426,7 +437,7 @@ class Cal extends Component {
         }).then((data) => data.json()).then(cal => {
             if (cal.success) {
                 console.log("Created calendar successfully")
-                this.state.calendars.push(calendar)
+                //this.state.calendars.push(calendar)
             } else {
                 console.log("Failed calendar creation")
             }
@@ -679,8 +690,12 @@ class Cal extends Component {
                     onClick={() => {
                         console.log(this.state.start)
                         console.log(this.state.end)
-                        if (this.state.start >= this.state.end) {
-                            alert("You can't make an event end before it starts!!!!")
+                        if (this.state.title == null) {
+                            alert("Please provide a title.")
+                        } else if (this.state.start >= this.state.end) {
+                            alert("Please enter valid dates.")
+                        } else if (this.state.calendar == null) {
+                            alert("Please select a calendar.")
                         } else {
                             this.setNewEvent(), this.handleClose();
                         }
@@ -808,10 +823,12 @@ class Cal extends Component {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        if (new Date(this.state.start) >= new Date(this.state.end)) {
-                            console.log(this.state.start)
-                            console.log(this.state.end)
-                            alert("You can't make an event end before it starts!!!!")
+                        if (this.state.title == null) {
+                            alert("Please provide a title.")
+                        } else if (new Date(this.state.start) >= new Date(this.state.end)) {
+                            alert("Please enter valid dates.")
+                        } else if (this.state.calendar == null) {
+                            alert("Please select a calendar.")
                         } else {
                             console.log(this.state.start)
                             console.log(this.state.end)

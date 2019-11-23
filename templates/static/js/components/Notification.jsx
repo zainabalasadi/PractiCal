@@ -28,7 +28,7 @@ class Notification extends React.Component {
         method: 'GET'
 
       }).then((data) => data.json()).then(data => {
-        this.setState({"notifs": data})
+        this.setState({notifs: data})
       });
       //   this.renderComponentsFromList(data)
       // }).then((render) => {
@@ -47,6 +47,11 @@ class Notification extends React.Component {
         )})}
         </div>
       )
+    }
+
+    componentDidMount() {
+      this.get_notifs()
+      console.log(this.state.notifs)
     }
 
   	handleClick = event => {
@@ -73,9 +78,12 @@ class Notification extends React.Component {
 				open={Boolean(this.state.anchorEl)}
 				onClose={this.handleClose}
 			>
-        <MenuItem onClick={this.handleClose}>Notification 1</MenuItem>
-        <MenuItem onClick={this.handleClose}>Notification 2</MenuItem>
-        <MenuItem onClick={this.handleClose}>Notification 3</MenuItem>
+        {this.state.notifs.map((notif) => {
+          console.log(notif)
+          return (
+            <MenuItem key={notif.id} onClick={this.handleClose}>{notif.message}</MenuItem>
+          )
+        })}
 			</Menu>
 			</div>
 		);

@@ -233,7 +233,7 @@ class PractiCalManager():
             invitees = dict()
             for i in invites:
                 _, inviteeID, status = i
-                _, _, _, inviteeEmail = self._getUser(userID=inviteeID)
+                _, _, _, inviteeEmail, _, _ = self._db.getUser(userID=inviteeID)
                 invitees[inviteeEmail] = status
 
             self._events[eventID] = Event(
@@ -367,7 +367,7 @@ class PractiCalManager():
         event = self._events[eventID]
         for email in receiverEmails:
             receiver = self._db.getUser(email=email)
-            _, _, _, senderEmail, _ = self._db.getUser(userID=senderID)
+            _, _, _, senderEmail, _, _ = self._db.getUser(userID=senderID)
             receiverID = receiver[0] if receiver and receiver != -1 else 0
             if not receiverID > 0: continue
 

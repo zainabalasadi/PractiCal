@@ -72,30 +72,36 @@ Had database issues which prevented me from coding much. Had to try to fix these
 Over the next 5 days I will look to relearn react. I will also look to learn how to use flask properly as well as javascript as I have never used it before.
 
 11/11
-Team meeting decided to spend time bug fixing. Also fixed the group functionality to perform as the rest of the team expected. There were some misunderstandings as to what 
+Team meeting decided to spend time bug fixing. Also fixed the group functionality to perform as the rest of the team expected. There were some misunderstandings as to what we wanted to achieve with this, so I had to change the code to match it.I also started on front end work, such as creating routes to send invites. 
 
 12/11
-Met with Michael to fix database issues
+Met with Michael to fix database issues. Worked on code, including adding template codes for fetch requests for things such as creating and getting events from the backend. 
 
 13/11
-Started working front end, managed to 
+Started working front end, managed to get basic functionality in terms of rendering the backend events in the calendar on load. However, no other features have yet been implemented. A lot of bug fixing between codes had to be done to integrate our code with our peers. This included making sure that what we sent back from the front end matched the terms we used in the backend.
 
 14/11
-Worked with Michael to finish calendar jsx
+Worked with Michael to finish calendar jsx routing, which includes editing and deleting events.
 
 15/11
-Redoing it
+A lot of bugs came up as a consequence of our routing, and as such we spent the majority of the day fixing these bugs. As of this stage, our database is still very separate from the rest of our code. As such persistence is lacking. We hope to in the next few days achieve persistence.
 
 16/11
-Meeting call w Morgan and Zainab - fixing up db issues and working on nlp frontend integration
+Meeting call with Morgan and Zainab - fixing up database issues and working on nlp frontend integration. Also working on general housekeeping issues which includes bugfixing. HAve also set up NLP routing and have tested it to make sure that the routes work and the NLP is functioning as expected. I also sucessfully made sure that notifications/calendars are being grabbed and sent to the front end. 
 
 17/11
-Worked on persisting the add/create/get/delete of events
+Worked on persisting the add/create/get/delete of events by linking out backend with our database aswell as our front end with our backend. There are a lot of routes and issues that have come up, but over the next few days I hope to be able to integrate the database in it's entireity. I also started the logout route in the backend but providing front end objects to interact and routes. Also formatted and styled a few of the elements in the front end. 
 
 18/11
-Met with the team in person, helped Zainab with rendering calendar successfully, with preset dates/info as well as loading on load of calendar, fixed a lot of date format issues between javascript and flask
+Met with the team in person, helped Zainab with rendering calendar successfully, with preset dates/info as well as loading on load of calendar, fixed a lot of date format issues between javascript and flask.
 
 Also helped Michael with the search function, getting that to render properly. Managed to get the events to load on load of calendar screen.
 
 19/11
 Today we spent time bug fixing any existing errors such as loading and rendering issues. Me and Michael successfully implemented the search function to correctly return an appropriate list of events. We also worked on formatting dates as well as improving user interaction with the website. More drop down menus were added and more fields were passed into and out of the database.
+
+20/11
+Spent today starting on the time Breakdown feature, and linking it to the frontend and backend.
+
+22/11
+Today I spent the day completing the timeBreakdown aswell as once again making quick bugfixes to issues with the time format. I also spent today bugfixing database issues and errors with our edit events function. 

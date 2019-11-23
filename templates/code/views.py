@@ -65,14 +65,20 @@ def createEvent():
                 userId = current_user.getID()
                 name = r['name']
                 desc = r['desc'] if 'desc' in r.keys() else ''
-                startDate = r['startDate']
-                endDate = r['endDate']
+                if (len(r['startDate']) == 16):
+                    startDate = (r['startDate'])
+                elif (len(r['startDate']) == 24):
+                    startDate = (r['startDate'][:-8])
+                if (len(r['endDate']) == 16):
+                    endDate = (r['endDate'])
+                elif (len(r['endDate']) == 24):
+                    endDate = (r['endDate'][:-8])
                 cal = current_user.getCalendarByName(r['calendar'])
                 category = r['category']
                 invitees = None
                 category = r['category']
                 if 'invitees' in r:
-                        invitees = r['invitees']
+                        invitees = r['invitees'].split()
                 groups = None
                 if 'groups' in r:
                         groups = r['groups']
@@ -80,7 +86,7 @@ def createEvent():
                         event = PCM.addEvent(userID=userId, title=name,
                             description=desc, startDateTime=startDate,
                             endDateTime=endDate, calendarName=cal.getName(),
-                                             category=category)
+                                             category=category, inviteeEmails=invitees)
                         cal.addEvent(event)
                         eventId = event.getID()
                         return jsonify({"success": "True"})
@@ -372,7 +378,7 @@ def deleteCalendar():
         calendar = current_user.getCalendarByName(name)
         if calendar is not None:
             current_user.deleteCalendar(calendar)
-            # PCM??
+            PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
             return jsonify({"success": "True"})
     return jsonify({"success": "False"})
 
@@ -384,5 +390,6 @@ def addContact():
         r = request.get_json()
         email = r['email']
         current_user.addContact('email')
+        PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
         return jsonify({"success": "True"})
 
