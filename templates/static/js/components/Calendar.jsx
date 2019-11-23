@@ -115,7 +115,8 @@ class Cal extends Component {
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this)
-        // this.handleClick = this.handleClick.bind(this);
+        this.get_calendars = this.get_calendars.bind(this)
+        this.delete_calendar = this.delete_calendar.bind(this)
     };
 
     componentDidMount() {
@@ -441,6 +442,26 @@ class Cal extends Component {
                 //this.state.calendars.push(calendar)
             } else {
                 console.log("Failed calendar creation")
+            }
+        });
+    }
+    
+    delete_calendar(calendar) {
+        let response = fetch('/deleteCalendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
+        }).then((data) => data.json()).then(data => {
+            if (data.success) {
+                // append to events list
+                // this.setState({ events: [], calendars: [] })
+                console.log("Suceeededdddd")
+                this.setState({events: [], calendars: []})
+                this.get_calendars()
+            } else {
+                console.log("Failedddddddd")
             }
         });
     }
@@ -986,7 +1007,7 @@ class Cal extends Component {
                     handleDeleteCal={this.handleDeleteCal} setCalName={this.setCalName}
                     setCalColour={this.setCalColour} setNewCalendar={this.setNewCalendar}
                     handleClick={this.handleClick} setNlpBarState={this.handleNlpTextbox}
-                    events={this.state.events}/>
+                    events={this.state.events} delete_calendar={this.delete_calendar}/>
             </div>
         );
     }

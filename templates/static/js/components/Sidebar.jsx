@@ -86,6 +86,7 @@ class Sidebar extends Component {
 
     deleteCal() {
         console.log("i am being called")
+        this.props.handleClose()
         let calendar = {"name": this.props.calName, "colour": this.props.calColour}
         let updatedCalendars = this.props.calendars.filter (
             cal => cal["name"] !== calendar.name
@@ -93,28 +94,19 @@ class Sidebar extends Component {
         let deletedCalendar = this.props.calendars.filter (
             cal => cal["name"] === calendar.name
         );
-        //this.setState({ events: updatedEvents });
-        this.delete_calendar(deletedCalendar[0])
+        // let updatedEvents = []
+        // let i = 0
+        // for (i; i < this.props.events.length; i++) {
+        //     if (this.props.events[i].calendar !== calendar.name) {
+        //         updatedEvents.push(this.props.events[i])
+        //     }
+        // }
+        // this.setState({ calendars: updatedCalendars, events: updatedEvents });
+        // this.forceUpdate()
+        this.props.delete_calendar(deletedCalendar[0])
     }
 
-    delete_calendar(calendar) {
-        let response = fetch('/deleteCalendar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-        body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
-        }).then((data) => data.json()).then(data => {
-            if (data.success) {
-                // append to events list
-                // this.setState({ events: [], calendars: [] })
-                // this.get_calendars()
-                console.log("Suceeededdddd")
-            } else {
-                console.log("Failedddddddd")
-            }
-        });
-    }
+    
 
     getCalList() {
         let response = fetch('/getEvents', {

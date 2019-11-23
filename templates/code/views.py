@@ -395,6 +395,8 @@ def deleteCalendar():
         name = r['name']
         calendar = current_user.getCalendarByName(name)
         if calendar is not None:
+            for event in calendar.getEvents():
+                PCM.deleteEvent(event.getID(), current_user.getID())
             current_user.deleteCalendar(calendar)
             PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
             return jsonify({"success": "True"})
