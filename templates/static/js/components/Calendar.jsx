@@ -136,7 +136,7 @@ class Cal extends Component {
                 <th>Title</th>
                 <th>Description</th>
                 <th>Start Time</th>
-                <th>End Time:</th>
+                <th>End Time</th>
             </tr>
         { list.map((e) => {
                 return (
