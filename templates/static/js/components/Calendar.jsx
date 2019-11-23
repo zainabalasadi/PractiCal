@@ -256,8 +256,7 @@ class Cal extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + d.getHours(),
-            min = '' + d.getMinutes();
+            hour = '' + d.getHours();
 
         if (month.length < 2)
             month = '0' + month;
@@ -265,8 +264,6 @@ class Cal extends Component {
             day = '0' + day;
         if (hour.length < 2)
             hour = '0' + hour;
-        if (min.length < 2)
-            min = '0' + min;
 
         return [year, month, day].join('-') + "T" + hour + ":" + '00';
     }
@@ -277,8 +274,7 @@ class Cal extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear(),
-            hour = '' + (d.getHours()),
-            min = '' + d.getMinutes();
+            hour = '' + (d.getHours());
 
         if (month.length < 2)
             month = '0' + month;
@@ -286,8 +282,6 @@ class Cal extends Component {
             day = '0' + day;
         if (hour.length < 2)
             hour = '0' + hour;
-        if (min.length < 2)
-            min = '0' + min;
 
         return [year, month, day].join('-') + "T" + hour + ":" + '00';
     }
@@ -314,13 +308,15 @@ class Cal extends Component {
 
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        console.log(eventToEdit.start);
+        console.log(eventToEdit.start.toISOString());
+	let startT= eventToEdit.start.toISOString();
+        let endT= eventToEdit.end.toISOString();
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
             desc: eventToEdit.desc,
-            start: eventToEdit.start,
-            end: eventToEdit.end,
+            start: startT.slice(0, -8),
+            end: endT.slice(0, -8),
             invitees: eventToEdit.invitees,
             groups: eventToEdit.groups,
             calendar: eventToEdit.calendar,
