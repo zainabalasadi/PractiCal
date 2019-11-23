@@ -66,6 +66,7 @@ class Sidebar extends Component {
         super(props);
 	    this.state = {nlpText: ""}
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
+        this.deleteCal = this.deleteCal.bind(this);
     }
 
     componentDidMount() {
@@ -83,36 +84,29 @@ class Sidebar extends Component {
         }).then(response => response.json()).then(data => this.props.handleNlpData(data))
     }
 
-    deleteCal(calendar) {
+    deleteCal() {
         console.log("i am being called")
+        this.props.handleClose()
+        let calendar = {"name": this.props.calName, "colour": this.props.calColour}
         let updatedCalendars = this.props.calendars.filter (
             cal => cal["name"] !== calendar.name
         );
         let deletedCalendar = this.props.calendars.filter (
             cal => cal["name"] === calendar.name
         );
-        //this.setState({ events: updatedEvents });
-        this.delete_calendar(deletedCalendar[0])
+        // let updatedEvents = []
+        // let i = 0
+        // for (i; i < this.props.events.length; i++) {
+        //     if (this.props.events[i].calendar !== calendar.name) {
+        //         updatedEvents.push(this.props.events[i])
+        //     }
+        // }
+        // this.setState({ calendars: updatedCalendars, events: updatedEvents });
+        // this.forceUpdate()
+        this.props.delete_calendar(deletedCalendar[0])
     }
 
-    delete_calendar(calendar) {
-        let response = fetch('/deleteCalendar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-        body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
-        }).then((data) => data.json()).then(data => {
-            if (data.success) {
-                // append to events list
-                // this.setState({ events: [], calendars: [] })
-                // this.get_calendars()
-                console.log("Suceeededdddd")
-            } else {
-                console.log("Failedddddddd")
-            }
-        });
-    }
+    
 
     getCalList() {
         let response = fetch('/getEvents', {
@@ -122,6 +116,7 @@ class Sidebar extends Component {
 
     handleDots(name) {
         console.log(name)
+        // this.props.handleClick(this)
     }
 
     renderCalList(calList) {
@@ -169,12 +164,13 @@ class Sidebar extends Component {
                 {this.props.calendars.map(item => {
                     const labelId = `cal-${item.name}`;
                     return (
-                        <div>
+                        <div>    
                             <ListItem className={classes.listItem} key={item.name} dense>
                                 <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
                                 <ListItemText id={labelId} primary={`${item.name}`} />
                                     <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick, this.handleDots.bind(this, `${item.name}`)}>
+                                        {/* <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}> */}
+                                        <IconButton edge="end" aria-label="comments" onClick={(e) => { this.props.handleClick(e, `${item.name}`, `${item.colour}`)} }>
                                             <MoreVertIcon className="threeDots"/>
                                         </IconButton>
                                     </ListItemSecondaryAction>
@@ -186,9 +182,9 @@ class Sidebar extends Component {
                                 open={Boolean(this.props.anchorEl)}
                                 onClose={this.props.handleClose}>
                                 <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                                <MenuItem>Delete</MenuItem>
+                                <MenuItem onClick={this.deleteCal}>Delete</MenuItem>
                             </Menu>
-                      </div>
+                        </div>         
                     );
                     })}
                     </List>
@@ -217,7 +213,7 @@ class Sidebar extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button
-                          label="Create Contact"
+                          label="Create Calendar"
                           variant="contained"
                           color="primary"
                           onClick={() => {
