@@ -2,9 +2,14 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from "@material-ui/core/styles";
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
 const styles = theme => ({
@@ -30,43 +35,63 @@ class Notification extends React.Component {
       }).then((data) => data.json()).then(data => {
         this.setState({notifs: data})
       });
-      //   this.renderComponentsFromList(data)
-      // }).then((render) => {
-      //   console.log("render:")
-      //   console.log(render)
-      //   return render
-      // });
     }
 
-    renderComponentsFromList(list) {
-      return (
-        <div>
-        {list.map((notif) => {
-          return (
-            <MenuItem key={notif.id} onClick={this.handleClose}>{notif.message}</MenuItem>
-        )})}
-        </div>
-      )
+    delete_notif(notif_id) {
+      let response = fetch('/deleteNotif', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({"id": notif_id})
+      }).then((data) => data.json());
+    }
+
+    respond_to_invite(event_id, resp) {
+      console.log(JSON.stringify({"id": event_id, "response": resp}))
+      let response = fetch('/inviteResponse', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({"id": event_id, "response": resp})
+      }).then((data) => data.json());
     }
 
     componentDidMount() {
       this.get_notifs()
-      console.log(this.state.notifs)
     }
 
   	handleClick = event => {
     	this.setState({ anchorEl: event.currentTarget });
   	};
 
-  	handleClose = (notif) => {
+  	handleClose = event => {
     	this.setState({ anchorEl: null });
   	};
+
+    handleCloseDelete = event => {
+      this.delete_notif(event.currentTarget.id)
+      this.get_notifs()
+      this.handleClose(event)
+    }
+
+    handleInviteGoing = event => {
+      console.log(event.currentTarget)
+      this.respond_to_invite(event.currentTarget.getAttribute('eid'), "going")
+      this.handleCloseDelete(event)
+    }
+
+    handleInviteDecline = event => {
+      this.respond_to_invite(event.currentTarget.getAttribute('eid'), "decline")
+      this.handleCloseDelete(event)
+    }
 
   	render() {
 		return (
 			<div>
-				<IconButton aria-label="show 5 new notifications" color="inherit" onClick={this.handleClick}>
-					<Badge badgeContent={5} color="secondary">
+				<IconButton aria-label="show new notifications" color="inherit" onClick={this.handleClick}>
+					<Badge badgeContent={this.state.notifs.length} color="secondary">
 						<NotificationsIcon />
 					</Badge>
 				</IconButton>
@@ -79,10 +104,29 @@ class Notification extends React.Component {
 				onClose={this.handleClose}
 			>
         {this.state.notifs.map((notif) => {
-          console.log(notif)
-          return (
-            <MenuItem key={notif.id} onClick={this.handleClose}>{notif.message}</MenuItem>
-          )
+          if (notif.type === "EVENTINVITE") {
+            return (
+              <MenuItem key={notif.id} id={notif.id} onClick={this.handleClose}>
+                <Typography variant="inherit">
+                  {notif.message}
+                </Typography>
+                <IconButton id={notif.id} eid={notif.eid} onClick={this.handleInviteGoing}>
+                  <CheckIcon fontSize="small" />
+                </IconButton>
+                <IconButton id={notif.id} eid={notif.eid} onClick={this.handleInviteDecline}>
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </MenuItem>
+            )
+          } else {
+            return (
+              <MenuItem key={notif.id} id={notif.id} onClick={this.handleCloseDelete}>
+                <Typography variant="inherit">
+                  {notif.message}
+                </Typography>
+              </MenuItem>
+            )
+          }
         })}
 			</Menu>
 			</div>

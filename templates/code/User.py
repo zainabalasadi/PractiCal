@@ -206,7 +206,8 @@ class User(UserMixin):
         except:
             return False
 
-    def removeNotification(self, notif, notifID=None):
+    def removeNotification(self, notif=None, notifID=None):
+        if not notif and not notifID: return
         if not notifID: notifID = notif.getID()
         try:
             del self._notifications[notifID]
