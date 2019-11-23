@@ -143,13 +143,25 @@ class Cal extends Component {
                     <tr>
                         <td>{e.title}</td>
                         <td>{e.desc}</td>
-                        <td>{e.start}</td>
-                        <td>{e.end}</td>
+                        <td>{new Date(e.start).getDate()}/{new Date(e.start).getMonth()}/{new Date(e.start).getFullYear()}  {new Date(e.start).getHours()}:{this.getMins(new Date(e.start).getMinutes())}</td>
+                        <td>{new Date(e.end).getDate()}/{new Date(e.end).getMonth()}/{new Date(e.end).getFullYear()}  {new Date(e.end).getHours()}:{this.getMins(new Date(e.end).getMinutes())}</td>
                     </tr>
             )})}
             </table>
         )
     }
+
+    getMins(mins) {
+    console.log(mins)
+    var s = String(mins)
+    console.log(s.length)
+        if (s.length < 2) {
+            return '0' + s
+        } else {
+            return s
+        }
+    }
+
 
     // Function to create event and send to back-end
     create_event(event) {
