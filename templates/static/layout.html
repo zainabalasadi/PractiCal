@@ -17,8 +17,8 @@
 <body>
 
     <!-- Navbar for login/signup -->
-    {%- if request.path == "/index" or request.path == "/register" 
-    or request.path == "/forgot" %}
+    {%- if request.path == "/" or request.path == "/register" 
+    or request.path == "/forgot" or request.path == "/index" -%}
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
