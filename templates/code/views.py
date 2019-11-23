@@ -65,8 +65,14 @@ def createEvent():
                 userId = current_user.getID()
                 name = r['name']
                 desc = r['desc'] if 'desc' in r.keys() else ''
-                startDate = r['startDate']
-                endDate = r['endDate']
+                if (len(r['startDate']) == 16):
+                    startDate = (r['startDate'])
+                elif (len(r['startDate']) == 24):
+                    startDate = (r['startDate'][:-8])
+                if (len(r['endDate']) == 16):
+                    endDate = (r['endDate'])
+                elif (len(r['endDate']) == 24):
+                    endDate = (r['endDate'][:-8])
                 cal = current_user.getCalendarByName(r['calendar'])
                 category = r['category']
                 invitees = None
