@@ -122,6 +122,7 @@ class Sidebar extends Component {
 
     handleDots(name) {
         console.log(name)
+        // this.props.handleClick(this)
     }
 
     renderCalList(calList) {
@@ -174,7 +175,8 @@ class Sidebar extends Component {
                                 <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
                                 <ListItemText id={labelId} primary={`${item.name}`} />
                                     <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick, this.handleDots.bind(this, `${item.name}`)}>
+                                        {/* <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}> */}
+                                        <IconButton edge="end" aria-label="comments" onClick={(e) => { this.props.handleClick(e, `${item.name}`)} }>
                                             <MoreVertIcon className="threeDots"/>
                                         </IconButton>
                                     </ListItemSecondaryAction>
@@ -186,7 +188,7 @@ class Sidebar extends Component {
                                 open={Boolean(this.props.anchorEl)}
                                 onClose={this.props.handleClose}>
                                 <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                                <MenuItem>Delete</MenuItem>
+                                <MenuItem onClick={this.delete_calendar}>Delete</MenuItem>
                             </Menu>
                       </div>
                     );

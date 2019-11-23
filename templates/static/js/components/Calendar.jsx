@@ -115,6 +115,7 @@ class Cal extends Component {
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this)
+        // this.handleClick = this.handleClick.bind(this);
     };
 
     componentDidMount() {
@@ -444,8 +445,10 @@ class Cal extends Component {
         });
     }
 
-    handleClick = (event) => {
-    	this.setState({ anchorEl: event.currentTarget });
+    handleClick = (e, name) => {
+        console.log('handled click')
+        console.log(name)
+    	this.setState({ anchorEl: e.currentTarget, calName: name });
   	};
 
     // Handle's start time select
