@@ -215,13 +215,17 @@ def searchEvents():
 @index_blueprint.route('/inviteResponse', methods=['POST'])
 @login_required
 def respondToInvite():
-        if request.method == 'POST':
-                r = request.get_json()
-                eID = r['eventID']
-                resp = r["response"]
-                PCM.respondToInvite(eID, current_user.getID(), resp)
-                return jsonify({'success': 'true'})
-        return jsonify({'success': 'false'})
+    if request.method == 'POST':
+        r = request.get_json()
+        eID = r['id']
+        resp = r["response"]
+        if resp == "going":
+            resp = Notification.NOTIF_INVITERESP_GOING
+        elif resp == "decline":
+            resp = Calendar.NOTIF_INVITERESP_DECLINE
+        PCM.respondToInvite(eID, current_user.getID(), resp)
+        return jsonify({"success": "True"})
+    return jsonify({"success": "False"})
 
 
 @index_blueprint.route('/register', methods=['GET', 'POST'])
@@ -302,35 +306,49 @@ def getNotifs():
         for notif in current_user.getNotifications():
             sender = PCM.getUserInfo(userEmail=notif.getSenderEmail())
             notifType = notif.getNotifType()
-            status = ""
+            strType = ""
+            senderName = "{} {}".format(sender[0], sender[1])
+            eventName = notif.getEvent().getName()
             if notifType == Notification.NOTIF_EVENTCHANGE:
-                message = "{sender} has updated event {event}"
+                message = "{sender} has updated event '{event}'".format(sender=senderName, event=eventName)
+                strType = "EVENTCHANGE"
             elif notifType == Notification.NOTIF_EVENTINVITE:
-                message = "{sender} has invited you to event {event}"
+                message = "{sender} has invited you to event '{event}'".format(sender=senderName, event=eventName)
+                strType = "EVENTINVITE"
             elif notifType == Notification.NOTIF_EVENTDELETE:
-                message = "{sender} has cancelled event {event}"
+                message = "{sender} has cancelled event '{event}'".format(sender=senderName, event=eventName)
+                strType = "EVENTDELETE"
             elif notifType == Notification.NOTIF_INVITERESP_GOING:
-                status = "'going'"
-                message = ("{sender} has changed their status to {status} "
-                           "for event {event}")
+                message = ("{sender} has changed their status to 'going' "
+                           "for event '{event}'").format(sender=senderName, event=eventName)
+                strType = "INVITERESP"
             elif notifType == Notification.NOTIF_INVITERESP_MAYBE:
-                status = "'maybe'"
-                message = ("{sender} has changed their status to {status} "
-                           "for event {event}")
+                message = ("{sender} has changed their status to 'maybe' "
+                           "for event '{event}'").format(sender=senderName, event=eventName)
+                strType = "INVITERESP"
             elif notifType == Notification.NOTIF_INVITERESP_DECLINE:
-                status = "'not going'"
-                message = ("{sender} has changed their status to {status} "
-                           "for event {event}")
+                message = ("{sender} has changed their status to 'not going' "
+                           "for event '{event}'").format(sender=senderName, event=eventName)
+                strType = "INVITERESP"
             else:
                 continue
-            message.format(sender="{} {}".format(sender[0], sender[1]),
-                event=notif.getEvent().getName(), status=status)
             notifObject = {
                 'id': notif.getID(),
+                'eid': notif.getEvent().getID(),
+                'type': strType,
                 'message': message
             }
             notifList.append(notifObject)
         return jsonify(notifList)
+
+@index_blueprint.route('/deleteNotif', methods=['POST'])
+@login_required
+def deleteNotif():
+    if request.method == 'POST':
+        r = request.get_json()
+        current_user.removeNotification(notifID=int(r['id']))
+        return jsonify({"success": "True"})
+    return jsonify({"success": "False"})
 
 @index_blueprint.route('/getCategoryHours', methods=['GET', 'POST'])
 @login_required
@@ -392,4 +410,3 @@ def addContact():
         current_user.addContact('email')
         PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
         return jsonify({"success": "True"})
-
