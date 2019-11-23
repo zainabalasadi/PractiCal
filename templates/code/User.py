@@ -3,6 +3,7 @@
 # Started 13/10/19
 # Edited by Egene Oletu
 # Last modified 06/11/19
+from builtins import round
 
 from flask_login import UserMixin
 from templates.code.Group import Group
@@ -298,7 +299,7 @@ class User(UserMixin):
             time = 0
             for calendar in self.getCalendars():
                 time += calendar.calculateHoursCategory(category, datetime.datetime.now())
-            l[category] = time
+            l[category] = round(time)
         return l
 
     # MOVED TO views.py because PCM needed
