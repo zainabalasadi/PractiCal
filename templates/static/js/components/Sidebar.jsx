@@ -29,9 +29,6 @@ const styles = theme => ({
     input: {
         marginBottom: theme.spacing(8),
     },
-    check: {
-        minWidth: 10,
-    },
     addButton: {
         position: 'absolute',
         right: theme.spacing(5),
@@ -42,7 +39,6 @@ const styles = theme => ({
         right: theme.spacing(1),
         top: theme.spacing(1),
     },
-
     listItem: {
         height: 40,
         width: '100%',
@@ -50,11 +46,10 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper,
         paddingLeft: 0,
     },
-
     textBox: {
         marginBottom: 30,
+        width: '100%',
     },
-
     colourPicker: {
         marginBottom: 30,
     },
@@ -175,7 +170,7 @@ class Sidebar extends Component {
                     const labelId = `cal-${item.name}`;
                     return (
                         <div>
-                            <ListItem className={classes.listItem} key={item.name} dense button>
+                            <ListItem className={classes.listItem} key={item.name} dense>
                                 <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
                                 <ListItemText id={labelId} primary={`${item.name}`} />
                                     <ListItemSecondaryAction>
@@ -199,7 +194,7 @@ class Sidebar extends Component {
                     </List>
 
                 {/* Modal to create new calendar */}
-                <Dialog maxWidth = {'md'} open={this.props.createPopUp} onClose={this.props.handleClose}>
+                <Dialog maxWidth = {'xs'} open={this.props.createPopUp} onClose={this.props.handleClose}>
                     <IconButton aria-label="close" className={classes.closeButton} onClick={this.props.handleClose}>
                         <CloseIcon />
                     </IconButton>
@@ -209,15 +204,16 @@ class Sidebar extends Component {
                     <DialogContent>
                         <TextField
                           className={classes.textBox}
-                          placeholder="Calendar Name"
+                          placeholder="Calendar name"
                           margin="dense"
                           onChange={e => {
                             this.props.setCalName(e.target.value);
                           }}/>
+                        <h3>Select a calendar colour</h3><br/>
                         <CirclePicker
                           className={classes.colourPicker}
                           color={ this.props.colour }
-                          onChangeComplete={ this.props.setCalColour }/>
+                          onChangeComplete={ this.props.setCalColour }/><br/>
                     </DialogContent>
                     <DialogActions>
                         <Button
