@@ -427,7 +427,7 @@ class Cal extends Component {
         }).then((data) => data.json()).then(cal => {
             if (cal.success) {
                 console.log("Created calendar successfully")
-                this.state.calendars.push(calendar)
+                //this.state.calendars.push(calendar)
             } else {
                 console.log("Failed calendar creation")
             }
