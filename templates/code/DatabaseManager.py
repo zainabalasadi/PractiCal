@@ -89,6 +89,14 @@ class DatabaseManager():
         sql = "DELETE FROM users WHERE uid = %s"
         val = (userID,)
         try:
+            if deleteInvite(receiverID=userID) == -1:
+                raise Exception("Error deleting invites related to user")
+            if deleteNotification(senderID=userID) == -1:
+                raise Exception("Error deleting notifications related to user")
+            if deleteNotification(receiverID=userID) == -1:
+                raise Exception("Error deleting notifications related to user")
+            if deleteEvent(userID=userID) == -1:
+                raise Exception("Error deleting events related to user")
             cursor.execute(sql, val)
             self._db.commit()
             rowcount = cursor.rowcount
@@ -266,21 +274,32 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def deleteEvent(self, eventID, userID=None):
-        cursor = self._db.cursor()
-        sql = "DELETE FROM events WHERE eid = %s"
-        val = [eventID]
+    def deleteEvent(self, eventID=None, userID=None):
+        if not eventID and not userID: return -1
+        conditions = []
+        val = []
+        if eventID:
+            conditions.append("eid = %s")
+            val.append(eventID)
         if userID:
-            sql += ", uid = %s"
+            conditions.append("uid = %s")
             val.append(userID)
         val = tuple(val)
         try:
+            if eventID and not userID:
+                if deleteInvite(eventID=eventID) == -1:
+                    raise Exception("Error deleting invites related to event")
+                if deleteNotification(eventID=eventID) == -1:
+                    raise Exception("Error deleting notifications related to event")
+            cursor = self._db.cursor()
+
+            sql = "DELETE FROM events WHERE {}".format(" AND ".join(conditions))
             cursor.execute(sql, val)
             self._db.commit()
             rowcount = cursor.rowcount
-            cursor.close()
             if not rowcount:
-                raise Exception("No changes made")
+                raise Exception("Event not deleted")
+            cursor.close()
             return 1
 
         except Exception as e:
@@ -460,10 +479,19 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def deleteInvite(self, eventID, receiverID):
+    def deleteInvite(self, eventID=None, receiverID=None):
+        if not eventID and not receiverID: return -1
         cursor = self._db.cursor()
-        sql = ("DELETE FROM invites WHERE eid = %s AND receiver_id = %s")
-        val = (eventID, receiverID)
+        conditions = []
+        val = []
+        if eventID:
+            conditions.append("eid = %s")
+            val.append(eventID)
+        if receiverID:
+            conditions.append("receiver_id = %s")
+            val.append(receiverID)
+        sql = "DELETE FROM invites WHERE {}".format(" AND ".join(conditions))
+        val = tuple(val)
         try:
             cursor.execute(sql, val)
             self._db.commit()
@@ -578,11 +606,28 @@ class DatabaseManager():
                    "The following error was raised:\n\n{}".format(e)))
             return -1
 
-    def deleteNotification(self, eventID, senderID, receiverID, notifType):
+    def deleteNotification(self, eventID=None, senderID=None, receiverID=None,
+            notifType=None):
+        if not eventID and not senderID and not receiverID and not notifType:
+            return -1
         cursor = self._db.cursor()
-        sql = ("DELETE FROM notifications WHERE eid = %s AND sender_id = %s AND "
-               "receiver_id = %s AND notif_type = %s")
-        val = (eventID, senderID, receiverID, notifType)
+        conditions = []
+        val = []
+        if eventID:
+            conditions.append("eid = %s")
+            val.append(eventID)
+        if senderID:
+            conditions.append("sender_id = %s")
+            val.append(senderID)
+        if receiverID:
+            conditions.append("receiver_id = %s")
+            val.append(receiverID)
+        if notifType:
+            conditions.append("notif_type = %s")
+            val.append(notifType)
+        sql = "DELETE FROM notifications WHERE {}".format(
+            " AND ".join(conditions))
+        val = tuple(val)
         try:
             cursor.execute(sql, val)
             self._db.commit()
