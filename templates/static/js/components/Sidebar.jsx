@@ -66,6 +66,7 @@ class Sidebar extends Component {
         super(props);
 	    this.state = {nlpText: ""}
         this.handleNlpCreation = this.handleNlpCreation.bind(this);
+        this.deleteCal = this.deleteCal.bind(this);
     }
 
     componentDidMount() {
@@ -83,8 +84,9 @@ class Sidebar extends Component {
         }).then(response => response.json()).then(data => this.props.handleNlpData(data))
     }
 
-    deleteCal(calendar) {
+    deleteCal() {
         console.log("i am being called")
+        let calendar = {"name": this.props.calName, "colour": this.props.calColour}
         let updatedCalendars = this.props.calendars.filter (
             cal => cal["name"] !== calendar.name
         );
@@ -176,7 +178,7 @@ class Sidebar extends Component {
                                 <ListItemText id={labelId} primary={`${item.name}`} />
                                     <ListItemSecondaryAction>
                                         {/* <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}> */}
-                                        <IconButton edge="end" aria-label="comments" onClick={(e) => { this.props.handleClick(e, `${item.name}`)} }>
+                                        <IconButton edge="end" aria-label="comments" onClick={(e) => { this.props.handleClick(e, `${item.name}`, `${item.colour}`)} }>
                                             <MoreVertIcon className="threeDots"/>
                                         </IconButton>
                                     </ListItemSecondaryAction>
@@ -188,7 +190,7 @@ class Sidebar extends Component {
                                 open={Boolean(this.props.anchorEl)}
                                 onClose={this.props.handleClose}>
                                 <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
-                                <MenuItem onClick={this.delete_calendar}>Delete</MenuItem>
+                                <MenuItem onClick={this.deleteCal}>Delete</MenuItem>
                             </Menu>
                       </div>
                     );

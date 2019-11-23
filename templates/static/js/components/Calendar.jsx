@@ -445,10 +445,9 @@ class Cal extends Component {
         });
     }
 
-    handleClick = (e, name) => {
-        console.log('handled click')
-        console.log(name)
-    	this.setState({ anchorEl: e.currentTarget, calName: name });
+    handleClick = (e, name, colour) => {
+        console.log(name, colour)
+    	this.setState({ anchorEl: e.currentTarget, calName: name, calColour: colour });
   	};
 
     // Handle's start time select
