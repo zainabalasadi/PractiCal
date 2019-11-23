@@ -170,7 +170,6 @@ class Sidebar extends Component {
                 {this.props.calendars.map(item => {
                     const labelId = `cal-${item.name}`;
                     return (
-                        <div>
                             <ListItem className={classes.listItem} key={item.name} dense>
                                 <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
                                 <ListItemText id={labelId} primary={`${item.name}`} />
@@ -180,7 +179,7 @@ class Sidebar extends Component {
                                             <MoreVertIcon className="threeDots"/>
                                         </IconButton>
                                     </ListItemSecondaryAction>
-                                </ListItem>
+                                
                                 {/* Menu for each calendar */}
                                 <Menu
                                 anchorEl={this.props.anchorEl}
@@ -190,7 +189,7 @@ class Sidebar extends Component {
                                 <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
                                 <MenuItem onClick={this.delete_calendar}>Delete</MenuItem>
                             </Menu>
-                      </div>
+                      </ListItem>
                     );
                     })}
                     </List>
