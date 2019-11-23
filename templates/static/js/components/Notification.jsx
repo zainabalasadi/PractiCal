@@ -48,7 +48,6 @@ class Notification extends React.Component {
     }
 
     respond_to_invite(event_id, resp) {
-      console.log(JSON.stringify({"id": event_id, "response": resp}))
       let response = fetch('/inviteResponse', {
         method: 'POST',
         headers: {
@@ -77,7 +76,6 @@ class Notification extends React.Component {
     }
 
     handleInviteGoing = event => {
-      console.log(event.currentTarget)
       this.respond_to_invite(event.currentTarget.getAttribute('eid'), "going")
       this.handleCloseDelete(event)
     }
