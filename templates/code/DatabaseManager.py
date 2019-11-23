@@ -755,6 +755,9 @@ if __name__ == "__main__":
                     'Uni': {
                         'colour': '#9C2BAF'
                     },
+                    'Birthdays': {
+                        'colour': '#2196f3'
+                    },
                 }
             })
         cursor.execute(("INSERT INTO users "
@@ -784,10 +787,20 @@ if __name__ == "__main__":
 
                         "(2, 'Sprint Meeting', 'Sprint Meeting 5, discussing merging back-end and front-end', '2019-10-30T"
                         "14:00', '2019-10-30T16:00', 'Uni', 'School'), "
+                        "(2, 'Coffee with Josh', 'Decide where to meet', '2019-11-04T"
+                        "09:00', '2019-11-04T10:00', 'Social', 'Social'), "
+                        "(2, 'Sprint Meeting', 'Discuss date bugs that are arising', '2019-11-06T"
+                        "14:00', '2019-11-06T16:00', 'Uni', 'School'), "
+                        "(2, 'Sprint Meeting', 'Discuss front-end final touches', '2019-11-13T"
+                        "14:00', '2019-11-13T16:00', 'Uni', 'School'), "
+                        "(2, 'Josh Birthday', 'Meet up at Central Station', '2019-11-08T"
+                        "18:00', '2019-11-08T23:00', 'Birthdays', 'Social'), "
                         "(2, 'Lunch with Sarah', 'Circular Quay', '2019-11-13T"
                         "12:00', '2019-11-13T13:30', 'Social', 'Social'), "
                         "(2, 'Doctor Appointment', 'Ask about hay fever', '2019-11-15T"
                         "13:00', '2019-11-15T13:30', 'Default', 'Miscellaneous'), "
+                        "(2, 'Abbie Birthday Party', 'Summer theme', '2019-11-16T"
+                        "18:00', '2019-11-16T23:00', 'Birthdays', 'Social'), "
                         "(2, 'AI Conference', 'Chat to Fred for job opportunities', '2019-11-18T"
                         "09:00', '2019-11-20T18:00', 'Work', 'Work'), "
                         "(2, 'Call with Kenny', 'Call 04 2222 2222', '2019-11-20T"
@@ -798,8 +811,10 @@ if __name__ == "__main__":
                         "18:30', '2019-11-24T19:45', 'Uni', 'School'), "
                         "(2, 'COMP4920 Peer Assessment', 'Submit peer assessments on Moodle', '2019-11-24T"
                         "13:30', '2019-11-24T13:45', 'Uni', 'School'), "
-                        "(2, 'COMP4920 Project Due', 'Event 9 description', '2019-11-24T"
+                        "(2, 'COMP4920 Project Due', 'Submit by midnight', '2019-11-24T"
                         "21:00', '2019-11-24T23:55', 'Uni', 'School'), "
+                        "(2, 'Prepare for meeting with Kenny Tomorrow', 'Read documents he sent', '2019-11-24T"
+                        "18:00', '2019-11-24T20:00', 'Work', 'Work'), "
                         "(2, 'COMP4920 Presentation', 'Presenting the wonderful PractiCal to staff', '2019-11-25T"
                         "15:00', '2019-11-25T17:00', 'Uni', 'School'), "
                         "(2, 'End of Term Drinks', 'Casual Dress Code', '2019-11-25T"
