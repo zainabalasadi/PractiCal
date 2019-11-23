@@ -72,7 +72,7 @@ def createEvent():
                 invitees = None
                 category = r['category']
                 if 'invitees' in r:
-                        invitees = r['invitees']
+                        invitees = r['invitees'].split()
                 groups = None
                 if 'groups' in r:
                         groups = r['groups']
@@ -80,7 +80,7 @@ def createEvent():
                         event = PCM.addEvent(userID=userId, title=name,
                             description=desc, startDateTime=startDate,
                             endDateTime=endDate, calendarName=cal.getName(),
-                                             category=category)
+                                             category=category, inviteeEmails=invitees)
                         cal.addEvent(event)
                         eventId = event.getID()
                         return jsonify({"success": "True"})

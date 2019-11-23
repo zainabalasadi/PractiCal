@@ -3,8 +3,12 @@ from templates.code.Comment import Comment
 from templates.code.Notification import Notification
 
 class Event():
+    INVITESTATUS_NONE = 0
+    INVITESTATUS_GOING = 1
+    INVITESTATUS_MAYBE = 2
+    INVITESTATUS_DECLINE = 3
     def __init__(self, eventID, userID, name, description, startDateTime,
-            endDateTime, category, location=None, invitees=dict()):
+            endDateTime, category, location=None, invitees=[]):
         self._eventID = eventID
         self._userID = userID
         self._name = name
@@ -75,7 +79,7 @@ class Event():
     def addComment(self, comment):
         self._comments.append(comment)
 
-    def addInvitees(self, invitee):
+    def addInvitees(self, invitees):
         for invitee in invitees:
             if not invitee in self._invitees:
                 self._invitees.append(invitee)

@@ -308,7 +308,7 @@ class Cal extends Component {
 
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        console.log(eventToEdit.start.toISOString());
+        console.log(eventToEdit.start);
 	let startT= eventToEdit.start.toISOString();
         let endT= eventToEdit.end.toISOString();
         this.setState ({
