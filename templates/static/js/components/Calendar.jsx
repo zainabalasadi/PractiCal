@@ -680,8 +680,10 @@ class Cal extends Component {
                     onClick={() => {
                         console.log(this.state.start)
                         console.log(this.state.end)
-                        if (this.state.start >= this.state.end) {
-                            alert("You can't make an event end before it starts!!!!")
+                        if (this.state.title == null) {
+                            alert("Please provide a title.")
+                        } else if (this.state.start >= this.state.end) {
+                            alert("Please enter valid dates.")
                         } else if (this.state.calendar == null) {
                             alert("Please select a calendar.")
                         } else {
@@ -811,10 +813,12 @@ class Cal extends Component {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        if (new Date(this.state.start) >= new Date(this.state.end)) {
-                            console.log(this.state.start)
-                            console.log(this.state.end)
-                            alert("You can't make an event end before it starts!!!!")
+                        if (this.state.title == null) {
+                            alert("Please provide a title.")
+                        } else if (new Date(this.state.start) >= new Date(this.state.end)) {
+                            alert("Please enter valid dates.")
+                        } else if (this.state.calendar == null) {
+                            alert("Please select a calendar.")
                         } else {
                             console.log(this.state.start)
                             console.log(this.state.end)
