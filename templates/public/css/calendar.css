@@ -305,3 +305,8 @@ div.inline {
 .school { background-color: #99C05D; }
 .family { background-color: #4897EC; }
 .misc { background-color: #8E37AA; }
+
+/**** Contact List ****/
+.Navbar-contactList-23 {
+    border: 1px solid #DADCE0;
+}

@@ -10,6 +10,11 @@ import logo from '../../../public/logo.svg';
 import { withStyles } from "@material-ui/core/styles";
 import TimeBreakdown from './TimeBreakdown'
 import Notification from './Notification'
+import { ListItem , ListItemText, List, Paper} from '@material-ui/core';
+import FaceIcon from '@material-ui/icons/Face';
+import EmailIcon from '@material-ui/icons/Email';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+
 
 const navHeight = 64;
 
@@ -70,6 +75,38 @@ const styles = theme => ({
         position: 'absolute',
         right: theme.spacing(1),
         top: theme.spacing(1),
+    },
+    contactList: {
+        maxHeight: 200, 
+        width: '100%',
+        overflow: 'auto',
+        margin: theme.spacing(8, 0, 2, 0),
+    },
+    inputMargin: {
+        margin: '4px 0 5px 0',
+        marginLeft: 50,
+        maxWidth: 500,
+        width: 500,
+        borderRadius: theme.shape.borderRadius,
+        borderWidth: '50',
+        '&:hover': {
+            backgroundColor: '#F2F3F4',
+        },
+    },
+    iconDiv: {
+        position: 'relative',
+        display: 'inline-block'
+    },
+    icon: {
+        position: 'absolute',
+        left: 4,
+        top: 10,
+        width: 20, height: 20,
+        marginRight: 50,
+    },
+    submitButton: {
+        margin: theme.spacing(2, 0, 2, 0),
+        float: 'right',
     },
 });
 
@@ -264,7 +301,7 @@ class Navbar extends Component {
             </AppBar>
 
             {/* Modal for contacts */}
-            <Dialog open={this.state.openContacts} onClose={this.handleClose}>
+            <Dialog maxWidth={'sm'} open={this.state.openContacts} onClose={this.handleClose}>
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
@@ -273,16 +310,23 @@ class Navbar extends Component {
                 </DialogTitle>
 
                 <DialogContent>
-                    <TextField
-                        placeholder="Group name"
-                        margin="dense"
-                        onChange={e => {this.setGroupName(e.target.value)}}/>
-                    <TextField
-                        placeholder="Emails"
-                        margin="dense"
-                        onChange={e => {this.setGroupEmail(e.target.value)}}/>
+                    <div className={classes.iconDiv}>
+                        <GroupAddIcon className={classes.icon}/>
+                        <TextField
+                            placeholder="Group name"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setGroupName(e.target.value)}}/>
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <EmailIcon className={classes.icon}/>
+                        <TextField
+                            placeholder="Emails"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setGroupEmail(e.target.value)}}/>
+                    </div>
                     <Button
                         label="Create Group"
+                        className={classes.submitButton}
                         variant="contained"
                         color="primary"
                         onClick={() => {
@@ -290,17 +334,23 @@ class Navbar extends Component {
                         }}>
                         Create Group
                         </Button>
-
+                    <div className={classes.iconDiv}>
+                        <FaceIcon className={classes.icon}/>
+                        <TextField 
+                            placeholder="Contact name"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setContactName(e.target.value)}}/>
+                    </div>
+                    <div className={classes.iconDiv}>
+                        <EmailIcon className={classes.icon}/>
                         <TextField
-                        placeholder="Contact name"
-                        margin="dense"
-                        onChange={e => {this.setContactName(e.target.value)}}/>
-                    <TextField
-                        placeholder="Email"
-                        margin="dense"
-                        onChange={e => {this.setContactEmail(e.target.value)}}/>
+                            placeholder="Email"
+                            className={classes.inputMargin}
+                            onChange={e => {this.setContactEmail(e.target.value)}}/>
+                    </div>
                     <Button
                         label="Create Contact"
+                        className={classes.submitButton}
                         variant="contained"
                         color="primary"
                         onClick={() => {
@@ -308,13 +358,17 @@ class Navbar extends Component {
                         }}>
                         Create Contact
                         </Button>
-                    <div className="contactsBox">
-                        <ul>
-                        {this.state.contacts.map(function(item, idx) {
-                            return (<li><span className="contactName">{item.contactName}</span>, {item.contactEmail}</li>)
-                        })}
-                        </ul>
-                    </div>
+                        <Paper className="contactList" elevation={0} className={classes.contactList}>
+                            <List>
+                                {this.state.contacts.map(function(item, idx) {
+                                    return (
+                                        <ListItem dense button>
+                                            <ListItemText primary={`${item.contactName}, ${item.contactEmail}`} />
+                                        </ListItem>
+                                    )
+                                })}
+                            </List>
+                        </Paper>
                 </DialogContent>
             </Dialog>
         </div>
