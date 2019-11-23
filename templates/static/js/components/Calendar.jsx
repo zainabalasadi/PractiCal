@@ -152,9 +152,7 @@ class Cal extends Component {
     }
 
     getMins(mins) {
-    console.log(mins)
     var s = String(mins)
-    console.log(s.length)
         if (s.length < 2) {
             return '0' + s
         } else {
