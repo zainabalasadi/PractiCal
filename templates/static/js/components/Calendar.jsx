@@ -682,6 +682,8 @@ class Cal extends Component {
                         console.log(this.state.end)
                         if (this.state.start >= this.state.end) {
                             alert("You can't make an event end before it starts!!!!")
+                        } else if (this.state.calendar == null) {
+                            alert("Please select a calendar.")
                         } else {
                             this.setNewEvent(), this.handleClose();
                         }
