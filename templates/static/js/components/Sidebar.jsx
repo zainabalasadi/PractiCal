@@ -172,15 +172,7 @@ class Sidebar extends Component {
                     return (
                             <ListItem className={classes.listItem} key={item.name} dense>
                                 <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
-                                <ListItemText id={labelId} primary={`${item.name}`} />
-                                    <ListItemSecondaryAction>
-                                        {/* <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}> */}
-                                        <IconButton edge="end" aria-label="comments" onClick={(e) => { this.props.handleClick(e, `${item.name}`)} }>
-                                            <MoreVertIcon className="threeDots"/>
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                
-                                {/* Menu for each calendar */}
+                                <ListItemText id={labelId} primary={`${item.name}`} >
                                 <Menu
                                 anchorEl={this.props.anchorEl}
                                 keepMounted
@@ -189,6 +181,16 @@ class Sidebar extends Component {
                                 <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
                                 <MenuItem onClick={this.delete_calendar}>Delete</MenuItem>
                             </Menu>
+                                </ListItemText>
+                                    <ListItemSecondaryAction>
+                                        {/* <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}> */}
+                                        <IconButton edge="end" aria-label="comments" onClick={(e) => { this.props.handleClick(e, `${item.name}`)} }>
+                                            <MoreVertIcon className="threeDots"/>
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                
+                                {/* Menu for each calendar */}
+                                
                       </ListItem>
                     );
                     })}
