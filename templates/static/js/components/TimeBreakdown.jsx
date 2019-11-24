@@ -28,18 +28,30 @@ class TimeBreakdown extends Component {
             setOpen: false,
             userName: "",
             breakdown: [],
-            family:"",
-            social:"",
-            school:"",
-            work:"",
+            family: "",
+            social: "",
+            school: "",
+            work: "",
+            greeting: "",
         };
         this.handleClose = this.handleClose.bind(this);
         this.getHours = this.getHours.bind(this);
         this.handleClickOpen = this.handleClickOpen.bind(this);
+        this.getGreeting = this.getGreeting.bind(this);
     };
 
     componentDidMount() {
         this._isMounted = true;
+        
+        // Assign greeting
+        var now = new Date(),
+            hour = now.getHours();
+
+        if (hour > 12) {
+            this.setState({ greeting: "Good afternoon"})
+        } else {
+            this.setState({ greeting: "Good morning"})
+        }
       
         let response = fetch('/getName', {
             method: 'GET'
@@ -81,6 +93,10 @@ class TimeBreakdown extends Component {
         console.log(this.state.social)
     }
 
+    getGreeting() {
+
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -98,29 +114,31 @@ class TimeBreakdown extends Component {
                 <IconButton aria-label="close" className={classes.closeButton} onClick={this.handleClose}>
                     <CloseIcon />
                 </IconButton>
-                <DialogTitle className={classes.heading}>{`Good morning ${this.state.userName},`}</DialogTitle>
+                <DialogTitle className={classes.heading}>
+                    {`${this.state.greeting} ${this.state.userName},`}
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                     <p className="timeIntro">Last week, you spent:</p>
-                    <div class="inline social tiles">
-                        <p class="timeNum">{this.state.social}<span>hours</span></p>
-                        <p class="timeType">on social events</p>                    
+                    <div className="inline social tiles">
+                        <p className="timeNum">{this.state.social}<span>hours</span></p>
+                        <p className="timeType">on social events</p>                    
                     </div>
-                    <div class="inline work tiles">
-                        <p class="timeNum">{this.state.work}<span>hours</span></p>
-                        <p class="timeType">on work events</p>                    
+                    <div className="inline work tiles">
+                        <p className="timeNum">{this.state.work}<span>hours</span></p>
+                        <p className="timeType">on work events</p>                    
                     </div>
-                    <div class="inline school tiles">
-                        <p class="timeNum">{this.state.school}<span>hours</span></p>
-                        <p class="timeType">on school events</p>                    
+                    <div className="inline school tiles">
+                        <p className="timeNum">{this.state.school}<span>hours</span></p>
+                        <p className="timeType">on school events</p>                    
                     </div>
-                    <div class="inline family tiles">
-                        <p class="timeNum">{this.state.family}<span>hours</span></p>
-                        <p class="timeType">on family events</p>                    
+                    <div className="inline family tiles">
+                        <p className="timeNum">{this.state.family}<span>hours</span></p>
+                        <p className="timeType">on family events</p>                    
                     </div>
-                    <div class="inline misc tiles">
-                        <p class="timeNum">{this.state.misc}<span>hours</span></p>
-                        <p class="timeType">on miscellaneous events</p>                    
+                    <div className="inline misc tiles">
+                        <p className="timeNum">{this.state.misc}<span>hours</span></p>
+                        <p className="timeType">on miscellaneous events</p>                    
                     </div>
                     </DialogContentText>
                 </DialogContent>
