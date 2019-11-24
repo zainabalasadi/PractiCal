@@ -67,3 +67,18 @@ entered when creating events.
 
 - Fixed bugs which caused the app to crash if the view mode was changed
 after creating an event.
+--------------------------------------------------------------------------
+
+Sprint 7: 20/11 - 24/11
+- Connected the front end and back end together for deleting calendar
+functionality. Fixed bugs which affected this on the back end. 
+
+- Added additional functionality so that users can search by description
+as well. 
+
+- Added some preliminary formatting for search results, i.e. putting
+results in a table rather than a list.
+
+- Completed lots of testing, and found bugs such as calendar name changes
+not persisting, and event creation on week and day view flipping from pm to
+am when saved in database.
