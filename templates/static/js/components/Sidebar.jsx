@@ -84,6 +84,10 @@ class Sidebar extends Component {
         }).then(response => response.json()).then(data => this.props.handleNlpData(data))
     }
 
+    editCal() {
+        console.log("editing being called")
+    }
+
     deleteCal() {
         console.log("i am being called")
         this.props.handleClose()
@@ -94,19 +98,8 @@ class Sidebar extends Component {
         let deletedCalendar = this.props.calendars.filter (
             cal => cal["name"] === calendar.name
         );
-        // let updatedEvents = []
-        // let i = 0
-        // for (i; i < this.props.events.length; i++) {
-        //     if (this.props.events[i].calendar !== calendar.name) {
-        //         updatedEvents.push(this.props.events[i])
-        //     }
-        // }
-        // this.setState({ calendars: updatedCalendars, events: updatedEvents });
-        // this.forceUpdate()
         this.props.delete_calendar(deletedCalendar[0])
     }
-
-    
 
     getCalList() {
         let response = fetch('/getEvents', {
@@ -169,7 +162,6 @@ class Sidebar extends Component {
                                 <div style={{backgroundColor: `${item.colour}`}} className={classes.colourPreview}></div>
                                 <ListItemText id={labelId} primary={`${item.name}`} />
                                     <ListItemSecondaryAction>
-                                        {/* <IconButton edge="end" aria-label="comments" onClick={this.props.handleClick}> */}
                                         <IconButton edge="end" aria-label="comments" onClick={(e) => { this.props.handleClick(e, `${item.name}`, `${item.colour}`)} }>
                                             <MoreVertIcon className="threeDots"/>
                                         </IconButton>
@@ -181,7 +173,7 @@ class Sidebar extends Component {
                                 keepMounted
                                 open={Boolean(this.props.anchorEl)}
                                 onClose={this.props.handleClose}>
-                                <MenuItem onClick={this.props.handleClose}>Edit</MenuItem>
+                                <MenuItem onClick={this.props.handleCreateEdit}>Edit</MenuItem>
                                 <MenuItem onClick={this.deleteCal}>Delete</MenuItem>
                             </Menu>
                         </div>         
@@ -189,7 +181,7 @@ class Sidebar extends Component {
                     })}
                     </List>
 
-                {/* Modal to create new calendar */}
+                {/* Modal to CREATE new calendar */}
                 <Dialog maxWidth = {'xs'} open={this.props.createPopUp} onClose={this.props.handleClose}>
                     <IconButton aria-label="close" className={classes.closeButton} onClick={this.props.handleClose}>
                         <CloseIcon />
@@ -209,6 +201,41 @@ class Sidebar extends Component {
                         <CirclePicker
                           className={classes.colourPicker}
                           color={ this.props.colour }
+                          onChangeComplete={ this.props.setCalColour }/><br/>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                          label="Create Calendar"
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            this.props.setNewCalendar(), this.props.handleClose();
+                          }}>
+                        Create Calendar
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+                {/* Modal to EDIT new calendar */}
+                <Dialog maxWidth = {'xs'} open={this.props.editPopUp} onClose={this.props.handleClose}>
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={this.props.handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                    <DialogTitle className={this.title} id="customized-dialog-title" onClose={this.props.handleClose}>
+                        Edit calendar
+                    </DialogTitle>
+                    <DialogContent>
+                        <TextField
+                          className={classes.textBox}
+                          value={this.props.calName}
+                          margin="dense"
+                          onChange={e => {
+                            this.props.setCalName(e.target.value);
+                          }}/>
+                        <h3>Select a calendar colour</h3><br/>
+                        <CirclePicker
+                          className={classes.colourPicker}
+                          color={ this.props.calColour }
                           onChangeComplete={ this.props.setCalColour }/><br/>
                     </DialogContent>
                     <DialogActions>
