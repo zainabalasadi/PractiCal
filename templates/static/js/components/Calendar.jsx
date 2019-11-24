@@ -112,7 +112,7 @@ class Cal extends Component {
             // NLP
 	        nlpText: "", nlpResult: {}, notifs: [], anchorEl: null,
             createPopUp: false, editPopUp: false, calName: "", 
-            calColour: "", oldCalName: "",
+            calColour: "", oldCalName: "", oldCalColour: "",
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this)
@@ -406,12 +406,17 @@ class Cal extends Component {
 
     setEditCalendar = () => {
         const { name, colour } = this.state;
-        if (name === undefined) {
+        if (!name) {
             const name = this.state.oldCalName
             let cal = { name, colour };
             this.edit_calendar(cal, this.state.oldCalName)
             this.handleClose
-        } else {
+        } else if (!colour) {
+            const colour = this.state.oldCalColour
+            let cal = { name, colour };
+            this.edit_calendar(cal, this.state.oldCalName)
+            this.handleClose
+        } else if (name && colour) {
             let cal = { name, colour };
             this.edit_calendar(cal, this.state.oldCalName)
         }
@@ -493,7 +498,7 @@ class Cal extends Component {
 
     handleClick = (e, name, colour) => {
         this.setState({ anchorEl: e.currentTarget, calName: name, calColour: colour,
-                        oldCalName: name });
+                        oldCalName: name, oldCalColour: colour, });
   	};
 
     // Handle's start time select
