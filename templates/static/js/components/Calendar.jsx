@@ -414,8 +414,15 @@ class Cal extends Component {
 
     setEditCalendar = () => {
         const { name, colour } = this.state;
-        let cal = { name, colour };
-        this.edit_calendar(cal, this.state.oldCalName)
+        if (name === undefined) {
+            const name = this.state.oldCalName
+            let cal = { name, colour };
+            this.edit_calendar(cal, this.state.oldCalName)
+            this.handleClose
+        } else {
+            let cal = { name, colour };
+            this.edit_calendar(cal, this.state.oldCalName)
+        }
     }
 
     handleDeleteCal = (calendarName) => {
