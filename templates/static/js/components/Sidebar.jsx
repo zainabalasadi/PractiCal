@@ -84,12 +84,7 @@ class Sidebar extends Component {
         }).then(response => response.json()).then(data => this.props.handleNlpData(data))
     }
 
-    editCal() {
-        console.log("editing being called")
-    }
-
     deleteCal() {
-        console.log("i am being called")
         this.props.handleClose()
         let calendar = {"name": this.props.calName, "colour": this.props.calColour}
         let updatedCalendars = this.props.calendars.filter (
@@ -105,11 +100,6 @@ class Sidebar extends Component {
         let response = fetch('/getEvents', {
             method: 'GET'
         }).then((data) => data.json()).then(data => this.renderCalList(data));
-    }
-
-    handleDots(name) {
-        console.log(name)
-        // this.props.handleClick(this)
     }
 
     renderCalList(calList) {
@@ -216,7 +206,7 @@ class Sidebar extends Component {
                     </DialogActions>
                 </Dialog>
 
-                {/* Modal to EDIT new calendar */}
+                {/* Modal to EDIT calendar */}
                 <Dialog maxWidth = {'xs'} open={this.props.editPopUp} onClose={this.props.handleClose}>
                     <IconButton aria-label="close" className={classes.closeButton} onClick={this.props.handleClose}>
                         <CloseIcon />
@@ -227,7 +217,7 @@ class Sidebar extends Component {
                     <DialogContent>
                         <TextField
                           className={classes.textBox}
-                          value={this.props.calName}
+                          defaultValue={this.props.calName}
                           margin="dense"
                           onChange={e => {
                             this.props.setCalName(e.target.value);
@@ -244,9 +234,9 @@ class Sidebar extends Component {
                           variant="contained"
                           color="primary"
                           onClick={() => {
-                            this.props.setNewCalendar(), this.props.handleClose();
+                            this.props.setEditCalendar(), this.props.handleClose();
                           }}>
-                        Create Calendar
+                        Edit Calendar
                         </Button>
                     </DialogActions>
                 </Dialog>

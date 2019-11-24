@@ -111,7 +111,8 @@ class Cal extends Component {
             searchResult: [], search: "", searchOpen: false,
             // NLP
 	        nlpText: "", nlpResult: {}, notifs: [], anchorEl: null,
-            createPopUp: false, editPopUp: false, calName: "", calColour: "",
+            createPopUp: false, editPopUp: false, calName: "", 
+            calColour: "", oldCalName: "",
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this)
@@ -255,7 +256,7 @@ class Cal extends Component {
     // Closes modal
     handleClose() {
         this.setState({ openEvent: false, openSlot: false, openNlp: false,
-                        createPopUp: false, anchorEl: null });
+                        createPopUp: false, editPopUp: false, anchorEl: null });
     }
 
     handleSearchClose() {
@@ -407,9 +408,15 @@ class Cal extends Component {
         this.setState ({ createPopUp: true });
     };
 
-    handleCreateEdit = () => {
+    handleCreateEdit = (name) => {
         this.setState ({ editPopUp: true });
     };
+
+    setEditCalendar = () => {
+        const { name, colour } = this.state;
+        let cal = { name, colour };
+        this.edit_calendar(cal, this.state.oldCalName)
+    }
 
     handleDeleteCal = (calendarName) => {
         var string = 'deleting' + calendarName
@@ -459,8 +466,6 @@ class Cal extends Component {
         body: JSON.stringify({"name": calendar.name, "colour": calendar.colour})
         }).then((data) => data.json()).then(data => {
             if (data.success) {
-                // append to events list
-                // this.setState({ events: [], calendars: [] })
                 console.log("Suceeededdddd")
                 this.setState({events: [], calendars: []})
                 this.get_calendars()
@@ -470,9 +475,26 @@ class Cal extends Component {
         });
     }
 
+    edit_calendar(calendar, oldName) {
+        let response = fetch('/editCalendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        body: JSON.stringify({"oldName": oldName, "name": calendar.name, "colour": calendar.colour})
+        }).then((data) => data.json()).then(data => {
+            if (data.success) {
+                this.setState({events: [], calendars: []})
+                this.get_calendars()
+            } else {
+                console.log("Failed")
+            }
+        });
+    }
+
     handleClick = (e, name, colour) => {
-        console.log(name, colour)
-    	this.setState({ anchorEl: e.currentTarget, calName: name, calColour: colour });
+        this.setState({ anchorEl: e.currentTarget, calName: name, calColour: colour,
+                        oldCalName: name });
   	};
 
     // Handle's start time select
@@ -1012,7 +1034,8 @@ class Cal extends Component {
                     setCalColour={this.setCalColour} setNewCalendar={this.setNewCalendar}
                     handleClick={this.handleClick} setNlpBarState={this.handleNlpTextbox}
                     events={this.state.events} delete_calendar={this.delete_calendar}
-                    handleCreateEdit={this.handleCreateEdit} editPopUp={this.state.editPopUp}/>
+                    handleCreateEdit={this.handleCreateEdit} editPopUp={this.state.editPopUp}
+                    oldCalName={this.state.oldCalName} setEditCalendar={this.setEditCalendar}/>
             </div>
         );
     }

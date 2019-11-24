@@ -406,6 +406,23 @@ def deleteCalendar():
     return jsonify({"success": "False"})
 
 
+@index_blueprint.route('/editCalendar', methods=['POST'])
+@login_required
+def editCalendar():
+    if request.method == 'POST':
+        r = request.get_json()
+        oldName = r['oldName']
+        name = r['name']
+        colour = r['colour']
+        oldCalendar = current_user.getCalendarByName(oldName)
+        if oldCalendar is not None:
+            current_user.changeCalendarName(oldCalendar, name)
+            current_user.changeCalendarColour(oldCalendar, colour)
+            PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
+            return jsonify({"success": "True"})
+    return jsonify({"success": "False"})
+
+
 @index_blueprint.route('/addContact', methods=['POST'])
 @login_required
 def addContact():
