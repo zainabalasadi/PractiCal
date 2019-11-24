@@ -1,40 +1,66 @@
+Team meetings log
 9/10/2019
-First sprint beginning and project plan presentation, we presented our ideas and decided on our modules for the first sprint. We decided to work entirely 
-on the backend before starting the frontend for this assignment, and we've begun with creating the functionality around user and event objects
+First sprint beginning and project plan presentation, we presented our ideas 
+and decided on our modules for the first sprint. We decided to work entirely 
+on the backend before starting the frontend for this assignment, and we've 
+begun with creating the functionality around user and event objects
 
 16/10/2019
-We finished first sprint comfortably and decided to begin weaving in the frontend and NLP development between our backend modules.
-We need to rearrange our file system to properly utilise flask and react, get started on dialogflow intent identification and get our report in
+We finished first sprint comfortably and decided to begin weaving in the 
+frontend and NLP development between our backend modules.
+We need to rearrange our file system to properly utilise flask and react, 
+get started on dialogflow intent identification and get our report in
 
 21/10/2019
 Started on dialogflow nlp use-cases, still working on getting it connected to back end.
+Includes formatting the input data and designating the expected parameters to extract
+by providing this, a number of training sentences and specifications for our data
+entities we'll be able to extract our necessary data
 
 23/10/2019
-Backend test cases working, finished setting up authentication procedures and am recieving correct responses. Actual code integration not yet complete and need to organise formatting for the output route
+Backend test cases working, finished setting up api authentication procedures and 
+am recieving correct responses. Actual code integration not yet complete and need 
+to organise formatting for the output route. What I mean by this is that currently
+we're extracting the necessary entities from the network but dates (for example)
+dont have the same representation as they did on the flask server/javascript
 
 28/10/2019
 Little progress this week with presentation due. Aiming to have dialogflow backend route completed by wednesday.
 
 30/10/2019
-Backend routing for dialogflow working. Will move on to begin organising post routing for entire backend infrastructure.
+Backend routing for dialogflow working. Will move on to begin organising 
+post routing for entire backend infrastructure. What this will involve is creating 
+all the python functions that allow the users to interact with the backend representation
 
 4/11/2019
-Finished event related routes, need to agree on certain formatting specifications for web service communications.
+Finished event related routes, need to agree on certain formatting specifications 
+for web service communications. Will work on ensuring backend changes propogate to 
+the database model.
 
 6/11/2019
-Added persistence and database updating for event creation and management
+Finished adding persistence and database updating for event creation and management.
+Python functions now add their changes to the mysql update queue. As such the server
+state is now preserved across restarts
 
 13/11/2019
-Started on NLP Frontend interface, began working on fetch calls and handling dialogflow responses
+Started on NLP Frontend interface, began working on fetch calls and handling dialogflow responses.
+Intended affect is to allow the user to confirm the results of the NLP query, such that they can correct
+mistakes before they are integrated
 
 16/11/2019
 Heavily refactored the sidebar to raise state up the component tree, debugged lost of the fetch calls aand handlers
+We're running into a number of misc bugs revolving around out persistent state management, however
+from the looks of it it is due to the high coupling of the mysql database and the python backend
 
 17/11/2019
 Refactored backend and database storage of dates, converted date objects to ISO string for storage so that format remains universal
+we chose this because the backend is barely interacting with the data and it is much easier to store the object in the database
+as a string as well as feed it to the frontend
 
 20/11/2019
-Unified our date format between frontend and backend, ths removing integration errors between frontend, backend, and database
+Unified our date format between frontend and backend, ths removing integration errors between frontend, backend, and database.
+moving to add contacts features and begin polishing features and bugs.
 
 24/11/2019
-Fixed final contacts and navbar bugs, improved the training dataset for dialogflow and retrained the nework
+Fixed final contacts and navbar bugs, improved the training dataset for dialogflow and retrained the nework.
+FIN
