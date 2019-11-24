@@ -25,7 +25,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=./googlekey.json
 ```
 pip3 install -r requirements.txt
 ```
-4. Navigate to static folder and install npm dependencies
+4. Navigate to **static folder** and install npm dependencies
 ```
 npm install
 ```
@@ -41,8 +41,17 @@ npm install babel-loader@^7 --save-dev
 ```
 python3 DatabaseManager.py
 ```
- 
+
 7. Open a terminal at the root directory and start the python server
 ```
 python3 run.py
+```
+8. If you recieve error messages involving material-ui, run
+```
+npm install --save --save-dev @material-ui/core
+```
+9. Login with the following username and password
+```
+username: zainab.a@email.com
+password: password
 ```
