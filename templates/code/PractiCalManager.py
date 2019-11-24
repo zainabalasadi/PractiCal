@@ -74,7 +74,7 @@ class PractiCalManager():
     def createUser(self, firstName, lastName, email, password):
         userID = self._db.addUser(firstName, lastName, email, password)
         if userID != -1:
-            newUser = User(userID, firstName, lastName, email, password)
+            newUser = User(userID, firstName, lastName, email)
             return True
         else:
             return False
