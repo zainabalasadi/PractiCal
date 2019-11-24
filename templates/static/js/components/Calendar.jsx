@@ -102,7 +102,7 @@ class Cal extends Component {
             events: [],
             calendars: [],
             title: "", start: "", end: "", desc: "",
-            invitees: "", groups: "", calendar: "",
+            invitees: [], groups: [], calendar: "",
             eventId: "", category: "", colour: "",
             // Calendar Modals
             openSlot: false, openEvent: false, openNlp: false,
@@ -162,7 +162,6 @@ class Cal extends Component {
             return s
         }
     }
-
 
     // Function to create event and send to back-end
     create_event(event) {
@@ -236,15 +235,12 @@ class Cal extends Component {
         for (var i = 0 ; i < calendarList.calendars.length ; i++) {
             this.state.calendars.push(calendarList.calendars[i])
             for (var j = 0 ; j < calendarList.calendars[i].events.length; j++) {
-                //var startStr = JSON.parse(calendarList.calendars[i].events[j].start)
-                // console.log(calendarList.calendars[i].events[j].start)
+                // Format start date
                 var start = new Date(calendarList.calendars[i].events[j].start)
                 calendarList.calendars[i].events[j].start = start
-
+                // Format end date
                 var end = new Date(calendarList.calendars[i].events[j].end)
                 calendarList.calendars[i].events[j].end = end
-                // console.log(calendarList.calendars[i].events[j].start)
-
                 // Add colour as attribute
                 calendarList.calendars[i].events[j].colour = calendarList.calendars[i].colour;
                 this.state.events.push(calendarList.calendars[i].events[j])
@@ -328,7 +324,6 @@ class Cal extends Component {
 
     //  Allows user to click on calendar slot and make new event
     handleSlotSelected(eventToEdit) {
-        console.log(eventToEdit.start);
         this.setState ({
             openSlot: true,
             title: eventToEdit.title,
@@ -345,9 +340,6 @@ class Cal extends Component {
 
     //  Allows user to click on existing event
     handleEventSelected(event) {
-        // console.log("event", event);
-        console.log(event.start)
-        console.log(event.end)
         this.setState ({
             openEvent: true,
             clickedEvent: event,

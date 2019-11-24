@@ -165,7 +165,7 @@ def getEvents():
                         eventDict['end'] = str(event.getEndDateTime())
                         eventDict['category'] = event.getCategory()
                         eventDict['comments'] = event.getComments()
-                        eventDict['invitees'] = event.getInvitees()
+                        eventDict['invitees'] = list(event.getInvitees())
                         eventDict['calendar'] = cal.getName()
                         eventDict['groups'] = current_user.getGroups()
                         eventList.append(eventDict)
@@ -173,6 +173,7 @@ def getEvents():
                 ret.append(calObj)
                 # break
         return jsonify({"calendars": ret})
+
 
 
 @index_blueprint.route('/searchEvents', methods=['POST'])
