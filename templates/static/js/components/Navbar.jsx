@@ -137,9 +137,28 @@ class Navbar extends Component {
             openNotification: false,
             searchText: "",
         };
+        this.contacts = this.fetchContacts();
         this.handleClose = this.handleClose.bind(this);
         this.handleContactOpen = this.handleContactOpen.bind(this);
     };
+
+    fetchContacts() {
+        let response = fetch('/getContacts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        }).then(response => response.json()).then(data => this.setContactState(data))
+    }
+
+    setContactState(d) {
+        console.log(d)
+        let contacts = this.state.contacts.slice();
+        for (var i = 0; i < d.data.length; i++) {
+            contacts.push(d.data[i])
+        }
+        this.setState({ contacts: contacts });
+    }
 
     setSearchText(e) {
         this.setState({ searchText: e.target.value })
@@ -173,7 +192,7 @@ class Navbar extends Component {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-        body: JSON.stringify({"email": contact.contactName, "name": contact.ContactEmail})
+        body: JSON.stringify({"name": contact.contactName, "email": contact.contactEmail})
         })
 	
 

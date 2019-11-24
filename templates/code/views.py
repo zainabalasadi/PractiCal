@@ -428,7 +428,16 @@ def editCalendar():
 def addContact():
     if request.method == 'POST':
         r = request.get_json()
+        print(r)
         email = r['email']
-        current_user.addContact('email')
+        name = r['name']
+        current_user.addContact(email, firstName=name)
         PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
         return jsonify({"success": "True"})
+
+@index_blueprint.route('/getContacts', methods=['POST'])
+@login_required
+def getContacts():
+    if request.method == 'POST':
+        contacts = current_user.getContacts()
+        return jsonify({"data": contacts})
