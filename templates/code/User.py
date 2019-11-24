@@ -87,9 +87,7 @@ class User(UserMixin):
     def getContacts(self):
         contacts = []
         for email in self._contacts.keys():
-            contacts.append((email, self._contacts[email][firstName],
-                self._contacts[email][lastName],
-                [grp.getName() for grp in self._contacts[email]['groups']]))
+            contacts.append((email, self._contacts[email][firstName]))
         return contacts
 
     def getGroups(self):
