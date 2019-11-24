@@ -168,7 +168,7 @@ class Cal extends Component {
         //console.log(event)
         console.log(this.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc,
-                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "startDate": this.formatActualDate(event.start), "endDate": this.formatActualDate(event.end), "invitees": event.invitees,
                                     "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
                             "category": event.category}))
         let response = fetch('/createEvent', {
@@ -177,7 +177,7 @@ class Cal extends Component {
                 'Content-Type': 'application/json;charset=utf-8'
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc,
-                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "startDate": this.formatActualDate(event.start), "endDate": this.formatActualDate(event.end), "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
                             "category": event.category})}).then((data) => data.json()).then(event => {
             if (event.success) {

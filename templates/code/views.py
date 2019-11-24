@@ -67,8 +67,12 @@ def createEvent():
                 desc = r['desc'] if 'desc' in r.keys() else ''
                 if (len(r['startDate']) == 16):
                     startDate = (r['startDate'])
+                    print("START DATE 16")
                 elif (len(r['startDate']) == 24):
                     startDate = (r['startDate'][:-8])
+                    print("START DATE 24")
+                else:
+                    print("fucked")
                 if (len(r['endDate']) == 16):
                     endDate = (r['endDate'])
                 elif (len(r['endDate']) == 24):
