@@ -86,8 +86,10 @@ class User(UserMixin):
 
     def getContacts(self):
         contacts = []
+        print("contact keys:", self._contacts.keys())
         for email in self._contacts.keys():
-            contacts.append((email, self._contacts[email]['name'], self._contacts[email]['groups']))
+            contacts.append((email, self._contacts[email]['name'],
+                [grp.getName() for grp in self._contacts[email]['groups']]))
         return contacts
 
     def getGroups(self):
@@ -114,12 +116,14 @@ class User(UserMixin):
             return True
 
     def addContact(self, email, name="", groupName=None):
+        print("hello")
         try:
             mem = self._contacts[email]
         except:
             mem = self._contacts[email] = {
                 'name': name,
                 'groups': list()}
+            print("new contact", email)
 
         if not groupName: return
         try:

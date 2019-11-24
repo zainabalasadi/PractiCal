@@ -435,7 +435,6 @@ def editCalendar():
 def addContact():
     if request.method == 'POST':
         r = request.get_json()
-        print(r)
         email = r['email']
         name = r['name']
         current_user.addContact(email, name)

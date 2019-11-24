@@ -108,8 +108,10 @@ class PractiCalManager():
         try:
             contacts = json.loads(contacts)
             for email in contacts.keys():
+                user.addContact(email, contacts[email]['name'])
+
                 for group in contacts[email]['groups']:
-                    user.addContact(email, contacts[email]['name'], group)
+                    user.addContact(email, groupName=group)
         except:
             pass
 
