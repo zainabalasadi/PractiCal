@@ -2,6 +2,8 @@ import mysql.connector
 import argparse
 import bcrypt
 import json
+import io
+from contextlib import redirect_stdout
 
 HOST = "localhost"
 USER = "admin"
@@ -89,14 +91,13 @@ class DatabaseManager():
         sql = "DELETE FROM users WHERE uid = %s"
         val = (userID,)
         try:
-            if self.deleteInvite(receiverID=userID) == -1:
-                raise Exception("Error deleting invites related to user")
-            if self.deleteNotification(senderID=userID) == -1:
-                raise Exception("Error deleting notifications related to user")
-            if self.deleteNotification(receiverID=userID) == -1:
-                raise Exception("Error deleting notifications related to user")
-            if self.deleteEvent(userID=userID) == -1:
-                raise Exception("Error deleting events related to user")
+            # Delete records in other tables associated with user
+            with redirect_stdout(io.StringIO()):
+                self.deleteInvite(receiverID=userID)
+                self.deleteNotification(senderID=userID)
+                self.deleteNotification(receiverID=userID)
+                self.deleteEvent(userID=userID)
+
             cursor.execute(sql, val)
             self._db.commit()
             rowcount = cursor.rowcount
@@ -287,12 +288,10 @@ class DatabaseManager():
         val = tuple(val)
         try:
             if eventID and not userID:
-                if self.deleteInvite(eventID=eventID) == -1:
-                    raise Exception("Error deleting invites related to event")
-                if self.deleteNotification(eventID=eventID) == -1:
-                    raise Exception("Error deleting notifications related to event")
+                with redirect_stdout(io.StringIO()):
+                    self.deleteInvite(eventID=eventID)
+                    self.deleteNotification(eventID=eventID)
             cursor = self._db.cursor()
-
             sql = "DELETE FROM events WHERE {}".format(" AND ".join(conditions))
             cursor.execute(sql, val)
             self._db.commit()
