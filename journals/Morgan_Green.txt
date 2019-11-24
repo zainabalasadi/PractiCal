@@ -20,3 +20,21 @@ Backend routing for dialogflow working. Will move on to begin organising post ro
 
 4/11/2019
 Finished event related routes, need to agree on certain formatting specifications for web service communications.
+
+6/11/2019
+Added persistence and database updating for event creation and management
+
+13/11/2019
+Started on NLP Frontend interface, began working on fetch calls and handling dialogflow responses
+
+16/11/2019
+Heavily refactored the sidebar to raise state up the component tree, debugged lost of the fetch calls aand handlers
+
+17/11/2019
+Refactored backend and database storage of dates, converted date objects to ISO string for storage so that format remains universal
+
+20/11/2019
+Unified our date format between frontend and backend, ths removing integration errors between frontend, backend, and database
+
+24/11/2019
+Fixed final contacts and navbar bugs, improved the training dataset for dialogflow and retrained the nework
