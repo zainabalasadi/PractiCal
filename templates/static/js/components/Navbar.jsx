@@ -114,12 +114,7 @@ class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contacts: [
-                {
-                  contactName: 'Jeff Lastname',
-                  contactEmail: 'jeff@email.com',
-                },
-            ],
+            contacts: [],
             groups: [
                 {
                   groupName: 'COMP4920',
