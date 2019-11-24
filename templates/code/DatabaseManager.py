@@ -89,13 +89,13 @@ class DatabaseManager():
         sql = "DELETE FROM users WHERE uid = %s"
         val = (userID,)
         try:
-            if deleteInvite(receiverID=userID) == -1:
+            if self.deleteInvite(receiverID=userID) == -1:
                 raise Exception("Error deleting invites related to user")
-            if deleteNotification(senderID=userID) == -1:
+            if self.deleteNotification(senderID=userID) == -1:
                 raise Exception("Error deleting notifications related to user")
-            if deleteNotification(receiverID=userID) == -1:
+            if self.deleteNotification(receiverID=userID) == -1:
                 raise Exception("Error deleting notifications related to user")
-            if deleteEvent(userID=userID) == -1:
+            if self.deleteEvent(userID=userID) == -1:
                 raise Exception("Error deleting events related to user")
             cursor.execute(sql, val)
             self._db.commit()
@@ -287,9 +287,9 @@ class DatabaseManager():
         val = tuple(val)
         try:
             if eventID and not userID:
-                if deleteInvite(eventID=eventID) == -1:
+                if self.deleteInvite(eventID=eventID) == -1:
                     raise Exception("Error deleting invites related to event")
-                if deleteNotification(eventID=eventID) == -1:
+                if self.deleteNotification(eventID=eventID) == -1:
                     raise Exception("Error deleting notifications related to event")
             cursor = self._db.cursor()
 
