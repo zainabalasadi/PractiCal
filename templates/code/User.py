@@ -87,7 +87,7 @@ class User(UserMixin):
     def getContacts(self):
         contacts = []
         for email in self._contacts.keys():
-            contacts.append((email, self._contacts[email][firstName]))
+            contacts.append((email, self._contacts[email]['name'], self._contacts[email]['groups']))
         return contacts
 
     def getGroups(self):
@@ -113,21 +113,20 @@ class User(UserMixin):
                 {'colour': newCalendar.getColour()}
             return True
 
-    def addContact(self, email, firstName="", lastName="", groupName=None):
+    def addContact(self, email, name="", groupName=None):
         try:
             mem = self._contacts[email]
         except:
             mem = self._contacts[email] = {
-                'firstName': firstName,
-                'lastName': lastName,
-                'groups': []}
+                'name': name,
+                'groups': list()}
 
         if not groupName: return
         try:
             grp = self._groups[groupName]
         except:
             grp = self._groups[groupName] = Group(groupName)
-        grp.addMember(email, mem['firstName'], mem['lastName'])
+        grp.addMember(email, name)
         if grp not in mem['groups']:
             self._contacts[email]['groups'].append(grp)
 

@@ -108,9 +108,8 @@ class PractiCalManager():
         try:
             contacts = json.loads(contacts)
             for email in contacts.keys():
-                _, contactFN, contactLN, _ = self._db.getUser(email=email)
-                for group in contacts[email]:
-                    user.addContact(email, contactFN, contactLN, group)
+                for group in contacts[email]['groups']:
+                    user.addContact(email, contacts[email]['name'], group)
         except:
             pass
 
@@ -434,14 +433,14 @@ class PractiCalManager():
                         newCategory=updateObject.getCategory(),
                         newLocation=updateObject.getLocation())
                 elif updateType == self.DBUpdate.DB_UPDATE_USER:
-                    contacts = {email: groups for email, _, _, groups \
-                            in updateObject.getContacts()}
+                    contacts = {email: {'name': name, 'groups': groups} \
+                        for email, name, groups in updateObject.getContacts()}
                     self._db.setUser(
                         userID=updateObject.getID(),
                         newFName=updateObject.getFirstName(),
                         newLName=updateObject.getLastName(),
                         newEmail=updateObject.getEmail(),
-                        newContacts=contacts,
+                        newContacts=json.dumps(contacts),
                         newPreferences=json.dumps(updateObject.getPreferences()))
                 elif updateType == self.DBUpdate.DB_UPDATE_INVITE_GOING:
                     self._db.setInvite(

@@ -11,14 +11,12 @@ class Group:
                 self._members[email]['lastName']))
         return ret
 
-    def addMember(self, email, firstName, lastName):
+    def addMember(self, email, name):
         try:
             mem = self._members[email]
             return
         except:
-            self._members[email] = {
-                'firstName': firstName,
-                'lastName': lastName}
+            self._members[email] = {'name': name}
 
     def removeMember(self, email):
         try:

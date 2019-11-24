@@ -438,7 +438,7 @@ def addContact():
         print(r)
         email = r['email']
         name = r['name']
-        current_user.addContact(email, firstName=name)
+        current_user.addContact(email, name)
         PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
         return jsonify({"success": "True"})
 
