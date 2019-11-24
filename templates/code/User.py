@@ -167,7 +167,7 @@ class User(UserMixin):
             self._calendars[newName] = calendar
 
             # Update user preferences
-            calPref = self._preferences[oldName]
+            calPref = self._preferences['calendars'][oldName]
             del self._preferences['calendars'][oldName]
             self._preferences['calendars'][newName] = calPref
             return True

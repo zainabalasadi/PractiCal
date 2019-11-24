@@ -424,6 +424,8 @@ def editCalendar():
             current_user.changeCalendarName(oldCalendar, name)
             current_user.changeCalendarColour(oldCalendar, colour)
             PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
+            for event in oldCalendar.getEvents():
+                PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_UPDATE_EVENT, oldCalendar)
             return jsonify({"success": "True"})
     return jsonify({"success": "False"})
 
