@@ -424,6 +424,8 @@ def editCalendar():
             current_user.changeCalendarName(oldCalendar, name)
             current_user.changeCalendarColour(oldCalendar, colour)
             PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
+            for event in oldCalendar.getEvents():
+                PCM.addToUpdateQueue(current_user.getID(), event, PCM.DBUpdate.DB_UPDATE_EVENT, oldCalendar)
             return jsonify({"success": "True"})
     return jsonify({"success": "False"})
 
@@ -433,10 +435,9 @@ def editCalendar():
 def addContact():
     if request.method == 'POST':
         r = request.get_json()
-        print(r)
         email = r['email']
         name = r['name']
-        current_user.addContact(email, firstName=name)
+        current_user.addContact(email, name)
         PCM.addToUpdateQueue(current_user.getID(), current_user, PCM.DBUpdate.DB_UPDATE_USER)
         return jsonify({"success": "True"})
 

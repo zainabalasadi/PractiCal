@@ -86,8 +86,10 @@ class User(UserMixin):
 
     def getContacts(self):
         contacts = []
+        print("contact keys:", self._contacts.keys())
         for email in self._contacts.keys():
-            contacts.append((email, self._contacts[email][firstName]))
+            contacts.append((email, self._contacts[email]['name'],
+                [grp.getName() for grp in self._contacts[email]['groups']]))
         return contacts
 
     def getGroups(self):
@@ -113,21 +115,22 @@ class User(UserMixin):
                 {'colour': newCalendar.getColour()}
             return True
 
-    def addContact(self, email, firstName="", lastName="", groupName=None):
+    def addContact(self, email, name="", groupName=None):
+        print("hello")
         try:
             mem = self._contacts[email]
         except:
             mem = self._contacts[email] = {
-                'firstName': firstName,
-                'lastName': lastName,
-                'groups': []}
+                'name': name,
+                'groups': list()}
+            print("new contact", email)
 
         if not groupName: return
         try:
             grp = self._groups[groupName]
         except:
             grp = self._groups[groupName] = Group(groupName)
-        grp.addMember(email, mem['firstName'], mem['lastName'])
+        grp.addMember(email, name)
         if grp not in mem['groups']:
             self._contacts[email]['groups'].append(grp)
 
@@ -167,7 +170,7 @@ class User(UserMixin):
             self._calendars[newName] = calendar
 
             # Update user preferences
-            calPref = self._preferences[oldName]
+            calPref = self._preferences['calendars'][oldName]
             del self._preferences['calendars'][oldName]
             self._preferences['calendars'][newName] = calPref
             return True
