@@ -84,3 +84,17 @@ integration to fully test user preferences.
 
 20/11/2019:
 Got logout button working properly.
+
+21/11/2019:
+Started working on notifications menu in frontend. So far gotten data to
+correctly be fetched from backend. Added test data to database to test this.
+
+22/11/2019:
+Continued working on notifications. Having trouble getting the data to load
+into notifications menu. Notification message not being formatted correctly in
+views
+
+23/11/2019:
+Got notifications to display in menu an got delete functionality working. Also
+added invite response support to notifications. Fixed message formatting issue
+as well. Notification menu just needs to be stylised now.
