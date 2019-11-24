@@ -41,9 +41,6 @@ class User(UserMixin):
         self._isAuthenticated = False
         self._isActive = True
         self._updates = {
-            'FIRST_NAME': False,
-            'LAST_NAME': False,
-            'EMAIL': False,
             'PREFERENCES': False,
             'CONTACTS': False,
             'NOTIFICATIONS': False
@@ -105,6 +102,9 @@ class User(UserMixin):
 
     def getPreferences(self):
         return self._preferences
+
+    def getUpdates(self):
+        return self._updates
 
     #
     # Adders
@@ -169,18 +169,6 @@ class User(UserMixin):
     #
     # Setters
     #
-    def setFirstName(self, firstName):
-        self._firstName = firstName
-        self._updates['FIRST_NAME'] = True
-
-    def setLastName(self, lastName):
-        self._lastName = lastName
-        self._updates['LAST_NAME'] = True
-
-    def setEmail(self, email):
-        self._email = email
-        self._updates['EMAIL'] = True
-
     def changeCalendarName(self, calendar, newName):
         try:
             # Update calendar
