@@ -243,7 +243,7 @@ class User(UserMixin):
     def respondToInvite(self, event, status=Calendar.INVITESTATUS_GOING,
             calendar=None):
         # Check user invited to event
-        if self._email not in event.getInvitee(): return
+        if self._email not in event.getInvitees(): return
         # Check calendar belongs to user
         if calendar and calendar not in self._calendars.values(): return
         # Check status code is valid
@@ -255,7 +255,9 @@ class User(UserMixin):
             cal.removeInvite(event)
 
         # Add invite to calendar
+        if not calendar: calendar = self.getCalendarByName('Default')
         calendar.addInvite(event, status)
+        print(calendar.getInvites())
 
     #
     # Search
