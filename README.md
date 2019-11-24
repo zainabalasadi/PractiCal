@@ -30,7 +30,11 @@ npm install babel-loader@^7 --save-dev
 ```
 python3 run.py
 ```
-7. Login with the following username and password
+7. If you recieve error messages involving material-ui, run
+```
+npm install --save --save-dev @material-ui/core
+```
+8. Login with the following username and password
 ```
 username: zainab.a@email.com
 password: password
