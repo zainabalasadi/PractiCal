@@ -111,7 +111,7 @@ class Cal extends Component {
             searchResult: [], search: "", searchOpen: false,
             // NLP
 	        nlpText: "", nlpResult: {}, notifs: [], anchorEl: null,
-            createPopUp: false, calName: "", calColour: "",
+            createPopUp: false, editPopUp: false, calName: "", calColour: "",
         };
         this.handleClose = this.handleClose.bind(this);
         this.handleSearchClose = this.handleSearchClose.bind(this)
@@ -405,6 +405,10 @@ class Cal extends Component {
 
     handleCreateOpen = () => {
         this.setState ({ createPopUp: true });
+    };
+
+    handleCreateEdit = () => {
+        this.setState ({ editPopUp: true });
     };
 
     handleDeleteCal = (calendarName) => {
@@ -1007,7 +1011,8 @@ class Cal extends Component {
                     handleDeleteCal={this.handleDeleteCal} setCalName={this.setCalName}
                     setCalColour={this.setCalColour} setNewCalendar={this.setNewCalendar}
                     handleClick={this.handleClick} setNlpBarState={this.handleNlpTextbox}
-                    events={this.state.events} delete_calendar={this.delete_calendar}/>
+                    events={this.state.events} delete_calendar={this.delete_calendar}
+                    handleCreateEdit={this.handleCreateEdit} editPopUp={this.state.editPopUp}/>
             </div>
         );
     }

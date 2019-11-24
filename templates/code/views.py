@@ -310,13 +310,13 @@ def getNotifs():
             senderName = "{} {}".format(sender[0], sender[1])
             eventName = notif.getEvent().getName()
             if notifType == Notification.NOTIF_EVENTCHANGE:
-                message = "{sender} has updated event '{event}'".format(sender=senderName, event=eventName)
+                message = "{sender} has updated the event '{event}'".format(sender=senderName, event=eventName)
                 strType = "EVENTCHANGE"
             elif notifType == Notification.NOTIF_EVENTINVITE:
-                message = "{sender} has invited you to event '{event}'".format(sender=senderName, event=eventName)
+                message = "{sender} has invited you to the event '{event}'".format(sender=senderName, event=eventName)
                 strType = "EVENTINVITE"
             elif notifType == Notification.NOTIF_EVENTDELETE:
-                message = "{sender} has cancelled event '{event}'".format(sender=senderName, event=eventName)
+                message = "{sender} has cancelled the event '{event}'".format(sender=senderName, event=eventName)
                 strType = "EVENTDELETE"
             elif notifType == Notification.NOTIF_INVITERESP_GOING:
                 message = ("{sender} has changed their status to 'going' "
@@ -335,6 +335,9 @@ def getNotifs():
             notifObject = {
                 'id': notif.getID(),
                 'eid': notif.getEvent().getID(),
+                'eTitle': notif.getEvent().getName(),
+                'eStart': notif.getEvent().getStartDateTime(),
+                'eEnd': notif.getEvent().getEndDateTime(),
                 'type': strType,
                 'message': message
             }

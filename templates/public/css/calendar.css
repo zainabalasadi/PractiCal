@@ -15,6 +15,13 @@ html, body {
     margin-left: 5px;
 }
 
+.notification.is-danger {
+    position: relative;
+    height: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 body {
 	font-family: 'Roboto', sans-serif;
     color: #222328;
@@ -309,4 +316,38 @@ div.inline {
 /**** Contact List ****/
 .Navbar-contactList-23 {
     border: 1px solid #DADCE0;
+}
+
+/**** Colour Picker ****/
+.Sidebar-colourPicker-156 {
+    width: 380px !important;
+    box-shadow: 6px inset !important;
+}
+
+.Sidebar-colourPicker-156 > div {
+    box-shadow: 6px inset !important;
+}
+
+/**** Notifications ****/
+.notifEventBlock {
+    background-color: #566EE9;
+    padding: 15px 15px 15px 15px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    line-height: 8px;
+    float: left;
+    clear: left;
+}
+
+.notifTitle {
+    font-weight: bold;
+}
+
+.going {
+    color: white !important;
+}
+
+.goingQuestion {
+    padding-top: 30px;
 }
