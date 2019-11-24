@@ -20,18 +20,26 @@ class Calendar():
             self.INVITESTATUS_GOING: [],
             self.INVITESTATUS_MAYBE: [],
             self.INVITESTATUS_DECLINE: []}
+        self._updates = {
+            'NAME': False,
+            'COLOUR': False,
+            'EVENTS': list(),
+            'INVITES': False
+        }
 
     def getName(self):
         return self._name
 
     def setName(self, name):
         self._name = name
+        self._updates['NAME'] = True
 
     def getColour(self):
         return str(self._colour)
 
     def setColour(self, colour):
         self._colour = colour
+        self._updates['COLOUR'] = True
 
     def getEvents(self):
         return self._events
@@ -41,6 +49,7 @@ class Calendar():
     def addEvent(self, event):
         if event not in self._events:
             self._events.append(event)
+            self._updates['EVENTS'].append(event)
             return True
         return False
 
@@ -53,12 +62,14 @@ class Calendar():
             return
         self.removeInvite(event)
         self._invites[status].append(event)
+        self._updates['INVITES'] = True
 
     # Remove invite from calendar
     def removeInvite(self, event):
         for events in self._invites.keys():
             if event in events:
                 self._invites[events].remove(event)
+                self._updates['INVITES'] = True
                 return
 
     # Return list of tuples of the form (event, status). If status
@@ -74,9 +85,6 @@ class Calendar():
                 invites += [(e, status) for e in self._invites[status]]
             return invites
         return None
-
-    def moveDelete(self, event):
-        self._events.remove(event)
 
     # Removes a given event from a user's calendar
     def deleteEvent(self, event):

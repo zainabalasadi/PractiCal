@@ -40,7 +40,14 @@ class User(UserMixin):
         self._notifications = dict()
         self._isAuthenticated = False
         self._isActive = True
-
+        self._updates = {
+            'FIRST_NAME': False,
+            'LAST_NAME': False,
+            'EMAIL': False,
+            'PREFERENCES': False,
+            'CONTACTS': False,
+            'NOTIFICATIONS': False
+        }
     #
     # Flask login functions
     #
@@ -111,6 +118,7 @@ class User(UserMixin):
             self._calendars[newCalName] = newCalendar
             self._preferences['calendars'][newCalName] = \
                 {'colour': newCalendar.getColour()}
+            self._updates['PREFERENCES'] = True
             return True
 
     def addContact(self, email, firstName="", lastName="", groupName=None):
@@ -121,6 +129,7 @@ class User(UserMixin):
                 'firstName': firstName,
                 'lastName': lastName,
                 'groups': []}
+            self._updates['CONTACTS'] = True
 
         if not groupName: return
         try:
@@ -137,6 +146,7 @@ class User(UserMixin):
             return
         except:
             self._groups[group.getName()] = group
+            self._updates['CONTACTS'] = True
 
     def addNotification(self, event, notifType, senderEmail):
         for notif in self._notifications.values():
@@ -150,6 +160,7 @@ class User(UserMixin):
         newID = ids[-1] + 1 if ids else 1
         self._notifications[newID] = Notification(
             newID, event, notifType, senderEmail)
+        self._updates['NOTIFICATIONS'] = True
 
     # Adds new invite to default calendar
     def addInvite(self, event):
@@ -158,6 +169,18 @@ class User(UserMixin):
     #
     # Setters
     #
+    def setFirstName(self, firstName):
+        self._firstName = firstName
+        self._updates['FIRST_NAME'] = True
+
+    def setLastName(self, lastName):
+        self._lastName = lastName
+        self._updates['LAST_NAME'] = True
+
+    def setEmail(self, email):
+        self._email = email
+        self._updates['EMAIL'] = True
+
     def changeCalendarName(self, calendar, newName):
         try:
             # Update calendar
@@ -200,6 +223,7 @@ class User(UserMixin):
                     calendar.getColour())
             else:
                 del self._preferences['calendars'][calendar.getName()]
+            self._updates['PREFERENCES'] = True
             return True
         except:
             return False
@@ -209,6 +233,7 @@ class User(UserMixin):
         if not notifID: notifID = notif.getID()
         try:
             del self._notifications[notifID]
+            self._updates['NOTIFICATIONS'] = True
         except:
             pass
         return
@@ -226,6 +251,7 @@ class User(UserMixin):
             del self._contacts[email]
             for group in self._groups:
                 group.removeMember(email)
+            self._updates['CONTACTS'] = True
         except:
             pass
 
@@ -240,12 +266,13 @@ class User(UserMixin):
     def respondToInvite(self, event, status=Calendar.INVITESTATUS_GOING,
             calendar=None):
         # Check user invited to event
-        if self._email not in event.getInvitee(): return
+        if self._email not in event.getInvitee(): return False
         # Check calendar belongs to user
-        if calendar and calendar not in self._calendars.values(): return
+        if calendar and calendar not in self._calendars.values(): return False
+        if not calendar: calendar = self._calendars['Default']
         # Check status code is valid
         if status < Calendar.INVITESTATUS_GOING or \
-                status > Calendar.INVITESTATUS_DECLINE: return
+                status > Calendar.INVITESTATUS_DECLINE: return False
 
         # Remove existing existing invite from all calendars
         for cal in self._calendars.values():
@@ -253,6 +280,7 @@ class User(UserMixin):
 
         # Add invite to calendar
         calendar.addInvite(event, status)
+        return True
 
     #
     # Search
@@ -300,22 +328,3 @@ class User(UserMixin):
                 time += calendar.calculateHoursCategory(category, datetime.datetime.now())
             l[category] = round(time)
         return l
-
-    # MOVED TO views.py because PCM needed
-    # search through events by host
-    # def searchEventsByHost(self, host):
-    #     listOfEvents = []
-    #     for calendar in self._calendars:
-    #         # self._calendar[calendar]
-    #         for event in self._calendars[calendar].getEvents():
-    #             userID = event.getUserID()
-    #             firstName = PCM.getUserInfo(userID=userID)[0]
-    #             lastName = PCM.getUserInfo(userID=userID)[1]
-    #             userName = firstName + " " + lastName
-    #             if host.lower() in userName.lower():
-    #                 listOfEvents.append(event)
-    #     return listOfEvents
-
-    #
-    # Other
-    #

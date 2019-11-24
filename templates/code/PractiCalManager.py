@@ -313,31 +313,41 @@ class PractiCalManager():
 
     # Updates invite status for user and sends response notification to
     # event owner
-    def respondToInvite(self, eventID, userID, response):
+    def respondToInvite(self, eventID, userID, response, calendar=None):
         # Check event loaded
-        if eventID not in self._events.keys(): return
+        if eventID not in self._events.keys(): return False
         # Check user is logged in
-        if userID not in self._users.keys(): return
+        if userID not in self._users.keys(): return False
         # Check user was invited to event
         userEmail = self._users[userID].getEmail()
-        if userEmail not in self._events[eventID].getInvitees(): return
+        if userEmail not in self._events[eventID].getInvitees(): return False
         # Check response is valid
-        if response != Notification.NOTIF_INVITERESP_GOING and \
-                response != Notification.NOTIF_INVITERESP_MAYBE and \
-                response != Notification.NOTIF_INVITERESP_DECLINE:
-            return
+        if response == Notification.NOTIF_INVITERESP_GOING:
+            status = Calendar.INVITESTATUS_GOING
+        elif response == Notification.NOTIF_INVITERESP_MAYBE:
+            status = Calendar.INVITESTATUS_MAYBE
+        elif response == Notification.NOTIF_INVITERESP_DECLINE:
+            status = Calendar.INVITESTATUS_DECLINE
+        else: return False
+
+        event = self._events[eventID]
+        # Change invite status in user
+        if not self._users[userID].respondToInvite(event, status, calendar):
+            return False
 
         eventOwnerID = self._events[eventID].getUserID()
         eventOwnerEmail = ""
         if eventOwnerID in self._users.keys():
             eventOwner = self._users[eventOwnerID]
             eventOwnerEmail = eventOwner.getEmail()
-            event = self._events[eventID]
             # Remove old response notification if there is one
             for notif in eventOwner.getNotifications():
-                if notif.getEvent() == event and notif.getSenderID() == userID:
+                notifType = notif.getNotifType()
+                if notif.getEvent() == event and notif.getSenderID() == userID \
+                        and (notifType == NOTIF_INVITERESP_GOING or \
+                        notifType == NOTIF_INVITERESP_MAYBE or \
+                        notifType == NOTIF_INVITERESP_DECLINE):
                     eventOwner.removeNotification(notif)
-                    break
         else:
             # Remove any old responses
             eventOwner = self._db.getUser(userID=eventOwnerID)
@@ -352,6 +362,8 @@ class PractiCalManager():
         # Send notification to event owner
         if eventOwnerEmail:
             self.sendNotification(eventID, userID, [eventOwnerEmail], response)
+
+        return True
 
     # Sends notification to list of users
     def sendNotification(self, eventID, senderID, receiverEmails, notifType):
@@ -417,58 +429,61 @@ class PractiCalManager():
             updateType))
 
     # Applies changes to database corresponding to list of objects given
-    def updateDatabase(self, updates):
-        try:
-            for update in updates:
-                updateType = update.getUpdateType()
-                updateObject = update.getObject()
+    # def updateDatabase(self, updates):
+    #     try:
+    #         for update in updates:
+    #             updateType = update.getUpdateType()
+    #             updateObject = update.getObject()
+    #
+    #             if updateType == self.DBUpdate.DB_UPDATE_EVENT:
+    #                 self._db.setEvent(
+    #                     eventID=updateObject.getID(),
+    #                     newTitle=updateObject.getName(),
+    #                     newDescr=updateObject.getDescription(),
+    #                     newStartDT=updateObject.getStartDateTime(),
+    #                     newEndDT=updateObject.getEndDateTime(),
+    #                     newCalendar=update.getCalendar().getName(),
+    #                     newCategory=updateObject.getCategory(),
+    #                     newLocation=updateObject.getLocation())
+    #             elif updateType == self.DBUpdate.DB_UPDATE_USER:
+    #                 contacts = {email: groups for email, _, _, groups \
+    #                         in updateObject.getContacts()}
+    #                 self._db.setUser(
+    #                     userID=updateObject.getID(),
+    #                     newFName=updateObject.getFirstName(),
+    #                     newLName=updateObject.getLastName(),
+    #                     newEmail=updateObject.getEmail(),
+    #                     newContacts=contacts,
+    #                     newPreferences=json.dumps(updateObject.getPreferences()))
+    #             elif updateType == self.DBUpdate.DB_UPDATE_INVITE_GOING:
+    #                 self._db.setInvite(
+    #                     updatedObject.getID(),
+    #                     update.getUserID(),
+    #                     Event.INVITESTATUS_GOING,
+    #                     update.getCalendar().getName())
+    #             elif updateType == self.DBUpdate.DB_UPDATE_INVITE_MAYBE:
+    #                 self._db.setInvite(
+    #                     updatedObject.getID(),
+    #                     update.getUserID(),
+    #                     Event.INVITESTATUS_MAYBE,
+    #                     None)
+    #             elif updateType == self.DBUpdate.DB_UPDATE_INVITE_DECLINE:
+    #                 self._db.setInvite(
+    #                     updatedObject.getID(),
+    #                     update.getUserID(),
+    #                     Event.INVITESTATUS_DECLINE,
+    #                     None)
+    #             elif updateType == self.DBUpdate.DB_DELETE_EVENT:
+    #                 self._db.deleteEvent(updateObject.getID())
+    #             elif updateType == self.DBUpdate.DB_DELETE_USER:
+    #                 self._db.deleteUser(updateObject.getID())
+    #
+    #     except Exception as e:
+    #         print(("Error encountered while trying to update database.\n"
+    #                "The following error was raised:\n\n{}".format(e)))
 
-                if updateType == self.DBUpdate.DB_UPDATE_EVENT:
-                    self._db.setEvent(
-                        eventID=updateObject.getID(),
-                        newTitle=updateObject.getName(),
-                        newDescr=updateObject.getDescription(),
-                        newStartDT=updateObject.getStartDateTime(),
-                        newEndDT=updateObject.getEndDateTime(),
-                        newCalendar=update.getCalendar().getName(),
-                        newCategory=updateObject.getCategory(),
-                        newLocation=updateObject.getLocation())
-                elif updateType == self.DBUpdate.DB_UPDATE_USER:
-                    contacts = {email: groups for email, _, _, groups \
-                            in updateObject.getContacts()}
-                    self._db.setUser(
-                        userID=updateObject.getID(),
-                        newFName=updateObject.getFirstName(),
-                        newLName=updateObject.getLastName(),
-                        newEmail=updateObject.getEmail(),
-                        newContacts=contacts,
-                        newPreferences=json.dumps(updateObject.getPreferences()))
-                elif updateType == self.DBUpdate.DB_UPDATE_INVITE_GOING:
-                    self._db.setInvite(
-                        updatedObject.getID(),
-                        update.getUserID(),
-                        Event.INVITESTATUS_GOING,
-                        update.getCalendar().getName())
-                elif updateType == self.DBUpdate.DB_UPDATE_INVITE_MAYBE:
-                    self._db.setInvite(
-                        updatedObject.getID(),
-                        update.getUserID(),
-                        Event.INVITESTATUS_MAYBE,
-                        None)
-                elif updateType == self.DBUpdate.DB_UPDATE_INVITE_DECLINE:
-                    self._db.setInvite(
-                        updatedObject.getID(),
-                        update.getUserID(),
-                        Event.INVITESTATUS_DECLINE,
-                        None)
-                elif updateType == self.DBUpdate.DB_DELETE_EVENT:
-                    self._db.deleteEvent(updateObject.getID())
-                elif updateType == self.DBUpdate.DB_DELETE_USER:
-                    self._db.deleteUser(updateObject.getID())
-
-        except Exception as e:
-            print(("Error encountered while trying to update database.\n"
-                   "The following error was raised:\n\n{}".format(e)))
+    def updateDBUser(self, userID):
+        pass
 
     def close(self):
         for userID in self._users.keys():
