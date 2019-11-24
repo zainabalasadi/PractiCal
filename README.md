@@ -14,7 +14,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=./googlekey.json
 ```
 pip3 install -r requirements.txt
 ```
-4. Navigate to static folder and install npm dependencies
+4. Navigate to **static folder** and install npm dependencies
 ```
 npm install
 ```
@@ -28,5 +28,10 @@ npm install babel-loader@^7 --save-dev
 ```
 6. Open a terminal at the root directory and start the python server
 ```
-python run.py
+python3 run.py
+```
+7. Login with the following username and password
+```
+username: zainab.a@email.com
+password: password
 ```
