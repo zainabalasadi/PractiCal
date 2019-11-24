@@ -150,7 +150,9 @@ class Navbar extends Component {
         console.log(d)
         let contacts = this.state.contacts.slice();
         for (var i = 0; i < d.data.length; i++) {
-            contacts.push(d.data[i])
+	    var contactN = d.data[i][1]
+	    var contactE = d.data[i][0]
+            contacts.push({contactName: contactN, contactEmail: contactE})
         }
         this.setState({ contacts: contacts });
     }
