@@ -168,7 +168,7 @@ class Cal extends Component {
         //console.log(event)
         console.log(this.state)
         console.log(JSON.stringify({"name": event.title, "desc": event.desc,
-                                    "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                                    "startDate": this.formatActualDate(event.start), "endDate": this.formatActualDate(event.end), "invitees": event.invitees,
                                     "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
                             "category": event.category}))
         let response = fetch('/createEvent', {
@@ -177,7 +177,7 @@ class Cal extends Component {
                 'Content-Type': 'application/json;charset=utf-8'
             },
         body: JSON.stringify({"name": event.title, "desc": event.desc,
-                            "startDate": event.start, "endDate": event.end, "invitees": event.invitees,
+                            "startDate": this.formatActualDate(event.start), "endDate": this.formatActualDate(event.end), "invitees": event.invitees,
                             "groups": event.groups, "calendar": event.calendar, "eventId": event.eventId,
                             "category": event.category})}).then((data) => data.json()).then(event => {
             if (event.success) {
@@ -555,19 +555,19 @@ class Cal extends Component {
 
         updatedEvent[index].title = title;
         updatedEvent[index].desc = desc;
-        updatedEvent[index].start = start;
-        updatedEvent[index].end = end;
+        updatedEvent[index].start = s;
+        updatedEvent[index].end = e;
         updatedEvent[index].invitees = invitees;
         updatedEvent[index].groups = groups;
         updatedEvent[index].calendar = calendar;
         updatedEvent[index].eventId = eventId;
         updatedEvent[index].category = category;
 
-        let eventFE = {
+        let eventBE = {
             "title": title,
             "desc": desc,
-            "start": this.formatActualDate(start),
-            "end": this.formatActualDate(end),
+            "start": start,
+            "end": end,
             "invitees": invitees,
             "groups": groups,
             "calendar": calendar,
@@ -577,7 +577,7 @@ class Cal extends Component {
 
         this.setState({ events: updatedEvent });
         this.forceUpdate()
-        this.edit_event(eventFE)
+        this.edit_event(eventBE)
     }
 
     // Filters out specific event that is to be deleted and set that variable to state
