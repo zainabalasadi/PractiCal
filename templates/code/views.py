@@ -78,9 +78,8 @@ def createEvent():
                 elif (len(r['endDate']) == 24):
                     endDate = (r['endDate'][:-8])
                 cal = current_user.getCalendarByName(r['calendar'])
-                category = r['category']
+                category = r['category'] if 'category' in r.keys() else None
                 invitees = None
-                category = r['category']
                 if 'invitees' in r:
                         invitees = r['invitees'].split()
                 groups = None
@@ -159,7 +158,9 @@ def getEvents():
                 calObj['colour'] = cal.getColour()
                 calObj['user'] = current_user.getFirstName()
                 eventList = []
-                for event in cal.getEvents():
+                calEvents = cal.getEvents()
+                calInvites = [invite[0] for invite in cal.getInvites(status=Calendar.INVITESTATUS_GOING)]
+                for event in calEvents + calInvites:
                         eventDict = {}
                         eventDict['creator'] = event.getUserID()
                         eventDict['title'] = event.getName()
@@ -222,13 +223,17 @@ def searchEvents():
 def respondToInvite():
     if request.method == 'POST':
         r = request.get_json()
+        print(r)
         eID = r['id']
         resp = r["response"]
         if resp == "going":
-            resp = Notification.NOTIF_INVITERESP_GOING
+            userResp = Calendar.INVITESTATUS_GOING
+            pcmResp = Notification.NOTIF_INVITERESP_GOING
         elif resp == "decline":
-            resp = Calendar.NOTIF_INVITERESP_DECLINE
-        PCM.respondToInvite(eID, current_user.getID(), resp)
+            userResp = Calendar.INVITESTATUS_DECLINE
+            pcmResp = Calendar.NOTIF_INVITERESP_DECLINE
+        current_user.respondToInvite(PCM.getEventByID(eID), userResp)
+        PCM.respondToInvite(eID, current_user.getID(), pcmResp)
         return jsonify({"success": "True"})
     return jsonify({"success": "False"})
 

@@ -57,7 +57,7 @@ class Calendar():
     # Remove invite from calendar
     def removeInvite(self, event):
         for events in self._invites.keys():
-            if event in events:
+            if event in self._invites[events]:
                 self._invites[events].remove(event)
                 return
 

@@ -350,12 +350,14 @@ class PractiCalManager():
             self._db.deleteNotification(eventID, userID, eventOwnerID,
                 Notification.NOTIF_INVITERESP_DECLINE)
 
+        self._db.setInvite(eventID, userID, response)
         # Send notification to event owner
         if eventOwnerEmail:
             self.sendNotification(eventID, userID, [eventOwnerEmail], response)
 
     # Sends notification to list of users
     def sendNotification(self, eventID, senderID, receiverEmails, notifType):
+
         # Check event loaded
         if eventID not in self._events.keys(): return
         # Check sender logged in
