@@ -1,6 +1,8 @@
 # PractiCal
 Calendar application with Natural Language Processing for event creation.
 
+![PractiCal Preview Image](practical.jpg)
+
 ## Database Setup Instructions
 1. Install MySQL server. Instructions on how to do so can be found at:
 </br>https://dev.mysql.com/doc/mysql-installation-excerpt/5.5/en/installing.html
